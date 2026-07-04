@@ -1,0 +1,99 @@
+---
+import { navItems, siteMeta } from '../data/nav.js';
+import { withBase } from '../utils/url.js';
+const { pathname } = Astro.url;
+---
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href={withBase('/')} aria-label={siteMeta.name}>
+      <img src={withBase(siteMeta.logo)} alt={siteMeta.name} width="120" height="60" />
+    </a>
+
+    <div class="header-right">
+      <a class="login-link" href={withBase('/members')}>로그인 &nbsp;|&nbsp; 회원가입</a>
+      <button class="nav-toggle" aria-label="메뉴 열기" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav-panel" aria-label="주 메뉴">
+    <ul>
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={withBase(item.href)}
+            class={pathname === withBase(item.href) ? 'active' : ''}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener' : undefined}
+          >{item.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: saturate(160%) blur(8px);
+    border-bottom: 1px solid var(--kp-line);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 84px;
+  }
+  .brand img { width: auto; height: 52px; object-fit: contain; }
+  .header-right { display: flex; align-items: center; gap: 22px; }
+  .login-link {
+    font-size: 13px; letter-spacing: 0.06em; color: var(--kp-maroon);
+    white-space: nowrap;
+  }
+  .login-link:hover { color: var(--kp-ink); }
+
+  .nav-toggle {
+    width: 40px; height: 40px; border: 0; background: transparent;
+    display: inline-flex; flex-direction: column; justify-content: center;
+    gap: 6px; cursor: pointer; padding: 8px;
+  }
+  .nav-toggle span {
+    display: block; height: 2px; width: 100%; background: var(--kp-ink);
+    transition: transform .3s, opacity .3s;
+  }
+  .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  .nav-panel {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease;
+    border-top: 0;
+    background: var(--kp-white);
+  }
+  .nav-panel.open { max-height: 80vh; overflow-y: auto; border-top: 1px solid var(--kp-line); }
+  .nav-panel ul {
+    list-style: none; margin: 0; padding: 8px 0;
+    max-width: var(--wrap); margin-inline: auto;
+  }
+  .nav-panel li { border-bottom: 1px solid var(--kp-line); }
+  .nav-panel li:last-child { border-bottom: 0; }
+  .nav-panel a {
+    display: block; padding: 16px 24px; font-size: 16px;
+    letter-spacing: 0.02em; color: var(--kp-ink);
+    transition: background .2s, padding-left .2s;
+  }
+  .nav-panel a:hover, .nav-panel a.active {
+    background: var(--kp-cream); padding-left: 34px; color: var(--kp-maroon);
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const panel = document.querySelector('.nav-panel');
+  toggle?.addEventListener('click', () => {
+    const open = panel?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+  });
+</script>

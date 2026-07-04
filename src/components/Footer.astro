@@ -1,0 +1,56 @@
+---
+import { siteMeta } from '../data/nav.js';
+import { withBase } from '../utils/url.js';
+---
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <img src={withBase(siteMeta.logo)} alt={siteMeta.name} width="150" height="70" />
+      <p class="footer-tagline">Pilates is complete coordination of body, mind, and spirit.</p>
+      <p class="footer-tagline-author">— Joseph H. Pilates</p>
+    </div>
+
+    <div class="footer-info">
+      <p><strong>사단법인 대한필라테스협회</strong></p>
+      <p>경기 성남시 분당구 내정로 58, 3층</p>
+      <p>TEL. 031-728-7723 &nbsp;/&nbsp; 031-728-7724</p>
+      <p>사업자등록번호 129-82-11411</p>
+    </div>
+
+    <nav class="footer-links" aria-label="바로가기">
+      <a href={withBase('/kpa')}>협회소개</a>
+      <a href={withBase('/curriculum')}>커리큘럼</a>
+      <a href={withBase('/coursedate')}>교육일정</a>
+      <a href={withBase('/ncpt')}>NCPT 자격증</a>
+      <a href={withBase('/address')}>오시는길</a>
+      <a href={withBase('/members')}>인증 회원 찾기</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <div class="wrap">Copyright@2018 KOREA PILATES. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--kp-ink); color: rgba(255,255,255,0.82); }
+  .footer-inner {
+    display: grid; grid-template-columns: 1.4fr 1fr 0.8fr; gap: 48px;
+    padding-block: 64px 40px;
+  }
+  .footer-brand img { height: 56px; width: auto; filter: brightness(0) invert(1); opacity: 0.92; }
+  .footer-tagline { font-family: var(--font-display); font-style: italic; margin: 20px 0 4px; font-size: 15px; color: rgba(255,255,255,0.7); }
+  .footer-tagline-author { font-size: 13px; color: var(--kp-sage); margin: 0; }
+  .footer-info p { margin: 0 0 8px; font-size: 14px; letter-spacing: 0.02em; }
+  .footer-info strong { color: #fff; font-size: 15px; }
+  .footer-links { display: flex; flex-direction: column; gap: 12px; }
+  .footer-links a { font-size: 14px; color: rgba(255,255,255,0.72); }
+  .footer-links a:hover { color: var(--kp-cream); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-block: 22px; font-size: 12px; letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+  }
+  @media (max-width: 800px) {
+    .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  }
+</style>

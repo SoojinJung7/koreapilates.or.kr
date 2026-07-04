@@ -1,0 +1,20 @@
+/* 원본 사이트가 사용하는 업로드 한글 폰트 (woff2, 사용자 소유).
+   역할(본문/제목)은 빌드 후 화면 대조로 조정합니다. */
+@font-face {
+  font-family: 'KPKR-A';
+  src: url('/fonts/c0b476_2bbdd4d76e9b418fb36145a1780300ac.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KPKR-B';
+  src: url('/fonts/c0b476_3c13694c08e346a689767efcbcef035c.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KPKR-C';
+  src: url('/fonts/c0b476_c9430c9f4b054176af8f434210934aed.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}

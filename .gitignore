@@ -1,0 +1,15 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# source crawl (원본 HTML 참고용 — 저장소에 올리지 않음)
+_source/
+
+# logs / env
+*.log
+.env
+.env.*
+.DS_Store
