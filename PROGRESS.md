@@ -20,7 +20,7 @@
 |---|---|---|
 | / | 홈 | ✅ 완료 |
 | /kpa | 협회소개 | ✅ 완료 |
-| /faculty | 강사소개 | ⬜ |
+| /faculty | 강사소개 | ✅ 완료 |
 | /projects | 시설 둘러보기 | ⬜ |
 | /pilatesequipment | 장비 둘러보기 | ⬜ |
 | /address | 오시는길 | ⬜ |

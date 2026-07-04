@@ -1,0 +1,317 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+// 강사진 데이터 — 원본 순서대로
+const faculty = [
+  {
+    name: '정수진',
+    role: '교육원장',
+    badge: 'PMA-NCPT 인증강사',
+    photo: '6f7ec1_3b17089b522b41d9b8ac4e25b53bf1fc~mv2.jpg',
+    sections: [
+      {
+        label: '학력사항',
+        items: [
+          'Hong Kong Polytechnic University 졸업',
+          '단국대학교 운동생리학 전공 이학박사',
+        ],
+      },
+      {
+        label: '경력사항',
+        items: [
+          '사단법인 대한필라테스협회 교육원장',
+          '해외 필라테스 교육/워크샵/컨퍼런스 통역 다수(STOTT, Polestar Pilates, BBU)',
+          'GYROTONIC®, 자이로키네시스® 교육통역 다수',
+          '필라인필립 스튜디오 매니저',
+          'KPA Graduates Workshop 진행 다수',
+          'Anatomy 101: 심화해부학 / 기초 신경계 / 운동역학',
+          'KPA Holiday: 어깨충돌증후군 / 반월상연골통증 / 산전산후 필라테스',
+          'SPRING, SPRINGBOARD 워크샵',
+          'SRP(선수재활) 필라테스 전담강사',
+        ],
+      },
+      {
+        label: '자격사항',
+        items: [
+          'Nationally Certified Pilates Trainer (국제공인 필라테스 강사 자격 PMA-NCPT)',
+          'Polestar Pilates Comprehensive Studio - Polestar Principles 수료',
+        ],
+      },
+      {
+        label: '수료사항',
+        items: [
+          'Donald A. Neumann: Kinesiology of Hip & Lumbo-pelvic Region 해외석학초청세미나 (2017)',
+          'DNS®(동적신경근안정화) Exercise 1 w/ Pilates Emphasis Seminar(2018)',
+          'GYROTONIC® Application of the Fascial Body (근막스페셜코스)',
+          'GYROTONIC® Pre & Post Natal Applications (산전산후스페셜코스)',
+          'GYROTONIC® Trilogy: application for Shoulder girdle (숄더거들코스)',
+          'GYROTONIC® Trilogy: application for Pelvic girdle (골반거들코스)',
+          'GYROTONIC® Trilogy: application for Scoliosis (척추측만코스)',
+          'GYROTONIC® Archway Lv.1 (아치웨이 코스)',
+        ],
+      },
+    ],
+  },
+  {
+    name: '신수현',
+    role: '시니어 멘토',
+    badge: 'PMA-NCPT 인증강사',
+    photo: '6f7ec1_bdab13b3bc0e4c0fb9e9154a13a788aa~mv2.jpg',
+    sections: [
+      {
+        label: '학력·경력사항',
+        items: [
+          '한국체육대학교 무용(발레) 전공',
+          '스포츠클럽필립 정자본점 전임강사',
+          '사단법인 대한필라테스협회(KPA) 시니어 교육멘토',
+          'Nationally Certified Pilates Trainer (국제공인 필라테스 강사 자격 PMA-NCPT)',
+          "KPA Graduates Workshop '발레, 그리고 필라테스' 진행",
+        ],
+      },
+      {
+        label: '사단법인 대한필라테스협회(KPA) Integrated Studio Certification',
+        items: [
+          '심폐소생술(CPR) 심화과정 이수',
+          'KPA Professional Course_ Anatomy101: 심화해부학(신경계) 이수',
+          'Lumbar Spine & Facet Syndrome: 요추면관절 증후군 이수',
+          'Hip impingment syndrome & Groin pain: 고관절 충돌증후군/서혜부통증 이수',
+          'Supraspinatus tendonitis: 극상근건염 이수',
+          'Facet syndrone: 면관절증후군 이수',
+          'Turtle neck syndrome: 거북목 증후군 이수',
+          'Biceptal tendonitis: 이두박근건염 이수',
+          'Disk Herniation: 요추 추간판 탈출증 이수',
+          '대한협회 체형관리사 자격증',
+        ],
+      },
+    ],
+  },
+  {
+    name: '류정민',
+    role: '시니어 멘토',
+    badge: 'PMA-NCPT 인증강사',
+    photo: '6f7ec1_75b0d3bda7bc4e618dd5e68be4db4697~mv2.jpg',
+    sections: [
+      {
+        label: '주요 경력 및 자격',
+        items: [
+          '사단법인 대한필라테스협회(KPA) 시니어 교육멘토',
+          'Jun필라테스 그룹강사, 리움필라테스 프라이빗레슨 강사',
+          'Nationally Certified Pilates Trainer (국제공인 필라테스 강사 자격 PMA-NCPT)',
+          "KPA 졸업생세미나 'Magic circle' study group 진행",
+          'Hip impingement syndrome & Groin pain / Facet syndrome 이수',
+          'Turtle neck syndrome / Bicep tendonitis / Disk Herniation / Patellar femoral pain syndrome & patella tendonitis 이수',
+          'AFIC 거북목 세미나 이수',
+        ],
+      },
+    ],
+  },
+  {
+    name: '임지희',
+    role: '멘토',
+    badge: null,
+    photo: '6f7ec1_3fb2b2285cfd4b00868bc12299964646~mv2.jpg',
+    sections: [
+      {
+        label: '주요 경력 및 자격',
+        items: [
+          '엘리엘 공유 필라테스 개인레슨 강사',
+          '바름 필라테스 오후 그룹강사',
+          'BODA 필라테스 전임강사',
+          '필라테스 호두 오전 전임강사',
+          '포스트 필라테스 그룹강사',
+          '사단법인 대한필라테스협회(KPA) Studio Integrated Course',
+          'KPA Holiday : 어깨충돌증후근 / 산전산후 필라테스',
+          'KPA Graduates workshop 이수',
+          'OT 실전노하우 / 어깨충돌증후근 / 산전산후 필라테스 스프링보드',
+          'BODA 소매틱 필라테스 전문가 과정 이수',
+          'BODA 몸학교 : 체화 해부학 3기 이수',
+          '통증워크샵 : 한님쌤 이수',
+          '주간한님쌤 시즌2 : 동작분석',
+          '리포머 백과사전',
+          '소메코 SOA 16기',
+        ],
+      },
+    ],
+  },
+  {
+    name: '우희승',
+    role: '멘토',
+    badge: null,
+    photo: '6f7ec1_e87a77d4f51a4416bee4447590933b72~mv2.jpg',
+    sections: [
+      {
+        label: '주요 경력',
+        items: [
+          '현) 스포츠클럽필립 정자본점 필라테스강사',
+          '현) 사단법인 대한필라테스협회(KPA) 교육멘토',
+          '전) Pilate D.ella 수원시청점, 수내점, 서현점 전임강사',
+          '전) Family Sports Center 필라테스 팀장',
+          '전) 스포츠클럽필립 정자플러스점 필라테스강사',
+        ],
+      },
+      {
+        label: '자격·수료사항',
+        items: [
+          '사단법인 대한필라테스협회(KPA) Integrated Studio Certification',
+          '대한문화체육지도자협회 Conditioning Pilates Instructor 자격',
+          'Park Pilates The master of Pilates Apparatus course 자격',
+          'TPI korea 골프 트레이닝 Level 1 자격',
+          'The ALAB 기능해부학의 정석 수료',
+          'BM (Body Mechanic) 수료',
+          '척추측만 슈로스 Level 1, 2',
+          'Foot, Neck Advanced Anatomy 발, 목 해부학 심화과정',
+          'Shoulder Imbalance Pilates Solution 어깨 불균형 필라테스 솔루션',
+          '골반 유형별 교정운동',
+          'Golf Pilates, Movement analysis training 골프필라테스 및 움직임 분석 트레이닝',
+          'AFIC conference 다수 세미나 이수 (척추측만증&슈로스, 재활, 허리디스크, 굿볼마사지테크닉, 요가&명상)',
+          '척추조절학(경추) 재활트레이닝, 모토콘트롤, 골프스윙훈련법, 급성무릎손상의 재활',
+          'Must Move (머스트무브) Breathing and Core 호흡과 코어 이수',
+          'Mintrion (민트리온) Golf Pilates 골프필라테스 이수',
+          '국제바디케어협회 Posture Assessment 자세평가 이수',
+          '스켈리도 필라테스 척추측만증 필라테스 이수',
+        ],
+      },
+    ],
+  },
+];
+---
+<BaseLayout title="강사소개">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">FACULTY</p>
+      <h1>강사소개</h1>
+      <p class="page-hero-sub">
+        필라테스 지도자과정 교육을 통해 필라테스의 대중화에 기여하기 위해 노력하고 있습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- 강사진 -->
+  <section class="section faculty">
+    <div class="wrap">
+      <div class="faculty-list">
+        {faculty.map((f, i) => (
+          <article class="prof" id={`prof-${i + 1}`}>
+            <div class="prof-photo">
+              <img src={img(f.photo)} alt={`${f.name} ${f.role}`} loading="lazy" />
+            </div>
+            <div class="prof-info">
+              <header class="prof-head">
+                <h2>
+                  {f.name}<span class="prof-role">{f.role}</span>
+                </h2>
+                {f.badge && <span class="prof-badge">{f.badge}</span>}
+              </header>
+              {f.sections.map((sec) => (
+                <div class="prof-section">
+                  <h3 class="prof-section-title">{sec.label}</h3>
+                  <ul class="prof-items">
+                    {sec.items.map((it) => (
+                      <li>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section faculty-cta">
+    <div class="wrap">
+      <h2>KPA의 강사진과 함께 성장하세요</h2>
+      <div class="faculty-cta-btns">
+        <a class="btn btn--filled" href={withBase('/coursedate')}>지도자과정 교육일정</a>
+        <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    background: var(--kp-maroon);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(70px, 12vw, 130px);
+  }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink); font-size: clamp(15px, 2vw, 19px);
+    margin-top: 14px; max-width: 640px; margin-inline: auto;
+  }
+
+  /* FACULTY LIST */
+  .faculty-list { display: grid; gap: clamp(48px, 8vw, 90px); }
+  .prof {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 60px);
+    align-items: start;
+  }
+  .prof-photo {
+    position: sticky; top: 110px;
+    border: 1px solid var(--kp-line);
+    background: var(--kp-cream);
+    overflow: hidden;
+  }
+  .prof-photo img { display: block; width: 100%; height: auto; }
+
+  .prof-head {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 14px;
+    padding-bottom: 18px; margin-bottom: 26px;
+    border-bottom: 2px solid var(--kp-sage);
+  }
+  .prof-head h2 {
+    margin: 0; color: var(--kp-maroon);
+    font-size: clamp(26px, 3.4vw, 34px);
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  }
+  .prof-role {
+    font-size: clamp(14px, 1.7vw, 17px);
+    color: var(--kp-olive); font-weight: 600;
+  }
+  .prof-badge {
+    font-family: var(--font-display); letter-spacing: 0.04em;
+    font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--kp-sage); padding: 6px 12px; border-radius: 999px;
+  }
+
+  .prof-section { margin-bottom: 26px; }
+  .prof-section:last-child { margin-bottom: 0; }
+  .prof-section-title {
+    font-size: 15px; color: var(--kp-olive);
+    margin: 0 0 12px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .prof-items { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+  .prof-items li {
+    position: relative; padding-left: 20px;
+    color: var(--kp-ink); font-size: 15.5px; line-height: 1.55;
+  }
+  .prof-items li::before {
+    content: ''; position: absolute; left: 4px; top: 10px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--kp-pink);
+  }
+
+  /* CTA */
+  .faculty-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .faculty-cta h2 { color: #fff; margin-bottom: 30px; }
+  .faculty-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .faculty-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .faculty-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .faculty-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .faculty-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 820px) {
+    .prof { grid-template-columns: 1fr; gap: 24px; }
+    .prof-photo { position: static; max-width: 360px; }
+  }
+</style>
