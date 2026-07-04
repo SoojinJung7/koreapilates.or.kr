@@ -36,6 +36,13 @@ for i in $(seq 1 "$MAX"); do
     ${MODEL:+--model "$MODEL"} \
     2>&1 | tee -a "$LOG"
 
+  # 안전장치: 헤드리스 세션이 커밋만 하고 push를 못 하는 경우가 있어
+  # 루프가 매 반복 끝에 직접 원격으로 올린다 (git push 는 셸 권한으로 확실히 실행됨).
+  if [ -n "$(git rev-list --count origin/main..main 2>/dev/null | grep -v '^0$')" ]; then
+    echo "· 루프가 밀린 커밋을 push 합니다..." | tee -a "$LOG"
+    git push origin main 2>&1 | tail -2 | tee -a "$LOG"
+  fi
+
   sleep 3
 done
 

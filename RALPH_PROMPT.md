@@ -19,7 +19,8 @@
 5. **동적 기능**(로그인/결제/게시판/신청 폼)은 이번 단계에서 **겉모습만** 만든다. 버튼은 두되 실제 백엔드 연결은 하지 않는다(나중 단계).
 6. **빌드 검증**: `npm run build` 실행 → 에러가 있으면 고쳐서 성공시킨다.
 7. **PROGRESS.md 갱신**: 방금 만든 페이지 행을 `✅ 완료` 로 바꾼다.
-8. **커밋·푸시**: `git add -A && git commit -m "페이지 추가: <이름> (<path>)" && git push origin main`.
+8. **커밋만 한다**: `git add -A && git commit -m "페이지 추가: <이름> (<path>)"`.
+   - **push 는 하지 마라.** 원격 push 는 루프(ralph.sh)가 매 반복 끝에 자동으로 실행한다.
    - 커밋 메시지 마지막 두 줄:
      `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`
      `Claude-Session: https://claude.ai/code/session_01H4hrSq1kwsDjkZ1rvKciSV`
