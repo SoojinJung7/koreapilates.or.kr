@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+// 시설(존)별 소개 — 원본 순서 그대로
+const zones = [
+  {
+    name: '필라테스존',
+    en: 'PILATES ZONE',
+    desc: '스튜디오에서 사용되는 모든 필라테스 대기구(리포머, 캐딜락, 체어, 배럴) 및 다양한 소도구가 갖춰져있고, 3m의 높은 층고와 대형 유리벽면을 통해 넓은 공간감을 느끼며 쾌적하게 수련할 수 있습니다.',
+    image: '6f7ec1_a920a345163a4a9b889aa3d78e0805f4~mv2.jpg',
+    alt: '리포머가 늘어선 필라테스존',
+  },
+  {
+    name: '웨이트존',
+    en: 'WEIGHT ZONE',
+    desc: '약 1,800m²이상의 넓은 공간 · 50여종의 최첨단 수입 머신 · 20여종의 다양한 GX가 진행됩니다.',
+    image: '6f7ec1_599263e52108433bb7c63ec5ee8b15aa~mv2.jpg',
+    alt: '최첨단 머신이 갖춰진 웨이트존',
+  },
+  {
+    name: '스포츠재활존',
+    en: 'SPORTS REHAB ZONE',
+    desc: 'CSMI 등속성 기기와 같은 전문 장비를 통해 더욱 정확한 가동범위, 검사/평가에 의거한 부상 회복 운동 프로그램을 설계할 수 있습니다.',
+    image: '6f7ec1_51144f11b23c493bb81e2271d0df6047~mv2.jpg',
+    alt: '전문 장비를 갖춘 스포츠재활존',
+  },
+  {
+    name: '기타교육장소',
+    en: 'EDUCATION SPACE',
+    desc: 'GX룸, 대강당과 같은 넓은 교육공간이 있어 다양한 워크샵 및 세미나가 열립니다.',
+    image: '6f7ec1_c0b8c05c4e9b4af0bd22eba2f0b4629a~mv2.jpg',
+    alt: '워크샵과 세미나가 열리는 넓은 교육공간',
+  },
+];
+---
+<BaseLayout title="시설 둘러보기">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">FACILITY</p>
+      <h1>시설 둘러보기</h1>
+      <p class="page-hero-sub">국내 최대 규모의 통합 수련 공간, 더 스파이럴 분당</p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap intro-wrap">
+      <p class="lead">
+        국내 최대! 다양한 수련공간을 교육생 혜택으로 누려보세요.
+      </p>
+      <p>
+        건강에 기여하는 시설을 직접 경험하고 느끼는 것이 실력의 밑거름이 됩니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ZONES -->
+  <section class="section zones">
+    <div class="wrap">
+      <div class="zone-list">
+        {zones.map((z, i) => (
+          <article class={`zone ${i % 2 === 1 ? 'zone--reverse' : ''}`}>
+            <div class="zone-media">
+              <img src={img(z.image)} alt={z.alt} loading="lazy" />
+            </div>
+            <div class="zone-body">
+              <p class="zone-en">{z.en}</p>
+              <h2>{z.name}</h2>
+              <p class="zone-desc">{z.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section facility-cta">
+    <div class="wrap">
+      <h2>직접 방문하여 공간을 경험해 보세요</h2>
+      <div class="facility-cta-btns">
+        <a class="btn btn--filled" href={withBase('/pilatesequipment')}>장비 둘러보기</a>
+        <a class="btn" href={withBase('/address')}>오시는길</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    background: var(--kp-maroon);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(70px, 12vw, 130px);
+  }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub { color: var(--kp-pink); font-size: clamp(16px, 2vw, 20px); margin-top: 14px; }
+
+  /* INTRO */
+  .intro { text-align: center; }
+  .intro-wrap { max-width: 820px; }
+  .intro .lead {
+    font-size: clamp(21px, 2.8vw, 30px);
+    color: var(--kp-maroon);
+    font-weight: 700;
+    line-height: 1.45;
+    margin-bottom: 18px;
+  }
+  .intro p { color: var(--kp-olive); }
+
+  /* ZONES */
+  .zones { padding-top: 0; }
+  .zone-list { display: grid; gap: clamp(40px, 7vw, 90px); }
+  .zone {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .zone--reverse .zone-media { order: 2; }
+  .zone-media {
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 18px 40px rgba(28, 16, 18, 0.12);
+  }
+  .zone-media img {
+    display: block; width: 100%; height: 100%;
+    aspect-ratio: 3 / 2; object-fit: cover;
+    transition: transform .6s ease;
+  }
+  .zone:hover .zone-media img { transform: scale(1.04); }
+  .zone-en {
+    font-family: var(--font-display);
+    letter-spacing: 0.18em;
+    color: var(--kp-sage);
+    font-size: 14px;
+    margin: 0 0 10px;
+  }
+  .zone-body h2 { color: var(--kp-maroon); margin: 0 0 18px; }
+  .zone-desc { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.75; margin: 0; }
+
+  /* CTA */
+  .facility-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .facility-cta h2 { color: #fff; margin-bottom: 30px; }
+  .facility-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .facility-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .facility-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .facility-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .facility-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 760px) {
+    .zone { grid-template-columns: 1fr; }
+    .zone--reverse .zone-media { order: 0; }
+  }
+</style>
