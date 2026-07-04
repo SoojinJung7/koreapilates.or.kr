@@ -14,9 +14,11 @@
 - 파비콘: ficons/6f7ec1_3d0c9ecdd37b4dcbaff4d9b8bcb4d4fd
 
 ## 페이지 목록 & 상태
+미리보기: https://soojinjung7.github.io/koreapilates.or.kr/ (실제 도메인 미변경)
+
 | 경로 | 이름 | 상태 |
 |---|---|---|
-| / | 홈 | ⬜ |
+| / | 홈 | ✅ 완료 |
 | /kpa | 협회소개 | ⬜ |
 | /faculty | 강사소개 | ⬜ |
 | /projects | 시설 둘러보기 | ⬜ |
@@ -36,13 +38,17 @@
 | /members | 인증 회원 찾기 | ⬜ |
 
 ## 공통 작업
-- ⬜ Astro 스캐폴드 + 디자인 시스템
-- ⬜ Header / Footer 컴포넌트 (내비게이션 18개 항목)
-- ⬜ 폰트 파일 다운로드 & 로컬 호스팅
-- ⬜ 이미지 다운로드 & 로컬 호스팅
-- ⬜ GitHub Pages 배포 설정 (CNAME)
+- ✅ Astro 스캐폴드 + 디자인 시스템
+- ✅ Header / Footer 컴포넌트 (내비게이션 18개 항목)
+- ✅ 폰트 파일 다운로드 & 로컬 호스팅
+- ✅ 홈페이지 이미지 다운로드 & 로컬 호스팅
+- ✅ GitHub Pages 자동배포 워크플로우 (base 경로 대응)
+- ⬜ 나머지 페이지 이미지 다운로드 (_source/fetch_images.sh <페이지명>)
+- ⬜ 폰트 역할(본문/제목) 화면 대조 후 확정
+- ⬜ 이미지 최적화 (원본 일부 18MB+)
 
 ## 다음 할 일
-1. npm install
-2. 폰트/이미지 다운로드
-3. Header/Footer + 홈 빌드 → 첫 커밋 & 푸시
+1. 서브페이지 순차 제작 (kpa → faculty → curriculum → coursedate → ...)
+   - 각 페이지: _source/pages/<name>.html 참고 + 이미지 다운로드 + Astro 페이지 작성
+2. 폰트 역할 확정 및 미세 조정
+3. 2단계(로그인/결제/게시판) 별도 개발
