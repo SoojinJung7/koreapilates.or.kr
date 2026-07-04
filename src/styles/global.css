@@ -11,12 +11,14 @@
   --kp-sage: rgb(141, 153, 144);    /* 세이지 그린 */
   --kp-olive: rgb(70, 83, 65);      /* 다크 올리브 */
   --kp-pink: rgb(214, 192, 195);    /* 더스티 핑크 */
+  --kp-mugwort: #6f7d53;            /* 쑥색 (헤더 배경) */
+  --kp-mugwort-dark: #5c6944;       /* 쑥색 진한 (호버) */
   --kp-line: rgba(28, 16, 18, 0.12);
 
-  /* --- Type scale --- */
-  --font-display: 'Didot', 'Caudex', 'Noto Serif KR', Georgia, serif;
-  --font-sans: 'Avenir', 'Avenir Next', 'Pretendard', 'Apple SD Gothic Neo',
+  /* --- Type scale (프리텐다드) --- */
+  --font-sans: 'Pretendard', 'Pretendard Variable', 'Apple SD Gothic Neo',
     'Malgun Gothic', system-ui, sans-serif;
+  --font-display: var(--font-sans);
 
   --wrap: 1200px;
 }
@@ -42,10 +44,10 @@ a { color: inherit; text-decoration: none; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 1.25;
   margin: 0 0 0.5em;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
 }
 
 .wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: 24px; }
