@@ -10,6 +10,9 @@
    - 정확한 문구는 `WebFetch` 로 실제 페이지( https://koreapilates.or.kr<path> )를 읽어 보강한다.
 3. **이미지 다운로드**: `bash _source/fetch_images.sh <name>` 실행 → `public/images/` 에 원본 이미지가 저장된다.
    - 어떤 이미지가 무엇인지 애매하면 `Read` 도구로 이미지를 직접 열어 확인하고 알맞은 위치에 배치하라.
+   - **⚠️ 필수 — 이미지 최적화**: 이미지를 받은 직후 반드시 `node _source/optimize_images.mjs` 를 실행한다.
+     원본 사진이 18MB 넘는 경우가 있어 최적화 없이 커밋하면 **GitHub Pages 배포가 실패한다.**
+     이 스크립트는 새로 받은 사진만 최대 2000px 로 리사이즈·압축하고(이미 최적화된 건 건너뜀), 원본은 `_source/images_orig_backup/` 에 백업한다.
 4. **페이지 작성**: `src/pages/<astro-path>.astro` 를 만든다.
    - 반드시 `BaseLayout` 을 쓰고 `title` 을 넘긴다. 예: `<BaseLayout title="협회소개">`.
    - 링크·이미지 경로는 `import { withBase, img } from '../utils/url.js'` (경로 깊이에 맞게 조정) 를 사용한다.
