@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// 페이지 대표 이미지 (에릭 프랭클린 초청 워크샵 현장)
+const heroImg = '6f7ec1_cd3110807926449b8c6c2f053e4fc2bc~mv2.png';
+
+// 해외 초청 세미나 아카이브 (원본 블로그 카드 순서 그대로)
+const seminars = [
+  {
+    title: 'Franklin method® 에릭 프랭클린 워크샵',
+    tag: 'Franklin Method',
+    desc: '세계적인 무브먼트 전문가 에릭 프랭클린(Eric Franklin)을 초청하여 진행한 프랭클린 메소드® 워크샵. 이미지와 상상을 활용한 다이나믹 뉴로코그니티브 이미저리(Dynamic Neurocognitive Imagery)로 몸의 움직임을 효율적으로 재교육하는 방법을 배웁니다.',
+    image: '6f7ec1_cd3110807926449b8c6c2f053e4fc2bc~mv2.png',
+  },
+  {
+    title: 'CLT Exercise course 워크샵',
+    tag: 'CLT Exercise',
+    desc: 'CLT Exercise course _ 움직임 및 운동 관련분야 전문가과정. 협응적이고 기능적인 움직임의 기본 패턴들을 사용하여 몸의 움직임을 협응적인 형태로 연습시키는 운동 방법이자 치료법입니다.',
+    image: '6f7ec1_529ff3512dee46bbab12ea48149c8909~mv2.png',
+  },
+  {
+    title: '필라테스 전문 세미나 "Innovations in Pilates"',
+    tag: 'Innovations',
+    date: '2016.08.26–27',
+    desc: '아카데미 문화의 선두주자, 스포츠클럽 필립에서 필라테스 전문 세미나 "Innovations in Pilates"가 지난 8월 26–27일 양일간 개최되었습니다. (Anthony Lett / 안기만 박사)',
+    image: '6f7ec1_a6993825569540f99499d40489b100f6~mv2.png',
+  },
+  {
+    title: '보수와 필라테스의 만남',
+    tag: 'BOSU',
+    desc: '불안정한 지지면 위에서의 균형 훈련을 필라테스와 접목한 세미나. 보수(BOSU)를 활용해 코어 안정성과 고유수용감각(proprioception)을 향상시키는 다양한 응용 동작을 배웁니다.',
+    image: '6f7ec1_df7d402ed24c4c31b6132e21dbff7294~mv2.jpg',
+  },
+];
+---
+<BaseLayout title="해외 초청 워크샵">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <img class="page-hero-bg" src={img(heroImg)} alt="" aria-hidden="true" />
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow">INVITED CONFERENCES</p>
+      <h1>해외 초청 세미나</h1>
+      <p class="page-hero-sub">
+        국내외 운동관련 다양한 전문가들을 초빙하여<br />
+        배움의 장을 열어줍니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap intro-inner">
+      <p class="eyebrow">Global Masters</p>
+      <h2>세계적인 전문가들과<br />함께하는 배움의 장</h2>
+      <p class="intro-body">
+        대한필라테스협회는 프랭클린 메소드®의 에릭 프랭클린을 비롯한 세계적인
+        무브먼트·필라테스 전문가들을 국내로 초청하여 특별 워크샵과 세미나를
+        진행합니다. 필라테스의 지평을 넓히는 최신 이론과 실기를 국내에서 직접
+        만나보실 수 있습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- SEMINAR ARCHIVE -->
+  <section class="section archive">
+    <div class="wrap">
+      <div class="archive-head">
+        <p class="eyebrow">CONFERENCE ARCHIVE</p>
+        <h2>지난 초청 워크샵 · 세미나</h2>
+        <p class="archive-lead">
+          프랭클린 메소드부터 CLT Exercise, Innovations in Pilates, 보수 세미나까지
+          — 국내외 전문가들과 함께한 다채로운 초청 교육을 진행해 왔습니다.
+        </p>
+      </div>
+      <div class="archive-grid">
+        {seminars.map((s) => (
+          <article class="seminar-card">
+            <div class="seminar-media">
+              <img src={img(s.image)} alt={s.title} loading="lazy" />
+              <span class="seminar-tag">{s.tag}</span>
+            </div>
+            <div class="seminar-body">
+              <h3>{s.title}</h3>
+              {s.date && <p class="seminar-date">{s.date}</p>}
+              <p>{s.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cf-cta">
+    <div class="wrap">
+      <p class="eyebrow">JOIN US</p>
+      <h2>초청 워크샵 신청 안내</h2>
+      <p>
+        새로운 초청 워크샵 일정과 신청은 워크샵/세미나 신청 페이지에서 확인하실 수
+        있습니다. 궁금한 점은 카카오톡으로 편하게 문의해 주세요.
+      </p>
+      <div class="cf-cta-btns">
+        <a class="btn btn--filled" href={withBase('/event-list')}>워크샵/세미나 신청</a>
+        <a class="btn" href={withBase('/workshop-seminar')}>워크샵/세미나 안내</a>
+        <a class="btn" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(80px, 14vw, 150px);
+    overflow: hidden;
+    background: var(--kp-maroon);
+  }
+  .page-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.32;
+    filter: saturate(0.9);
+  }
+  .page-hero-inner { position: relative; z-index: 1; }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* INTRO */
+  .intro-inner { max-width: 860px; text-align: center; margin-inline: auto; }
+  .intro-inner h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.8vw, 40px); margin: 6px 0 20px; line-height: 1.25; }
+  .intro-body { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.95; margin: 0; }
+
+  /* ARCHIVE */
+  .archive { background: var(--kp-cream); }
+  .archive-head { max-width: 820px; margin-bottom: clamp(28px, 4vw, 46px); }
+  .archive-head h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 16px; }
+  .archive-lead { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.9; margin: 0; }
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(20px, 3vw, 32px);
+  }
+  .seminar-card {
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 34px rgba(28, 16, 18, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  .seminar-media { position: relative; aspect-ratio: 3 / 2; overflow: hidden; }
+  .seminar-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .seminar-tag {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    font-family: var(--font-display);
+    background: rgba(59, 30, 34, 0.9);
+    color: var(--kp-cream);
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .seminar-body { padding: clamp(20px, 2.6vw, 26px); display: flex; flex-direction: column; }
+  .seminar-body h3 { color: var(--kp-maroon); font-size: clamp(18px, 2.2vw, 22px); margin: 0 0 10px; line-height: 1.35; }
+  .seminar-date {
+    font-family: var(--font-display);
+    color: var(--kp-sage);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0 0 10px;
+  }
+  .seminar-body p { color: var(--kp-olive); font-size: 14.5px; line-height: 1.8; margin: 0; }
+
+  /* CTA */
+  .cf-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .cf-cta .eyebrow { color: var(--kp-pink); }
+  .cf-cta h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
+  .cf-cta p { color: var(--kp-pink); margin: 0 auto 28px; line-height: 1.85; max-width: 640px; }
+  .cf-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .cf-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .cf-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .cf-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .cf-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 700px) {
+    .archive-grid { grid-template-columns: 1fr; }
+  }
+</style>
