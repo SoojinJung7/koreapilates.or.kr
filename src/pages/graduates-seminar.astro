@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// 페이지 대표 이미지 (졸업생 세미나 강의 현장)
+const heroImg = '6f7ec1_bc66e70244be420aa1fb98353cc2528b~mv2.jpeg';
+
+// 졸업생 세미나 콘텐츠 (원본 블로그 카드 순서 그대로)
+const seminars = [
+  {
+    title: '목통증, 어디까지 알고있니?',
+    tag: 'Cervical Care',
+    desc: '전-후 차이가 확실한 경추통증 솔루션 : 경추의 변형된 커브 종류 탐구 / 경추 통증기전에 따른 실전 노하우 & 시퀀스, 폼롤러, 리커버링을 이용한 근막이완',
+    image: '6f7ec1_6b484e1f4b92438f8457cb2f9ba16b65~mv2.jpg',
+  },
+  {
+    title: '추석세미나 : DAY 3',
+    tag: 'Cadillac',
+    desc: 'TOWARDS PERFECTION : CADILLAC — 캐딜락 교재에 수록된 모든 동작들의 목적 / 완성도를 높이는 워크샵',
+    image: '6f7ec1_4a3e0ffcb76e4c2f9390848ee95699c7~mv2.jpg',
+  },
+  {
+    title: '추석세미나 : DAY 2',
+    tag: 'Pre & Post Natal',
+    desc: 'PRE & POST NATAL 101 — 산전, 산후에 대한 정보 및 유용한 필라테스 시퀀스, 시기별로 변하는 임산부의 정렬과 몸의 변화에 따른 필라테스 접근법 +a',
+    image: '6f7ec1_b93115d75cbf43ac9ba01d29b9ea8b2a~mv2.jpg',
+  },
+  {
+    title: '추석세미나 : DAY 1',
+    tag: 'Anatomy',
+    desc: 'COMPLETE ANATOMY — 3D 해부학 프로그램을 통한 근골격계 질환 탐구 / 흉곽출구증후군 / 어깨충돌증후군 / 반월상연골파열 / 전방십자인대파열 탐구',
+    image: '6f7ec1_3740780c149a472dbe6970aec77e842c~mv2.jpg',
+  },
+  {
+    title: 'NPCP 자격증반 1기',
+    tag: 'Certification',
+    desc: '국제공인 PMA-NPCP 자격취득과정 / 커리큘럼 소개 / STUDY GUIDE / PRACTICE QUESTION 풀이',
+    image: '6f7ec1_bc66e70244be420aa1fb98353cc2528b~mv2.jpeg',
+  },
+  {
+    title: '발레, 그리고 필라테스',
+    tag: 'Ballet',
+    desc: '필라테스와 발레의 공통점 탐구 및 폴드브라(Port de bras), 안전한 고관절 외회전 큐잉방법 및 변형동작 시퀀스 전수',
+    image: '6f7ec1_06deb9ecb78f4d019e3d1e3bca7bfbb1~mv2.jpg',
+  },
+  {
+    title: 'KPA 봄맞이 수련 : 매직서클',
+    tag: 'Magic Circle',
+    desc: "JOSEPH'S MAGIC CIRCLE — 간과하고 있었던 필라테스 매직서클 소도구 사용법 돌아보기 및 매직서클을 이용한 복횡근, 골반기저근 티칭법 전수",
+    image: '6f7ec1_48951219a66447b68e1a02718e8f022b~mv2.jpg',
+  },
+  {
+    title: '심폐소생술 심화교육',
+    tag: 'CPR',
+    desc: '한국응급처치교육원 초빙, 심폐소생술 심화교육 및 임산부, 영아에 따른 응급처치 방법, 자동심장충격기(AED) 사용방법 습득 (CPR 심화수료증 발급)',
+    image: '6f7ec1_48da69716105422aabaabadc637b1720~mv2.jpg',
+  },
+  {
+    title: 'OT실전 노하우',
+    tag: 'Orientation',
+    desc: 'OT(Orientation)수업 Before & After를 극대화시키는 체형별 안성맞춤 동작 찾아내기, 모의 OT레슨 시뮬레이션 진행, 계약을 이끄는 실전 Tip 및 조언 전수',
+    image: '6f7ec1_e5695dc310a84346a61eda6544947252~mv2.jpg',
+  },
+  {
+    title: '동작의길 again',
+    tag: 'Reformer',
+    desc: '(추가수요로 인한 재진행) 교재 외 새로운 리포머 상급동작 습득 및 부상 없는 수행을 돕는 핸즈온 전수, 2023년 맞이 KPA졸업생세미나 컨텐츠 소개',
+    image: '6f7ec1_787dc173a35147b28350bf8b12bbd200~mv2.jpg',
+  },
+  {
+    title: '동작의길',
+    tag: 'Reformer',
+    desc: '교재 외 새로운 리포머 상급동작 습득 및 부상 없는 수행을 돕는 핸즈온 전수, 2023년 맞이 KPA졸업생세미나 컨텐츠 소개',
+    image: '6f7ec1_9bcc882c7ca24ecca7bb7f1b53231f2b~mv2.jpg',
+  },
+];
+---
+<BaseLayout title="졸업생 세미나">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <img class="page-hero-bg" src={img(heroImg)} alt="" aria-hidden="true" />
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow">ALUMNI SEMINAR</p>
+      <h1>졸업생 세미나</h1>
+      <p class="page-hero-sub">
+        정규 지도자과정을 졸업하신 분들을 위한<br />
+        심화 실기·해부학·현장 노하우 교육 프로그램입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap intro-inner">
+      <p class="eyebrow">Continuing Education</p>
+      <h2>졸업 이후에도 이어지는<br />배움의 여정</h2>
+      <p class="intro-body">
+        KPA 협회에서는 졸업 이후에도 배움을 이어나갈 수 있도록 수준 높은 교육
+        컨텐츠를 제공합니다. 대한필라테스협회의 정규 지도자과정을 성공적으로
+        졸업하신 분들은 ‘졸업생’이 되시며, 졸업생 세미나에 참여할 수 있는 자격이
+        주어집니다. 더욱 많은 실기동작, 심층적 해부학 이론, 그리고 실제 강사활동시에
+        유용하게 사용할 수 있는 정보를 습득하여 실력을 향상시킬 수 있습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- SEMINAR ARCHIVE -->
+  <section class="section archive">
+    <div class="wrap">
+      <div class="archive-head">
+        <p class="eyebrow">SEMINAR ARCHIVE</p>
+        <h2>지난 졸업생 세미나 콘텐츠</h2>
+        <p class="archive-lead">
+          해부학부터 실기 동작, 자격취득과정, 응급처치까지 — 지도자로서의 역량을
+          한층 더 넓히는 다양한 심화 세미나를 진행해 왔습니다.
+        </p>
+      </div>
+      <div class="archive-grid">
+        {seminars.map((s) => (
+          <article class="seminar-card">
+            <div class="seminar-media">
+              <img src={img(s.image)} alt={s.title} loading="lazy" />
+              <span class="seminar-tag">{s.tag}</span>
+            </div>
+            <div class="seminar-body">
+              <h3>{s.title}</h3>
+              <p>{s.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section gs-cta">
+    <div class="wrap">
+      <p class="eyebrow">JOIN US</p>
+      <h2>졸업생 세미나 신청</h2>
+      <p>
+        새로운 세미나 일정과 신청은 워크샵/세미나 신청 페이지에서 확인하실 수
+        있습니다. 궁금한 점은 카카오톡으로 편하게 문의해 주세요.
+      </p>
+      <div class="gs-cta-btns">
+        <a class="btn btn--filled" href={withBase('/event-list')}>워크샵/세미나 신청</a>
+        <a class="btn" href={withBase('/workshop-seminar')}>워크샵/세미나 안내</a>
+        <a class="btn" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(80px, 14vw, 150px);
+    overflow: hidden;
+    background: var(--kp-maroon);
+  }
+  .page-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.32;
+    filter: saturate(0.9);
+  }
+  .page-hero-inner { position: relative; z-index: 1; }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* INTRO */
+  .intro-inner { max-width: 860px; text-align: center; margin-inline: auto; }
+  .intro-inner h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.8vw, 40px); margin: 6px 0 20px; line-height: 1.25; }
+  .intro-body { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.95; margin: 0; }
+
+  /* ARCHIVE */
+  .archive { background: var(--kp-cream); }
+  .archive-head { max-width: 820px; margin-bottom: clamp(28px, 4vw, 46px); }
+  .archive-head h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 16px; }
+  .archive-lead { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.9; margin: 0; }
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 3vw, 32px);
+  }
+  .seminar-card {
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 34px rgba(28, 16, 18, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  .seminar-media { position: relative; aspect-ratio: 3 / 2; overflow: hidden; }
+  .seminar-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .seminar-tag {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    font-family: var(--font-display);
+    background: rgba(59, 30, 34, 0.9);
+    color: var(--kp-cream);
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .seminar-body { padding: clamp(20px, 2.6vw, 26px); display: flex; flex-direction: column; }
+  .seminar-body h3 { color: var(--kp-maroon); font-size: clamp(18px, 2.2vw, 22px); margin: 0 0 12px; line-height: 1.35; }
+  .seminar-body p { color: var(--kp-olive); font-size: 14.5px; line-height: 1.8; margin: 0; }
+
+  /* CTA */
+  .gs-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .gs-cta .eyebrow { color: var(--kp-pink); }
+  .gs-cta h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
+  .gs-cta p { color: var(--kp-pink); margin: 0 auto 28px; line-height: 1.85; max-width: 640px; }
+  .gs-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .gs-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .gs-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .gs-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .gs-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 900px) {
+    .archive-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .archive-grid { grid-template-columns: 1fr; }
+  }
+</style>
