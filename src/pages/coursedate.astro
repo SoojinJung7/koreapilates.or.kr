@@ -1,0 +1,421 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// KPA 지도자과정 250시간 구성
+const hours = [
+  '사전레슨 4시간 (멘토레슨)',
+  '교육 105시간',
+  '기타교육 5시간 (드레스업, 프로필사진)',
+  '개인실습 20시간 / 수련·스터디·티칭 80시간',
+  '심화교육 36시간 (월 1회 6시간, 총 6회)',
+];
+
+// 공통 교육 정보
+const subjects =
+  '기초해부학, 필라테스이론, 필라테스 자세측정, 필라테스 프로그램(시퀀스), 매트, 리포머, 캐딜락, 체어, 배럴, 소도구, 필라테스 실전교육';
+const capacity = '총 6명 정원';
+
+// 기수별 교육일정 (최신순)
+const schedule = [
+  { gen: '169기', date: '2026.09.06', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'open', note: '잔여 1자리' },
+  { gen: '168기', date: '2026.05.11', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '167기', date: '2026.01.18', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '166기', date: '2025.10.22', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '165기', date: '2025.06.29', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '164기', date: '2025.04.23', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '163기', date: '2024.12.01', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '162기', date: '2024.09.25', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '161기', date: '2024.04.07', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '160기', date: '2024.01.31', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '159기', date: '2023.11.04', day: '토요반', time: '토요일 12:00 ~ 18:00', status: 'closed' },
+  { gen: '158기', date: '2023.09.10', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '157기', date: '2023.07.12', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+  { gen: '156기', date: '2023.02.26', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
+  { gen: '155기', date: '2023.01.16', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
+];
+
+const openBatch = schedule.find((s) => s.status === 'open');
+
+// 하단 스토리 카드
+const stories = [
+  {
+    tag: '졸업을 축하합니다',
+    image: '6f7ec1_227dbc2d9fd24b2187ff2a101e88cde2~mv2.jpg',
+    alt: 'KPA 지도자과정 배럴 실기 교육',
+    body: '전문성과 실력을 갖춘 지도자로 성장한 여러분의 강사 데뷔를 축하합니다! 6개월의 필라테스 지도자과정이 결코 쉽지 않았지만 멋지게 완주하셨습니다. 이제는 누군가의 변화를 이끄는 멋진 강사가 되어주세요.',
+  },
+  {
+    tag: '2024 워크샵',
+    image: '6f7ec1_396eabbbda07493ab0ab24bc02c4da26~mv2.jpg',
+    alt: 'KPA 워크샵 리포머 실전 교육 현장',
+    body: 'KPA 워크샵은 자격증 취득을 넘어서, 실제 현장에서 통하는 감각을 채워갑니다. 해부학, 기능평가, 큐잉, 멘토링은 기본. 진짜 강사는 ‘사람을 보는 눈’부터 다릅니다. KPA는 단단한 기본기 위에 진짜 ‘전문가다움’을 쌓아갑니다.',
+  },
+  {
+    tag: '교육스케치',
+    image: '6f7ec1_48951219a66447b68e1a02718e8f022b~mv2.jpg',
+    alt: '교육생 단체 기념사진',
+    body: '그저 사진 한 장이 아닙니다. 수업의 열기, 지도자의 진심, 그리고 배우는 이의 눈빛까지. 이곳엔 강사로 성장해가는 모든 순간이 담겨 있습니다. KPA와 함께한 ‘교육스케치’ 그날의 기록, 당신의 성장 스토리를 시작하세요.',
+  },
+];
+---
+<BaseLayout title="교육일정">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">TRAINING COURSE</p>
+      <h1>교육일정</h1>
+      <p class="page-hero-sub">
+        필라테스 운동법의 이해력을 높이고 교육 종료 직후 트레이닝이 가능한 교육입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- 모집 안내 -->
+  <section class="section intro">
+    <div class="wrap intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow">NOW RECRUITING</p>
+        <h2>지도자과정 모집 중</h2>
+        <p class="intro-lead">
+          최대정원 6명 소수정예교육 — 실전 중심으로 교육하여 졸업 이후 바로
+          강사생활이 가능하도록 지도합니다.
+        </p>
+
+        <div class="hours-box">
+          <p class="hours-title">KPA 지도자과정 250시간</p>
+          <ul>
+            {hours.map((h, i) => <li><span class="hours-no">{i + 1}</span>{h}</li>)}
+          </ul>
+        </div>
+
+        {openBatch && (
+          <a class="btn btn--filled" href={withBase('/category/all-products')}>
+            {openBatch.gen} {openBatch.date} {openBatch.day} 신청하기
+          </a>
+        )}
+      </div>
+      <div class="intro-media">
+        <img src={img('6f7ec1_227dbc2d9fd24b2187ff2a101e88cde2~mv2.jpg')} alt="KPA 지도자과정 교육 현장" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 안내 사항 -->
+  <section class="section notice">
+    <div class="wrap">
+      <div class="notice-grid">
+        <div class="notice-card">
+          <h3>교육비</h3>
+          <p class="notice-big">550만원</p>
+          <p class="notice-sub">현금 / 카드 동일, 분납 가능</p>
+          <ul>
+            <li>1차 분납 — 개강 당일 50%</li>
+            <li>2차 분납 — 중간고사 잔여 50%</li>
+          </ul>
+        </div>
+        <div class="notice-card">
+          <h3>교육 등록 예약 및 환불 안내</h3>
+          <p>
+            원하시는 자리를 미리 확보하시려면 30만원을 선결제해 주시면 됩니다.
+            해당 금액은 등록 확정을 위한 예약금이며, 정식 등록 시 총 금액에 포함됩니다.
+          </p>
+          <p class="notice-warn">
+            단, 결제일로부터 7일이 경과하면 환불이 불가하오니 신중하게 결정해 주시기 바랍니다.
+          </p>
+          <p class="notice-account">
+            계좌번호 : 신한은행 100-026-900773<br />
+            (예금주 : 사단법인대한필라테스협회)
+          </p>
+        </div>
+      </div>
+      <ul class="notice-list">
+        <li>본 협회는 설립 이후 분당 본원에서만 교육을 진행하고 있습니다.</li>
+        <li>추후 개강일정 및 자세한 문의는 전화 혹은 방문 상담을 통해 안내드립니다. (문의처 : 031.728.7724)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 기수별 일정 -->
+  <section class="section batches">
+    <div class="wrap">
+      <p class="eyebrow">SCHEDULE</p>
+      <h2 class="batches-title">기수별 교육일정</h2>
+      <p class="batches-common">
+        <strong>공통 교육과목</strong> {subjects} <span class="dot">·</span>
+        <strong>수업정원</strong> {capacity}
+      </p>
+      <div class="batch-list">
+        {schedule.map((b) => (
+          <article class:list={['batch', b.status === 'open' && 'batch--open']}>
+            <div class="batch-head">
+              <span class="batch-gen">{b.gen}</span>
+              <span class="batch-date">{b.date}</span>
+              <span class="batch-day">{b.day}</span>
+            </div>
+            <div class="batch-time">{b.time}</div>
+            <div class="batch-status">
+              {b.status === 'open' ? (
+                <span class="badge badge--open">신청 가능{b.note && ` · ${b.note}`}</span>
+              ) : (
+                <span class="badge badge--closed">마감</span>
+              )}
+            </div>
+            {b.status === 'open' ? (
+              <a class="btn btn--sm btn--filled" href={withBase('/category/all-products')}>신청하기</a>
+            ) : (
+              <span class="btn btn--sm btn--disabled" aria-disabled="true">모집 종료</span>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 스토리 밴드 -->
+  <section class="section stories">
+    <div class="wrap">
+      <p class="eyebrow">KPA MOMENTS</p>
+      <h2 class="stories-title">강사로 성장해가는 모든 순간</h2>
+      <div class="story-grid">
+        {stories.map((s) => (
+          <article class="story">
+            <div class="story-media">
+              <img src={img(s.image)} alt={s.alt} loading="lazy" />
+              <span class="story-tag">{s.tag}</span>
+            </div>
+            <p class="story-body">{s.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section course-cta">
+    <div class="wrap">
+      <h2>지금 지도자과정을 시작하세요</h2>
+      <p>개강 일정을 확인하고, 궁금한 점은 카카오톡 혹은 전화로 상담하세요.</p>
+      <div class="course-cta-btns">
+        <a class="btn btn--filled" href={withBase('/category/all-products')}>교육 신청하기</a>
+        <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
+        <a class="btn" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    background: var(--kp-maroon);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(70px, 12vw, 130px);
+  }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* INTRO */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .intro-copy h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.6vw, 38px); margin: 6px 0 18px; }
+  .intro-lead { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.85; margin-bottom: 26px; }
+  .intro-media img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+  }
+  .hours-box {
+    background: var(--kp-cream);
+    border-left: 3px solid var(--kp-maroon);
+    padding: 24px 28px;
+    border-radius: 6px;
+    margin-bottom: 28px;
+  }
+  .hours-title { color: var(--kp-maroon); font-weight: 700; margin: 0 0 14px; font-size: 17px; }
+  .hours-box ul { list-style: none; margin: 0; padding: 0; }
+  .hours-box li {
+    color: var(--kp-olive);
+    font-size: 15px;
+    line-height: 1.6;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .hours-box li:last-child { margin-bottom: 0; }
+  .hours-no {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--kp-maroon);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* NOTICE */
+  .notice { background: var(--kp-cream); }
+  .notice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(18px, 3vw, 28px);
+    margin-bottom: 28px;
+  }
+  .notice-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: clamp(24px, 3vw, 34px);
+  }
+  .notice-card h3 { color: var(--kp-maroon); font-size: clamp(18px, 2.2vw, 21px); margin: 0 0 14px; }
+  .notice-big { font-family: var(--font-display); color: var(--kp-maroon); font-size: clamp(32px, 5vw, 44px); font-weight: 800; margin: 0; line-height: 1; }
+  .notice-sub { color: var(--kp-sage); font-size: 14px; margin: 8px 0 16px; }
+  .notice-card p { color: var(--kp-olive); font-size: 15px; line-height: 1.8; margin: 0 0 12px; }
+  .notice-card ul { list-style: none; margin: 0; padding: 0; }
+  .notice-card li {
+    color: var(--kp-olive);
+    font-size: 15px;
+    line-height: 1.7;
+    padding-left: 16px;
+    position: relative;
+  }
+  .notice-card li::before { content: '·'; position: absolute; left: 4px; color: var(--kp-sage); font-weight: 700; }
+  .notice-warn { color: var(--kp-maroon) !important; font-weight: 600; }
+  .notice-account {
+    background: rgba(141, 153, 144, 0.14);
+    border-radius: 6px;
+    padding: 14px 18px;
+    color: var(--kp-maroon) !important;
+    font-size: 15px !important;
+    margin: 0 !important;
+  }
+  .notice-list { list-style: none; margin: 0; padding: 0; }
+  .notice-list li {
+    color: var(--kp-olive);
+    font-size: 14px;
+    line-height: 1.7;
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .notice-list li::before { content: '※'; position: absolute; left: 0; color: var(--kp-sage); }
+
+  /* BATCHES */
+  .batches-title { color: var(--kp-maroon); font-size: clamp(24px, 3.6vw, 36px); margin: 6px 0 16px; }
+  .batches-common {
+    color: var(--kp-olive);
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0 0 clamp(24px, 4vw, 36px);
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--kp-line);
+  }
+  .batches-common strong { color: var(--kp-maroon); }
+  .batches-common .dot { margin: 0 8px; color: var(--kp-sage); }
+  .batch-list { display: flex; flex-direction: column; gap: 12px; }
+  .batch {
+    display: grid;
+    grid-template-columns: 260px 1fr auto auto;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px;
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 10px;
+  }
+  .batch--open {
+    border-color: var(--kp-maroon);
+    box-shadow: 0 6px 22px rgba(59, 30, 34, 0.1);
+  }
+  .batch-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .batch-gen { font-family: var(--font-display); color: var(--kp-maroon); font-weight: 800; font-size: clamp(18px, 2.2vw, 22px); }
+  .batch-date { color: var(--kp-ink); font-weight: 600; font-size: 15px; }
+  .batch-day { color: var(--kp-sage); font-size: 14px; }
+  .batch-time { color: var(--kp-olive); font-size: 14px; line-height: 1.6; }
+  .badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge--open { background: var(--kp-maroon); color: #fff; }
+  .badge--closed { background: rgba(141, 153, 144, 0.2); color: var(--kp-sage); }
+  .btn--sm { padding: 8px 18px; font-size: 13px; }
+  .btn--disabled {
+    color: var(--kp-sage);
+    border-color: var(--kp-line);
+    background: transparent;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* STORIES */
+  .stories { background: #fbf7ef; }
+  .stories-title { color: var(--kp-maroon); font-size: clamp(24px, 3.4vw, 34px); margin: 6px 0 clamp(28px, 4vw, 44px); }
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 3vw, 30px);
+  }
+  .story-media { position: relative; }
+  .story-media img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+  }
+  .story-tag {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    background: var(--kp-maroon);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+  .story-body { color: var(--kp-olive); font-size: 15px; line-height: 1.8; margin: 18px 0 0; }
+
+  /* CTA */
+  .course-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .course-cta h2 { color: #fff; margin-bottom: 12px; }
+  .course-cta p { color: var(--kp-pink); margin-bottom: 28px; }
+  .course-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .course-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .course-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .course-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .course-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 900px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .intro-media { order: -1; }
+    .notice-grid { grid-template-columns: 1fr; }
+    .batch { grid-template-columns: 1fr; gap: 10px; align-items: start; }
+    .batch-status { order: 2; }
+    .story-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; }
+  }
+</style>

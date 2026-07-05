@@ -25,7 +25,7 @@
 | /pilatesequipment | 장비 둘러보기 | ✅ 완료 |
 | /address | 오시는길 | ✅ 완료 |
 | /curriculum | 커리큘럼 | ✅ 완료 |
-| /coursedate | 교육일정 | ⬜ |
+| /coursedate | 교육일정 | ✅ 완료 |
 | /kpaapp | KPA 교육어플 | ⬜ |
 | /category/all-products | 심화과정 수강신청 | ⬜ |
 | /ncpt | NCPT 국제공인 자격증 | ⬜ |
