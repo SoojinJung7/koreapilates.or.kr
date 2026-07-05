@@ -1,0 +1,304 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// 3대 기능 그룹 (원본 구성 그대로)
+const groups = [
+  {
+    no: '01',
+    en: 'Smart Learning',
+    ko: '체계적인 교육 관리와 학습 지원',
+    align: 'left',
+    shots: [
+      { image: '6f7ec1_18521acb09754b899fc23f2d8757a7cc~mv2.png', alt: 'KPA 교육어플 내신평가 화면' },
+    ],
+    features: [
+      {
+        en: 'Evaluation',
+        ko: '실시간 평가',
+        body: '주간테스트, 수행평가, 과제, 로그북, 기말고사(실기), 실전모의고사 등 교육 과정별 점수를 실시간으로 확인할 수 있습니다.',
+      },
+      {
+        en: 'Assignment',
+        ko: '과제 관리',
+        body: '과제 제출과 로그북 관리까지 하나의 플랫폼에서 편리하게 진행할 수 있습니다.',
+      },
+    ],
+  },
+  {
+    no: '02',
+    en: 'Smart Reservation',
+    ko: '예약부터 시설 현황까지, 더욱 편리한 환경 제공',
+    align: 'right',
+    shots: [
+      { image: '6f7ec1_e04a58f6bef54d0f805e89f031ade8ea~mv2.png', alt: 'KPA 교육어플 교육장 예약 화면' },
+      { image: '6f7ec1_695defbf6ba34ca0a6552b0104ca4287~mv2.png', alt: 'KPA 교육어플 스튜디오 현황 화면' },
+    ],
+    features: [
+      {
+        en: 'Reservation',
+        ko: '교육장 예약 & 예약 관리',
+        body: '교육장 예약부터 예약 내역 및 이용 일정 관리까지 하나의 플랫폼에서 체계적으로 제공합니다.',
+      },
+      {
+        en: 'Studio',
+        ko: '스튜디오 현황',
+        body: '교육장 및 스튜디오의 이용 현황과 예약 가능 시간을 실시간으로 확인할 수 있습니다.',
+      },
+    ],
+  },
+  {
+    no: '03',
+    en: 'KPA Services',
+    ko: '협회의 다양한 서비스를 담아낸 하나의 플랫폼',
+    align: 'left',
+    shots: [
+      { image: '6f7ec1_feee9004ee194c1caf962eb99335276a~mv2.png', alt: 'KPA 교육어플 예비교육생 홈 화면' },
+      { image: '6f7ec1_5fdd5312a61a4bf7bbefbb3115c46b97~mv2.png', alt: 'KPA 교육어플 사전 교육자료(해부학) 화면' },
+    ],
+    features: [
+      {
+        en: 'Notice',
+        ko: '공지사항',
+        body: '교육 일정과 협회 공지사항을 실시간으로 확인할 수 있습니다.',
+      },
+      {
+        en: 'Pre-Learning',
+        ko: '사전 교육자료 제공 & 준비물 알림',
+        body: '후보생을 대상으로 교육 시작 전, 필수 교육자료와 학습 콘텐츠를 미리 제공하여 교육 내용을 사전에 숙지하고 더욱 효과적으로 교육에 참여할 수 있도록 지원합니다.',
+      },
+    ],
+  },
+];
+---
+<BaseLayout title="KPA 교육어플">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">KPA EDUCATION PLATFORM</p>
+      <h1>KPA 교육어플</h1>
+      <p class="page-hero-sub">
+        사단법인 대한필라테스협회가 독자 개발한 통합 교육 플랫폼
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow">KPA EDUCATION PLATFORM</p>
+        <h2>교육 운영과 학습 관리를<br />하나로 연결하다</h2>
+        <p class="intro-lead">
+          사단법인 대한필라테스협회(KPA)가 직접 기획하고 독자 개발한
+          KPA Education Platform은 교육 운영과 학습 관리를 하나로 연결하는
+          통합 교육 시스템입니다.
+        </p>
+        <p class="intro-body">
+          내신평가, 수행평가, 과제평가, 로그북 관리 등 교육 전 과정을 실시간으로
+          확인하고 관리할 수 있으며, 교육 일정 조회, 교육장 대관, 협회 공지 및
+          다양한 회원 서비스까지 하나의 플랫폼에서 편리하게 이용할 수 있습니다.
+          교육생과 강사 모두에게 더욱 체계적이고 효율적인 교육 환경을 제공하며,
+          KPA만의 교육 철학과 운영 노하우를 디지털 플랫폼에 담아 새로운 교육
+          경험을 제공합니다.
+        </p>
+      </div>
+      <div class="intro-media">
+        <div class="phone">
+          <img src={img('6f7ec1_feee9004ee194c1caf962eb99335276a~mv2.png')} alt="KPA 교육어플 예비교육생 홈 화면" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONE PLATFORM -->
+  <section class="section platform">
+    <div class="wrap platform-inner">
+      <p class="eyebrow">ONE PLATFORM FOR KPA MEMBER</p>
+      <h2>후보생부터 강사까지,<br />하나의 플랫폼으로</h2>
+      <p class="platform-lead">
+        KPA 교육어플(KPA Education Platform)은 후보생, 교육생, 수료생(졸업생),
+        강사 모두를 위한 통합 교육 플랫폼입니다. 교육 준비부터 학습, 평가, 시설
+        이용, 협회 서비스까지 모든 교육 경험을 하나의 플랫폼으로 연결하여 더욱
+        체계적이고 효율적인 교육 환경을 제공합니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- FEATURE GROUPS -->
+  {groups.map((g) => (
+    <section class:list={['section', 'feature', g.align === 'right' && 'feature--alt']}>
+      <div class="wrap feature-grid">
+        <div class="feature-shots">
+          {g.shots.map((s) => (
+            <div class="phone">
+              <img src={img(s.image)} alt={s.alt} loading="lazy" />
+            </div>
+          ))}
+        </div>
+        <div class="feature-copy">
+          <p class="feature-no">{g.no}<span>.</span></p>
+          <h2 class="feature-en">{g.en}</h2>
+          <p class="feature-ko">{g.ko}</p>
+          <ul class="feature-list">
+            {g.features.map((f) => (
+              <li>
+                <p class="feature-head">
+                  <span class="feature-head-en">{f.en}</span>
+                  <span class="feature-bar">|</span>
+                  <span class="feature-head-ko">{f.ko}</span>
+                </p>
+                <p class="feature-body">{f.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- CTA -->
+  <section class="section app-cta">
+    <div class="wrap">
+      <h2>KPA 교육어플로 시작하세요</h2>
+      <p>
+        정식 교육생으로 등록되면 예약·내신 등 모든 기능을 이용하실 수 있습니다.
+        어플 이용 및 교육 문의는 카카오톡 혹은 전화로 상담하세요.
+      </p>
+      <div class="app-cta-btns">
+        <a class="btn btn--filled" href={withBase('/coursedate')}>교육일정 보기</a>
+        <a class="btn" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+      </div>
+      <p class="app-cta-note">
+        어플 이용 시 <a href={withBase('/kpaapp')}>개인정보 수집 및 이용 약관</a>에 동의하게 됩니다.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    background: var(--kp-maroon);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(70px, 12vw, 130px);
+  }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* PHONE FRAME */
+  .phone {
+    background: #fff;
+    border: 6px solid var(--kp-ink);
+    border-radius: 30px;
+    padding: 8px;
+    box-shadow: 0 18px 44px rgba(28, 16, 18, 0.18);
+    max-width: 300px;
+    width: 100%;
+  }
+  .phone img {
+    width: 100%;
+    display: block;
+    border-radius: 20px;
+  }
+
+  /* INTRO */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+  .intro-copy h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.6vw, 40px); margin: 6px 0 20px; line-height: 1.25; }
+  .intro-lead { color: var(--kp-ink); font-size: clamp(16px, 1.9vw, 19px); line-height: 1.8; margin-bottom: 20px; font-weight: 600; }
+  .intro-body { color: var(--kp-olive); font-size: clamp(14px, 1.7vw, 16px); line-height: 1.9; margin: 0; }
+  .intro-media { display: flex; justify-content: center; }
+
+  /* ONE PLATFORM */
+  .platform { background: var(--kp-cream); text-align: center; }
+  .platform-inner { max-width: 820px; }
+  .platform h2 { color: var(--kp-maroon); font-size: clamp(24px, 3.4vw, 36px); margin: 6px 0 22px; line-height: 1.3; }
+  .platform-lead { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.9; margin: 0; }
+
+  /* FEATURE GROUPS */
+  .feature--alt { background: #fbf7ef; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(30px, 5vw, 70px);
+    align-items: center;
+  }
+  .feature--alt .feature-shots { order: 2; }
+  .feature-shots {
+    display: flex;
+    justify-content: center;
+    gap: clamp(14px, 2vw, 24px);
+    flex-wrap: wrap;
+  }
+  .feature-shots .phone:nth-child(2) { margin-top: clamp(20px, 4vw, 46px); }
+  .feature-no {
+    font-family: var(--font-display);
+    color: var(--kp-sage);
+    font-size: clamp(30px, 5vw, 46px);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+  }
+  .feature-no span { color: var(--kp-maroon); }
+  .feature-en { color: var(--kp-maroon); font-size: clamp(24px, 3.4vw, 34px); margin: 10px 0 6px; }
+  .feature-ko { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 18px); margin: 0 0 clamp(22px, 3vw, 30px); }
+  .feature-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .feature-list li {
+    border-top: 1px solid var(--kp-line);
+    padding-top: 20px;
+  }
+  .feature-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 0 8px;
+  }
+  .feature-head-en { font-family: var(--font-display); color: var(--kp-maroon); font-weight: 800; font-size: clamp(17px, 2.1vw, 20px); }
+  .feature-bar { color: var(--kp-sage); }
+  .feature-head-ko { color: var(--kp-ink); font-weight: 700; font-size: clamp(15px, 1.9vw, 17px); }
+  .feature-body { color: var(--kp-olive); font-size: 15px; line-height: 1.8; margin: 0; }
+
+  /* CTA */
+  .app-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .app-cta h2 { color: #fff; margin-bottom: 12px; }
+  .app-cta p { color: var(--kp-pink); margin-bottom: 28px; max-width: 640px; margin-inline: auto; line-height: 1.8; }
+  .app-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .app-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .app-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .app-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .app-cta .btn--filled:hover { background: #fff; }
+  .app-cta-note { color: var(--kp-sage) !important; font-size: 13px !important; margin: 26px 0 0 !important; }
+  .app-cta-note a { color: var(--kp-pink); text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .intro-media { order: -1; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature--alt .feature-shots { order: -1; }
+    .feature-shots { order: -1; }
+    .feature-shots .phone:nth-child(2) { margin-top: 0; }
+  }
+</style>
