@@ -35,7 +35,7 @@
 | /conferences | 해외 초청 워크샵 | ✅ 완료 |
 | /community | KPA커뮤니티 | ✅ 완료 |
 | /file-share | 자료게시판 | ✅ 완료 |
-| /members | 인증 회원 찾기 | ⬜ |
+| /members | 인증 회원 찾기 | ✅ 완료 |
 
 ## 공통 작업
 - ✅ Astro 스캐폴드 + 디자인 시스템
