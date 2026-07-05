@@ -1,0 +1,258 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// 페이지 대표 이미지
+const heroImg = '6f7ec1_a83cbb7373c448a18e9b390df45c6eb1~mv2.jpeg';
+
+// KPA 커뮤니티 그룹 목록 (원본 Wix 그룹)
+const groups = [
+  {
+    n: 1,
+    name: '수업/과제 공지',
+    visibility: '공개',
+    members: 36,
+    image: '11062b_70b5c3a3ae0548409bb58e0f7e194b1b~mv2.jpg',
+  },
+  {
+    n: 2,
+    name: '교육생 과제제출',
+    visibility: '공개',
+    members: 34,
+    image: '6f7ec1_bdb5f42bac934d1c8b003a050ec0be54~mv2.jpg',
+  },
+  {
+    n: 3,
+    name: '질문 & 꿀팁게시판',
+    visibility: '공개',
+    members: 25,
+    image: '6f7ec1_24017a8ff1fd4b64a5ce218d84cbac76~mv2.jpg',
+  },
+  {
+    n: 4,
+    name: '교육생/졸업생 커뮤니티',
+    visibility: '비공개',
+    members: 20,
+    image: '6f7ec1_b93115d75cbf43ac9ba01d29b9ea8b2a~mv2.jpg',
+  },
+  {
+    n: 5,
+    name: '유용한 법률/세무/노무 정보',
+    visibility: '비공개',
+    members: 16,
+    image: '11062b_d62cbc01f4614d8596f96696333cdacc~mv2.jpeg',
+  },
+  {
+    n: 6,
+    name: '취업정보/인턴',
+    visibility: '비공개',
+    members: 17,
+    image: '6f7ec1_4a3e0ffcb76e4c2f9390848ee95699c7~mv2.jpg',
+  },
+];
+---
+<BaseLayout title="KPA커뮤니티">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <img class="page-hero-bg" src={img(heroImg)} alt="" aria-hidden="true" />
+    <div class="wrap page-hero-inner">
+      <p class="eyebrow">KPA COMMUNITY</p>
+      <h1>KPA 커뮤니티</h1>
+      <p class="page-hero-sub">
+        교육생 - 졸업생 간의 소통과 나눔을 통한<br />
+        지속적인 성장이 이루어지는 커뮤니티입니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap">
+      <div class="intro-inner">
+        <p class="intro-body">
+          KPA는 필라테스 지도자과정 교육을 통해 필라테스의 대중화에 기여하기 위해
+          노력하고 있습니다. KPA 커뮤니티는 교육생과 졸업생이 함께 소통하고 배움을
+          나누며, 수업 공지부터 과제 제출, 질문과 꿀팁, 취업 정보까지 서로의 성장을
+          응원하는 공간입니다.
+        </p>
+        <p class="intro-note">*지도자과정 문의는 ‘카카오채널’로 문의 바랍니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GROUPS -->
+  <section class="section groups">
+    <div class="wrap">
+      <div class="groups-head">
+        <div>
+          <p class="eyebrow">Groups</p>
+          <h2>그룹</h2>
+          <p class="groups-desc">아래에서 그룹 및 게시물을 확인하세요.</p>
+        </div>
+        <div class="groups-auth">
+          <a class="btn" href={kakaoChat} target="_blank" rel="noopener">로그인 ㅣ 회원가입</a>
+        </div>
+      </div>
+
+      <p class="groups-count">전체 ({groups.length})</p>
+
+      <div class="group-grid">
+        {groups.map((g) => (
+          <article class="group-card">
+            <div class="group-media">
+              <img src={img(g.image)} alt={g.name} loading="lazy" />
+              <span class={`group-badge ${g.visibility === '공개' ? 'is-public' : 'is-private'}`}>
+                {g.visibility}
+              </span>
+            </div>
+            <div class="group-body">
+              <h3>{g.n}. {g.name}</h3>
+              <p class="group-meta">{g.visibility} · 회원 {g.members}명</p>
+              <div class="group-actions">
+                <button class="btn btn--filled btn--sm" type="button" disabled>
+                  {g.visibility === '공개' ? '가입' : '가입 요청하기'}
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="section guide">
+    <div class="wrap">
+      <div class="guide-inner">
+        <p class="eyebrow">Notice</p>
+        <h2>게시글 작성 안내</h2>
+        <p class="guide-body">게시판의 취지에 맞는 주제의 글을 작성해 주세요.</p>
+        <div class="guide-actions">
+          <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+          <a class="btn" href={withBase('/file-share')}>자료게시판 바로가기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(80px, 14vw, 150px);
+    overflow: hidden;
+    background: var(--kp-maroon);
+  }
+  .page-hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.32;
+    filter: saturate(0.9);
+  }
+  .page-hero-inner { position: relative; z-index: 1; }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* INTRO */
+  .intro-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+  .intro-body { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.95; margin: 0 0 16px; }
+  .intro-note { color: var(--kp-maroon); font-weight: 700; font-size: clamp(13px, 1.6vw, 15px); margin: 0; }
+
+  /* GROUPS */
+  .groups { background: var(--kp-cream); }
+  .groups-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: clamp(16px, 2.5vw, 24px);
+  }
+  .groups-head h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 0; }
+  .groups-desc { color: var(--kp-olive); font-size: 15px; margin: 8px 0 0; }
+
+  .groups-count {
+    color: var(--kp-olive);
+    font-weight: 700;
+    font-size: 14px;
+    border-top: 1px solid var(--kp-line);
+    padding-top: 16px;
+    margin: 0 0 clamp(20px, 3vw, 28px);
+  }
+
+  .group-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(18px, 2.5vw, 28px);
+  }
+  .group-card {
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(28, 16, 18, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .group-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 46px rgba(28, 16, 18, 0.14);
+  }
+  .group-media { position: relative; aspect-ratio: 16 / 9; background: #f1f1f1; }
+  .group-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .group-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    padding: 4px 11px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .group-badge.is-public { background: var(--kp-olive); }
+  .group-badge.is-private { background: var(--kp-maroon); }
+
+  .group-body { padding: clamp(18px, 2.4vw, 24px); display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .group-body h3 { color: var(--kp-maroon); font-size: clamp(17px, 2.2vw, 20px); margin: 0; line-height: 1.35; }
+  .group-meta { color: var(--kp-sage); font-weight: 700; font-size: 13.5px; margin: 0; }
+  .group-actions { margin-top: auto; padding-top: 6px; }
+
+  .btn--sm { padding: 9px 20px; font-size: 13.5px; }
+  .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+  /* GUIDE */
+  .guide { background: var(--kp-ink); color: #fff; text-align: center; }
+  .guide-inner { max-width: 760px; margin: 0 auto; }
+  .guide .eyebrow { color: var(--kp-pink); }
+  .guide h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(24px, 4vw, 38px); }
+  .guide-body { color: var(--kp-pink); margin-bottom: 28px; line-height: 1.8; }
+  .guide-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .guide .btn { border-color: var(--kp-cream); color: #fff; }
+  .guide .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .guide .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .guide .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 900px) {
+    .group-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .group-grid { grid-template-columns: 1fr; }
+  }
+</style>
