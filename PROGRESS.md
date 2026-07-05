@@ -30,7 +30,7 @@
 | /category/all-products | 심화과정 수강신청 | ✅ 완료 |
 | /ncpt | NCPT 국제공인 자격증 | ✅ 완료 |
 | /workshop-seminar | 워크샵/세미나 | ✅ 완료 |
-| /event-list | 워크샵/세미나 신청 | ⬜ |
+| /event-list | 워크샵/세미나 신청 | ✅ 완료 |
 | /graduates-seminar | 졸업생세미나 | ⬜ |
 | /conferences | 해외 초청 워크샵 | ⬜ |
 | /community | KPA커뮤니티 | ⬜ |
