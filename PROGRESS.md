@@ -23,7 +23,7 @@
 | /faculty | 강사소개 | ✅ 완료 |
 | /projects | 시설 둘러보기 | ✅ 완료 |
 | /pilatesequipment | 장비 둘러보기 | ✅ 완료 |
-| /address | 오시는길 | ⬜ |
+| /address | 오시는길 | ✅ 완료 |
 | /curriculum | 커리큘럼 | ⬜ |
 | /coursedate | 교육일정 | ⬜ |
 | /kpaapp | KPA 교육어플 | ⬜ |
