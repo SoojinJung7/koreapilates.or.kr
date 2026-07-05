@@ -24,7 +24,7 @@
 | /projects | 시설 둘러보기 | ✅ 완료 |
 | /pilatesequipment | 장비 둘러보기 | ✅ 완료 |
 | /address | 오시는길 | ✅ 완료 |
-| /curriculum | 커리큘럼 | ⬜ |
+| /curriculum | 커리큘럼 | ✅ 완료 |
 | /coursedate | 교육일정 | ⬜ |
 | /kpaapp | KPA 교육어플 | ⬜ |
 | /category/all-products | 심화과정 수강신청 | ⬜ |
