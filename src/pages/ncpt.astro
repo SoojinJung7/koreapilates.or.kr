@@ -1,0 +1,330 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase, img } from '../utils/url.js';
+
+const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+
+// NPCP 로고 / NCPT 인증 배지
+const npcpLogo = '6f7ec1_fd8ac8356c2046d8989aa57be2f3bb56~mv2.jpg';
+const ncptBadge = '6f7ec1_dc26d6435773471bad89acaab9e8a136~mv2.jpg';
+
+// 합격 후기 (원본 순서: 루비 → 지원 → 수현)
+const reviews = [
+  {
+    name: '루비선생님',
+    en: "Ruby's TIP",
+    title: '루비선생님의 시험준비 TIP!',
+    story:
+      'NCPT 시험준비반 1기는 협회 분들과 함께 진행했었는데요, 항상 야무지고 똑똑했던 루비선생님을 다시 코스에서 만나게 되어 기뻤어요:) 역시, 수업도 결석하지 않고 착실하게 참석하신 결과 시험을 한 번에, 그것도 100점 만점 중 97점의 초고득점으로 통과하게 되셨습니다!!',
+    headline: '100점 만점에 97점!! 루비선생님의 합격을 축하합니다!',
+    tips: [
+      '병리학도 병리학이지만, 강사로서 돌발상황 대처방법을 유심히 공부해보세요~! 특히, 그룹수업에서 일어날 수 있는 상황, 다친 회원님을 어떻게 케어해드리는지에 대해서도 잘 읽어두세요ㅎㅎ Study Guide에 키워드로 나와있고, 그 부분이 응용되어서 나옵니다!',
+      '조셉선생님의 34가지 동작 순서는 선택이 아닌 필수! 가능하면, 이때를 기회삼아 본인의 몸으로 외우는 것이 자격취득 이후에도 큰 도움이 될 거예요.',
+      "단어를 보고 뜻을 이해해도 헷갈리니 영어독해를 잘 해두시는 것이 좋아요~ 'Best, Most, Least, Not'과 같은 키워드들을 유심히 보시고, 이 문제의 출제의도가 무엇일까도 생각해 보세요:)",
+    ],
+    certificate: { image: '6f7ec1_e292536c72464f0aae77674314755233~mv2.png', alt: 'Ruby Shin NCPT 자격증' },
+    chat: { image: '6f7ec1_9eb38dd96adf4b09ab43015218a4cd64~mv2.png', alt: '루비선생님 합격 카카오톡 후기' },
+  },
+  {
+    name: '지원선생님',
+    en: "Jiwon's TIP",
+    title: '지원쌤의 NCPT 시험합격 TIP!',
+    story:
+      '지원선생님과도 2023년의 버킷리스트를 함께 달성했어요! 이번 코스를 통해서, 필라테스에 대해서 많이 생각하고 질환에 대해서도 확실히 이해하니까 공부하면서 도움이 많이 되었다고 하시네요:) 하고 나니깐 자신감도 생기구요! 기계처럼 수업하던 일상에 진짜 활력에 도움이 되었다니 참 감사했습니다~!',
+    headline: '회원님을 위해 끊임없이 공부하는, 지원선생님의 NCPT 합격을 축하합니다!',
+    tips: [
+      '스케줄 조율이나, 홈페이지에서 원하는 것을 찾지 못할 때, 또 테스팅 센터 관련 이슈로 NPCP본사에 보내는 이메일도 혼자 적기엔 막막할 거예요~ 그럴땐.. 원장님께 바로 도움을 요청하세요!ㅎㅎ',
+      'Practice Question이 실제 시험에 거의 나오지 않아 놀랐어요. 몇 번 반복해서 계속 풀었었는데, 문맥을 파악해야 풀 수 있는 문제들이 많으니 Practice Question은 기본, Study Guide를 심도있게 읽어서 확실하게 이해하는 것을 추천해요!',
+      "병리학을 너무 파고들 필요는 없어도, 기본적으로 적힌 'Precaution & Contraindication'은 잘 정리해서 외우고, 그에 어울리는 필라테스 동작들도 미리 생각해두면 도움이 많이 될 거예요!",
+    ],
+    certificate: { image: '6f7ec1_f66c839c15fb4c74897cde5778c4b943~mv2.png', alt: 'Jiwon Kim NCPT 자격증' },
+    chat: { image: '6f7ec1_bee6832e0afc430989930a5578c9627e~mv2.png', alt: '지원선생님 합격 카카오톡 후기' },
+  },
+  {
+    name: '수현선생님',
+    en: "Soohyun's TIP",
+    title: '수현쌤의 시험 합격 TIP!!',
+    story:
+      '3시간의 시험이 정신적으로 꽤 피로한데, 영어로 문제를 풀려니 많이 힘들었을 거예요. 그래도 끊임없이 도전해서 결국 해냈어요!! 오히려 좋은 것인지(?) NPCP가 홈페이지를 개편하면서, 자격증서도 새로운 레이아웃으로 받으신 수현쌤! 다시 한 번, NCPT 인증강사가 된 것을 축하해요:)',
+    headline: '중요한건 꺾이지 않는 마음, 수현쌤의 NCPT 합격을 축하합니다!',
+    tips: [
+      '영어 독해가 필수예요. 단어를 영어사전에서 찾아도, 독해가 잘 되지 않으면 질문의 요지가 읽히지 않으니, 읽고 이해할 수 있는 영어실력을 꼭 잘 다지시길 바래요!',
+      '어떤 문제가 오답인지 알려주지 않는 시험이라, 어느 한 파트도 흘려읽지 않도록 하세요~! 협회마다 다른 동작 이름이 존재하니 미리 숙지하시고, 조셉의 34가지 동작 순서도 시험 임박할때쯤 차곡차곡 외워두세요!',
+      '정보가 많이 없는 시험이다 보니, 준비하는 것 자체가 막연할 거예요. 그럴 때는 오늘 하루 주어진 일을 잘 해내고, 내일을 잘 계획하면서 컨디션 관리하며 꾸준히 해나가다 보면 됩니다! 앞으로 시험보시게 될 모든 분들을 응원해요:)',
+    ],
+    certificate: { image: '6f7ec1_b98b53a3629647d5882cc24cdbb98cc2~mv2.png', alt: 'Soo Hyun Shin NCPT 자격증' },
+    chat: { image: '6f7ec1_d3d8059e823343e091201a47abffe1e5~mv2.png', alt: '수현선생님 합격 카카오톡 후기' },
+  },
+];
+---
+<BaseLayout title="NCPT 국제공인 자격증">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">NCPT CERTIFICATION</p>
+      <h1>NCPT 국제공인 자격증</h1>
+      <p class="page-hero-sub">
+        세계에서 ‘유일한’ 필라테스 국제공인 자격증은<br />
+        현직 필라테스 강사만 취득 가능합니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section intro">
+    <div class="wrap intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow">NCPT Certification</p>
+        <h2>유일하게 국제적으로<br />인증받은 필라테스 자격증</h2>
+        <p class="intro-lead">국제공인 필라테스 자격증은 NCPT가 유일합니다.</p>
+        <p class="intro-body">
+          필라테스 창시자인 조셉과, 그의 아내인 클라라의 타계 이후 필라테스
+          운동법이 다양한 응용과 개념 첨가로 희석되어가는 현상을 방지하기 위해
+          필라테스 운동법을 전수하는 강사들의 실력을 검증하고 정통성을 확립하는
+          시험인 ‘National Pilates Certification Exam’이 만들어졌으며, 해당 시험을
+          통과한 강사는 정식 국제공인 필라테스 지도자 NCPT(Nationally Certified
+          Pilates Teacher)가 됩니다.
+        </p>
+        <p class="intro-body">
+          이 자격증은 미국 국가인증 기관위원회 NCCA(National Commission for
+          Certification Agency)의 인증을 받은 세계에서 유일한 국제공인
+          자격증입니다. 과거에는 PMA-CPT로 불렸으나, 현재는 NCPT로 변경되었습니다.
+          본 자격증의 시험 자격은 필라테스 자격 취득 후 450시간 이상의 개별적
+          공부와 실전 티칭 시간이 축적된 강사에게만 주어집니다.
+        </p>
+        <p class="intro-body">
+          시험 통과시, ‘NCPT(Nationally Certified Pilates Teacher)’의 타이틀 및
+          NPCP 국제강사 인증 배지를 이력서 및 홈페이지 강사 소개시 사용할 수 있게
+          됩니다.
+        </p>
+      </div>
+      <div class="intro-media">
+        <div class="badge-card">
+          <img src={img(npcpLogo)} alt="National Pilates Certification Program 로고" loading="lazy" />
+        </div>
+        <div class="badge-card badge-card--emblem">
+          <img src={img(ncptBadge)} alt="Nationally Certified Pilates Teacher 인증 배지" loading="lazy" />
+          <p class="badge-caption">Nationally Certified<br />Pilates Teacher</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS INTRO -->
+  <section class="section reviews-intro">
+    <div class="wrap reviews-intro-inner">
+      <p class="eyebrow">REAL STORIES</p>
+      <h2>NCPT 자격증 합격 생생후기</h2>
+      <p class="reviews-lead">
+        국제공인 필라테스 인증강사(NCPT) 자격증 준비반과 함께해 결국에는 취득하신
+        선생님들의 생생한 후기를 모아봤습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  {reviews.map((r, i) => (
+    <section class:list={['section', 'review', i % 2 === 1 && 'review--alt']}>
+      <div class="wrap review-grid">
+        <div class="review-media">
+          <div class="cert-frame">
+            <img src={img(r.certificate.image)} alt={r.certificate.alt} loading="lazy" />
+          </div>
+          <div class="chat-frame">
+            <img src={img(r.chat.image)} alt={r.chat.alt} loading="lazy" />
+          </div>
+        </div>
+        <div class="review-copy">
+          <p class="review-en">{r.en}</p>
+          <h3 class="review-title">{r.title}</h3>
+          <p class="review-story">{r.story}</p>
+          <ul class="tip-list">
+            {r.tips.map((t) => (
+              <li>{t}</li>
+            ))}
+          </ul>
+          <p class="review-headline">{r.headline}</p>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- CTA -->
+  <section class="section ncpt-cta">
+    <div class="wrap">
+      <p class="eyebrow">YOUR TURN</p>
+      <h2>다음은 여러분들의 차례입니다!</h2>
+      <p>바라는 곳에 길이 있으니, 한번 두드려 보세요.</p>
+      <div class="ncpt-cta-btns">
+        <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
+        <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* PAGE HERO */
+  .page-hero {
+    background: var(--kp-maroon);
+    color: #fff;
+    text-align: center;
+    padding-block: clamp(70px, 12vw, 130px);
+  }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub {
+    color: var(--kp-pink);
+    font-size: clamp(15px, 2vw, 19px);
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* INTRO */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+  .intro-copy h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.6vw, 40px); margin: 6px 0 18px; line-height: 1.25; }
+  .intro-lead { color: var(--kp-ink); font-size: clamp(16px, 1.9vw, 19px); line-height: 1.7; margin-bottom: 22px; font-weight: 700; }
+  .intro-body { color: var(--kp-olive); font-size: clamp(14px, 1.7vw, 16px); line-height: 1.9; margin: 0 0 16px; }
+  .intro-media {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 3vw, 28px);
+    position: sticky;
+    top: 100px;
+  }
+  .badge-card {
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 16px;
+    padding: 26px 24px;
+    box-shadow: 0 14px 34px rgba(28, 16, 18, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .badge-card img { width: 100%; max-width: 240px; display: block; }
+  .badge-card--emblem img { max-width: 170px; }
+  .badge-caption {
+    font-family: var(--font-display);
+    color: var(--kp-maroon);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* REVIEWS INTRO */
+  .reviews-intro { background: var(--kp-cream); text-align: center; }
+  .reviews-intro-inner { max-width: 780px; }
+  .reviews-intro h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 20px; }
+  .reviews-lead { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 18px); line-height: 1.85; margin: 0; }
+
+  /* REVIEW */
+  .review--alt { background: #fbf7ef; }
+  .review-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(30px, 5vw, 64px);
+    align-items: start;
+  }
+  .review--alt .review-media { order: 2; }
+  .review-media { display: flex; flex-direction: column; gap: clamp(18px, 3vw, 26px); }
+  .cert-frame {
+    background: #fff;
+    border: 1px solid var(--kp-line);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 12px 30px rgba(28, 16, 18, 0.1);
+  }
+  .cert-frame img { width: 100%; display: block; border-radius: 6px; }
+  .chat-frame {
+    max-width: 300px;
+    width: 100%;
+    margin-inline: auto;
+    border: 6px solid var(--kp-ink);
+    border-radius: 26px;
+    padding: 6px;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(28, 16, 18, 0.16);
+  }
+  .chat-frame img { width: 100%; display: block; border-radius: 18px; }
+
+  .review-en {
+    font-family: var(--font-display);
+    color: var(--kp-sage);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    font-size: clamp(16px, 2.2vw, 20px);
+    margin: 0 0 6px;
+  }
+  .review-title { color: var(--kp-maroon); font-size: clamp(22px, 3vw, 30px); margin: 0 0 18px; line-height: 1.3; }
+  .review-story { color: var(--kp-ink); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.85; margin: 0 0 26px; font-weight: 600; }
+  .tip-list {
+    list-style: none;
+    margin: 0 0 26px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tip-list li {
+    position: relative;
+    padding: 16px 18px 16px 44px;
+    background: rgba(141, 153, 144, 0.1);
+    border-radius: 12px;
+    color: var(--kp-olive);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .tip-list li::before {
+    content: 'TIP';
+    position: absolute;
+    left: 14px;
+    top: 16px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--kp-maroon);
+    background: var(--kp-cream);
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .review-headline {
+    color: var(--kp-maroon);
+    font-weight: 800;
+    font-size: clamp(17px, 2.2vw, 21px);
+    line-height: 1.5;
+    margin: 0;
+    padding-top: 20px;
+    border-top: 2px solid var(--kp-cream);
+  }
+
+  /* CTA */
+  .ncpt-cta { background: var(--kp-ink); color: #fff; text-align: center; }
+  .ncpt-cta .eyebrow { color: var(--kp-pink); }
+  .ncpt-cta h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
+  .ncpt-cta p { color: var(--kp-pink); margin-bottom: 28px; line-height: 1.8; }
+  .ncpt-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .ncpt-cta .btn { border-color: var(--kp-cream); color: #fff; }
+  .ncpt-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
+  .ncpt-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
+  .ncpt-cta .btn--filled:hover { background: #fff; }
+
+  @media (max-width: 900px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .intro-media { position: static; flex-direction: row; flex-wrap: wrap; }
+    .badge-card { flex: 1 1 240px; }
+    .review-grid { grid-template-columns: 1fr; }
+    .review--alt .review-media { order: -1; }
+    .review-media { order: -1; }
+  }
+</style>

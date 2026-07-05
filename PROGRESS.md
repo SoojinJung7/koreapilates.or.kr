@@ -28,7 +28,7 @@
 | /coursedate | 교육일정 | ✅ 완료 |
 | /kpaapp | KPA 교육어플 | ✅ 완료 |
 | /category/all-products | 심화과정 수강신청 | ✅ 완료 |
-| /ncpt | NCPT 국제공인 자격증 | ⬜ |
+| /ncpt | NCPT 국제공인 자격증 | ✅ 완료 |
 | /workshop-seminar | 워크샵/세미나 | ⬜ |
 | /event-list | 워크샵/세미나 신청 | ⬜ |
 | /graduates-seminar | 졸업생세미나 | ⬜ |
