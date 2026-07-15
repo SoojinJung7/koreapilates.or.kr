@@ -6,6 +6,7 @@
   "description": "KPA 사단법인 대한필라테스협회 공식 홈페이지 (Astro 재구축본)",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/fetch-instagram.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"

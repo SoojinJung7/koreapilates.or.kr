@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # 인스타그램 피드 자동 갱신용 — 매일 00:00 UTC(한국 09:00)에 재빌드
+  schedule:
+    - cron: '0 0 * * *'
 
 permissions:
   contents: read
@@ -24,6 +27,10 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
+        env:
+          # GitHub 저장소 Secrets 에 등록 → 있으면 실제 인스타 피드로 갱신, 없으면 임시 데이터 유지
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist

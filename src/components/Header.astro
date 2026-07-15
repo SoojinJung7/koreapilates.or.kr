@@ -35,11 +35,17 @@ const isActive = (href) => pathname === withBase(href);
             </li>
           )
         ))}
+        <li class="nav-item auth-mobile">
+          <a class="nav-top nav-top--link" href={withBase('/members')}>인증강사 로그인</a>
+        </li>
+        <li class="nav-item auth-mobile">
+          <a class="nav-top nav-top--link" href={withBase('/members')}>회원가입</a>
+        </li>
       </ul>
     </nav>
 
     <div class="header-right">
-      <a class="login-link" href={withBase('/members')}>로그인 <span>|</span> 회원가입</a>
+      <a class="login-link" href={withBase('/members')}>인증강사 로그인 <span>|</span> 회원가입</a>
       <button class="nav-toggle" aria-label="메뉴 열기" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -50,25 +56,28 @@ const isActive = (href) => pathname === withBase(href);
 <style>
   .site-header {
     position: sticky; top: 0; z-index: 100;
-    background: var(--kp-mugwort);
+    background: var(--kp-brand);
     color: #fff;
-    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(250,233,190,0.18);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
   }
   .header-inner { display: flex; align-items: center; gap: 32px; height: 78px; }
   .brand { flex-shrink: 0; }
-  /* 로고를 쑥색 배경에서 흰색으로 */
-  .brand img { height: 44px; width: auto; object-fit: contain; filter: brightness(0) invert(1); }
+  /* 마룬(진밤) 배경에 맞춰 로고를 흰색으로 */
+  .brand img { height: 33px; width: auto; object-fit: contain; display: block; filter: brightness(0) invert(1); }
 
   /* ---------- Desktop nav ---------- */
   .primary-nav { flex: 1; }
-  .nav-list { list-style: none; display: flex; gap: 6px; margin: 0; padding: 0; }
+  .nav-list { list-style: none; display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; }
   .nav-item { position: relative; }
   .nav-top {
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--font-sans); font-size: 16px; font-weight: 600;
+    font-family: var(--font-sans); font-size: 16px; font-weight: 600; line-height: 1;
     color: #fff; background: none; border: 0; cursor: pointer;
-    padding: 12px 18px; letter-spacing: 0.01em;
+    padding: 14px 18px; letter-spacing: 0.01em;
   }
+  /* 캐럿 없는 링크도 캐럿 있는 항목과 세로 정렬이 어긋나지 않도록 */
+  .nav-top .caret { flex-shrink: 0; }
   .nav-top:hover, .nav-item:hover .nav-top { color: var(--kp-cream); }
   .caret { transition: transform .25s; opacity: .85; }
   .nav-item:hover .caret { transform: rotate(180deg); }
@@ -77,7 +86,7 @@ const isActive = (href) => pathname === withBase(href);
     position: absolute; top: 100%; left: 0; min-width: 210px;
     background: #fff; color: var(--kp-ink);
     box-shadow: 0 14px 30px rgba(28,16,18,0.14);
-    border-top: 3px solid var(--kp-mugwort);
+    border-top: 3px solid var(--kp-brand);
     opacity: 0; visibility: hidden; transform: translateY(8px);
     transition: opacity .22s, transform .22s, visibility .22s;
   }
@@ -90,14 +99,17 @@ const isActive = (href) => pathname === withBase(href);
     white-space: nowrap; transition: background .18s, color .18s, padding-left .18s;
   }
   .dropdown a:hover, .dropdown a.active {
-    background: var(--kp-cream); color: var(--kp-mugwort-dark); padding-left: 28px;
+    background: var(--kp-cream); color: var(--kp-brand); padding-left: 28px;
   }
 
   /* ---------- Right ---------- */
   .header-right { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
   .login-link { font-size: 13px; color: #fff; opacity: .92; white-space: nowrap; letter-spacing: 0.02em; }
-  .login-link span { opacity: .5; margin: 0 4px; }
+  .login-link span { opacity: .45; margin: 0 4px; }
   .login-link:hover { color: var(--kp-cream); }
+
+  /* 로그인/회원가입은 데스크톱에선 헤더 우측 링크로만 노출, 메뉴 안 항목은 숨김 */
+  .auth-mobile { display: none; }
 
   .nav-toggle {
     display: none; width: 42px; height: 42px; border: 0; background: transparent;
@@ -108,27 +120,34 @@ const isActive = (href) => pathname === withBase(href);
   /* ---------- Mobile ---------- */
   @media (max-width: 940px) {
     .header-inner { gap: 16px; }
+    /* 모바일: 가운데 메뉴가 absolute라 흐름에서 빠지므로, 우측 영역(햄버거)을 오른쪽 끝으로 민다 */
+    .header-right { margin-left: auto; }
     .primary-nav {
       position: absolute; top: 78px; left: 0; right: 0;
-      background: var(--kp-mugwort);
+      background: var(--kp-brand);
       max-height: 0; overflow: hidden; transition: max-height .4s ease;
     }
-    .primary-nav.open { max-height: 80vh; overflow-y: auto; box-shadow: 0 14px 24px rgba(0,0,0,.18); }
-    .nav-list { flex-direction: column; gap: 0; padding: 6px 0; }
-    .nav-item { border-top: 1px solid rgba(255,255,255,0.14); }
+    .primary-nav.open { max-height: 80vh; overflow-y: auto; box-shadow: 0 14px 24px rgba(0,0,0,.28); border-top: 1px solid rgba(250,233,190,0.18); }
+    /* 모바일: 세로 배치 — 데스크톱의 align-items:center 를 덮어써 항목을 꽉 채우고 왼쪽 정렬 */
+    .nav-list { flex-direction: column; align-items: stretch; gap: 0; padding: 6px 0; text-align: left; }
+    .nav-item { border-top: 1px solid rgba(255,255,255,0.12); }
     .nav-top { width: 100%; justify-content: space-between; padding: 16px 24px; font-size: 17px; }
     .dropdown {
       position: static; opacity: 1; visibility: visible; transform: none;
       box-shadow: none; border-top: 0; min-width: 0;
       max-height: 0; overflow: hidden; transition: max-height .3s ease;
-      background: rgba(255,255,255,0.06);
+      background: rgba(0,0,0,0.07);
     }
     .nav-item.expanded .dropdown { max-height: 500px; }
     .nav-item:hover .dropdown { opacity: 1; } /* reset desktop rule */
     .dropdown a { color: #fff; padding: 13px 40px; }
-    .dropdown a:hover, .dropdown a.active { background: rgba(0,0,0,0.12); color: var(--kp-cream); }
+    .dropdown a:hover, .dropdown a.active { background: rgba(0,0,0,0.13); color: var(--kp-cream); }
     .nav-item.expanded .caret { transform: rotate(180deg); }
     .nav-toggle { display: inline-flex; }
+    /* 모바일: 헤더 바의 로그인/회원가입 링크 숨기고, 햄버거 메뉴 안으로 이동 */
+    .login-link { display: none; }
+    .auth-mobile { display: block; }
+    .auth-mobile .nav-top { color: var(--kp-cream); font-weight: 700; }
     .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
     .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }

@@ -1,0 +1,26 @@
+{
+  "handle": "koreapilatesassociation",
+  "profile": "https://www.instagram.com/koreapilatesassociation",
+  "updatedAt": null,
+  "placeholder": true,
+  "posts": [
+    {
+      "id": "placeholder-1",
+      "permalink": "https://www.instagram.com/koreapilatesassociation",
+      "image": "/images/6f7ec1_9f6015ebafd14b97b64037b4e1702540~mv2.jpg",
+      "caption": "KPA 지도자과정 현장 스케치 (임시 이미지 — 실제 인스타 연동 시 자동 교체)"
+    },
+    {
+      "id": "placeholder-2",
+      "permalink": "https://www.instagram.com/koreapilatesassociation",
+      "image": "/images/6f7ec1_63d891a3e69148d6aca9880cfd26d66a~mv2.jpg",
+      "caption": "워크샵 & 세미나 (임시 이미지 — 실제 인스타 연동 시 자동 교체)"
+    },
+    {
+      "id": "placeholder-3",
+      "permalink": "https://www.instagram.com/koreapilatesassociation",
+      "image": "/images/6f7ec1_358557b5f0614388ba997cca26bc516a~mv2.jpg",
+      "caption": "필라테스 전문 세미나 (임시 이미지 — 실제 인스타 연동 시 자동 교체)"
+    }
+  ]
+}
