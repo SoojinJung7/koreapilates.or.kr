@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase, img } from '../utils/url.js';
 import instagram from '../data/instagram.json';
+import Calendar from '../components/Calendar.astro';
 
 const hero = '6f7ec1_f36aeed6d4d946d2b906ca35afd19f27~mv2.jpg';
 
@@ -120,6 +121,17 @@ const partners = [
     </div>
   </section>
 
+  <!-- 협회 일정 달력 -->
+  <section class="section home-schedule">
+    <div class="wrap">
+      <p class="eyebrow">SCHEDULE</p>
+      <h2>지금, 협회는 이렇게 움직입니다</h2>
+      <p class="home-schedule-sub">교육생 수련부터 개강·워크샵·통역·멘토 트레이닝까지 — 매일 돌아가는 협회의 실제 일정입니다.</p>
+      <Calendar />
+      <a class="btn home-schedule-cta" href={withBase('/schedule')}>일정 달력 전체 보기</a>
+    </div>
+  </section>
+
   <!-- 워크샵 -->
   <section class="section workshops">
     <div class="wrap">
@@ -234,6 +246,12 @@ const partners = [
   .testimonial { text-align: center; background: var(--kp-olive); color: #fff; }
   .testimonial blockquote { font-family: var(--font-display); font-size: clamp(19px, 2.6vw, 27px); line-height: 1.6; max-width: 820px; margin: 0 auto 20px; font-style: italic; }
   .testimonial cite { font-style: normal; color: var(--kp-cream); letter-spacing: 0.1em; font-size: 14px; }
+
+  /* HOME SCHEDULE (살아있는 협회 · 달력) */
+  .home-schedule { text-align: center; background: rgba(122, 105, 94, 0.05); }
+  .home-schedule h2 { color: var(--kp-maroon); margin-bottom: 10px; }
+  .home-schedule-sub { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); max-width: 640px; margin: 0 auto 44px; }
+  .home-schedule-cta { margin-top: 44px; }
 
   /* WORKSHOPS */
   .workshops h2 { color: var(--kp-maroon); margin-bottom: 40px; }

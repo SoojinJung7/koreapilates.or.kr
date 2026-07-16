@@ -1,0 +1,211 @@
+---
+// 공용 캘린더 위젯 — 미니 월 달력 + 이달 활동요약 + 다가오는 일정.
+// schedule.json 의 events 를 읽어 렌더한다. 색/카테고리는 아래 TYPES 한 곳에서 관리.
+import schedule from '../data/schedule.json';
+
+const TYPES = {
+  academic: { label: '정규수업·개강·수료·시험', short: '정규수업',      color: 'var(--c-academic)' },
+  practice: { label: '교육생 수련·실습',        short: '수련',          color: 'var(--c-practice)' },
+  events:   { label: '심화과정·워크샵·세미나',  short: '워크샵·세미나', color: 'var(--c-events)' },
+  support:  { label: '멘토 트레이닝·통역',      short: '멘토·통역',     color: 'var(--c-support)' },
+};
+
+const events = schedule.events;
+const used = new Set(events.map((e) => e.type));
+const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) => v);
+---
+<div class="cal-widget">
+  <div class="cal-legend">
+    {legend.map((t) => (
+      <span><i class="cw-dot" style={`background:${t.color}`}></i>{t.label}</span>
+    ))}
+  </div>
+
+  <div class="cal-stats" id="cw-stats"></div>
+
+  <div class="cal-hybrid">
+    <div class="cal-mini">
+      <div class="cal-bar">
+        <div class="cal-title" id="cw-title">&nbsp;</div>
+        <div class="cal-nav">
+          <button id="cw-prev" aria-label="이전 달">‹</button>
+          <button id="cw-next" aria-label="다음 달">›</button>
+        </div>
+      </div>
+      <div class="cal-weekdays" id="cw-week"></div>
+      <div class="cal-days" id="cw-days"></div>
+    </div>
+    <div class="cal-upcoming">
+      <p class="cal-up-title">다가오는 일정</p>
+      <div class="cal-up" id="cw-up"></div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ events, TYPES }}>
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  const pad = (n) => String(n).padStart(2, '0');
+  const keyOf = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
+  const evOn = (k) => events.filter((e) => e.date === k);
+  const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const meta = (t) => TYPES[t] || { label: '기타', short: '기타', color: '#9a9088' };
+
+  const now = new Date();
+  const TODAY = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  // 기본 표시 월: 오늘 이후 가장 이른 일정이 있는 달 (없으면 이번 달) — 항상 '살아있는' 달을 보여준다
+  const future = events.map((e) => parse(e.date)).filter((d) => d >= TODAY).sort((a, b) => a - b);
+  const anchor = future.length ? future[0] : TODAY;
+  let view = { y: anchor.getFullYear(), m: anchor.getMonth() };
+
+  function init(root) {
+    root = root || document;
+    const $ = (id) => root.getElementById ? root.getElementById(id) : document.getElementById(id);
+    if (!document.getElementById('cw-week')) return;
+    document.getElementById('cw-week').innerHTML =
+      WD.map((w, i) => `<span class="${i === 0 ? 'sun' : ''}">${w}</span>`).join('');
+    document.getElementById('cw-prev').onclick = () => { view.m--; if (view.m < 0) { view.m = 11; view.y--; } render(); };
+    document.getElementById('cw-next').onclick = () => { view.m++; if (view.m > 11) { view.m = 0; view.y++; } render(); };
+    render();
+    renderUpcoming();
+  }
+
+  function render() {
+    document.getElementById('cw-title').textContent = `${view.y}년 ${view.m + 1}월`;
+    const first = new Date(view.y, view.m, 1);
+    const start = new Date(first); start.setDate(1 - first.getDay());
+    const counts = {};
+    let html = '';
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const out = d.getMonth() !== view.m;
+      const isSun = d.getDay() === 0;
+      const isToday = same(d, TODAY);
+      const evs = evOn(keyOf(d.getFullYear(), d.getMonth(), d.getDate()));
+      if (!out) evs.forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; });
+      const dots = evs.slice(0, 4)
+        .map((e) => `<span class="cw-mdot" style="background:${meta(e.type).color}"></span>`).join('');
+      const cls = ['cw-cell', out ? 'out' : '', isSun ? 'sun' : '', isToday ? 'today' : '', evs.length ? 'has' : '']
+        .filter(Boolean).join(' ');
+      const tip = evs.map((e) => e.title).join(', ');
+      html += `<div class="${cls}" title="${tip}">${d.getDate()}${dots ? `<span class="cw-mdots">${dots}</span>` : ''}</div>`;
+    }
+    document.getElementById('cw-days').innerHTML = html;
+
+    // 이 달 활동 요약
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    const chips = Object.entries(counts).sort((a, b) => b[1] - a[1])
+      .map(([t, n]) => `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).short} <b>${n}</b></span>`).join('');
+    document.getElementById('cw-stats').innerHTML = total
+      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${total}건</span><div class="cw-chips">${chips}</div>`
+      : `<span class="cw-live cw-live--off"></span><span class="cw-total">이 달 등록된 일정 없음</span>`;
+  }
+
+  function renderUpcoming() {
+    // 다가오는 일정 리스트는 '행사 위주'로 — 반복되는 수련은 제외(달력 점·통계엔 그대로 포함)
+    const up = events
+      .filter((e) => parse(e.date) >= TODAY && e.type !== 'practice')
+      .sort((a, b) => a.date.localeCompare(b.date)).slice(0, 7);
+    const el = document.getElementById('cw-up');
+    if (!up.length) { el.innerHTML = '<p class="cw-empty">예정된 일정이 없습니다.</p>'; return; }
+    el.innerHTML = up.map((e) => {
+      const dt = parse(e.date); const t = meta(e.type);
+      return `<div class="cw-urow">
+        <span class="cw-ubar" style="background:${t.color}"></span>
+        <span class="cw-udate">${dt.getMonth() + 1}.${dt.getDate()} <em>(${WD[dt.getDay()]})</em></span>
+        <span class="cw-utitle">${e.title}${e.where ? `<span class="cw-uwhere"> · ${e.where}</span>` : ''}</span>
+        <span class="cw-utype" style="color:${t.color}">${t.short}</span>
+      </div>`;
+    }).join('');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init());
+  else init();
+</script>
+
+<!--
+  달력 내용은 클라이언트 JS가 그려 넣어 Astro 스코프 스타일이 닿지 않으므로 is:global 로 두되,
+  모든 선택자를 .cal-widget 안으로 한정해 다른 곳엔 영향이 없게 한다.
+-->
+<style is:global>
+  .cal-widget {
+    /* 4개 카테고리 색 */
+    --c-academic: #c0453b;   /* 🔴 정규수업·개강·수료·시험 */
+    --c-practice: #5a9e6a;   /* 🟢 교육생 수련·실습 */
+    --c-events: #e08a39;     /* 🟠 심화과정·워크샵·세미나 */
+    --c-support: #4677b0;    /* 🔵 멘토 트레이닝·통역 */
+  }
+
+  /* 범례 */
+  .cal-widget .cal-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; margin-bottom: 20px; }
+  .cal-widget .cal-legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--kp-olive); }
+  .cal-widget .cw-dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+
+  /* 이 달 활동 요약 */
+  .cal-widget .cal-stats {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; justify-content: center;
+    max-width: 860px; margin: 0 auto 30px; padding: 14px 18px;
+    background: #fff; border: 1px solid var(--kp-line); border-radius: 12px;
+  }
+  .cal-widget .cw-live { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--kp-maroon); }
+  .cal-widget .cw-live i { width: 8px; height: 8px; border-radius: 50%; background: #cf4b3e; box-shadow: 0 0 0 0 rgba(207,75,62,0.6); animation: cwpulse 2s infinite; }
+  .cal-widget .cw-total { font-size: 15px; font-weight: 800; color: var(--kp-ink); font-variant-numeric: tabular-nums; }
+  .cal-widget .cw-chips { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+  .cal-widget .cw-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--kp-olive); }
+  .cal-widget .cw-chip i { width: 8px; height: 8px; border-radius: 2px; }
+  .cal-widget .cw-chip b { color: var(--kp-ink); font-variant-numeric: tabular-nums; }
+  @keyframes cwpulse { 0% { box-shadow: 0 0 0 0 rgba(207,75,62,0.5); } 70% { box-shadow: 0 0 0 7px rgba(207,75,62,0); } 100% { box-shadow: 0 0 0 0 rgba(207,75,62,0); } }
+  @media (prefers-reduced-motion: reduce) { .cal-widget .cw-live i { animation: none; } }
+
+  /* 레이아웃 */
+  .cal-widget .cal-hybrid { display: grid; grid-template-columns: 360px 1fr; gap: 44px; align-items: start; text-align: left; }
+
+  /* 달력 상단 바 */
+  .cal-widget .cal-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-widget .cal-title { font-size: 18px; font-weight: 700; color: var(--kp-maroon); font-variant-numeric: tabular-nums; }
+  .cal-widget .cal-nav { display: flex; gap: 8px; }
+  .cal-widget .cal-nav button {
+    width: 34px; height: 34px; border: 1px solid var(--kp-line); background: #fff; border-radius: 9px;
+    cursor: pointer; color: var(--kp-brand-dark); font-size: 16px; display: grid; place-items: center;
+    transition: background .18s, border-color .18s;
+  }
+  .cal-widget .cal-nav button:hover { background: var(--kp-cream); border-color: var(--kp-brand-soft); }
+  .cal-widget .cal-nav button:focus-visible { outline: 2px solid var(--kp-brand); outline-offset: 2px; }
+
+  /* 미니 달력 그리드 */
+  .cal-widget .cal-weekdays, .cal-widget .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .cal-widget .cal-weekdays span { text-align: center; font-size: 11.5px; font-weight: 600; color: var(--kp-olive); padding: 4px 0; }
+  .cal-widget .cal-weekdays span.sun { color: #a8524e; }
+  .cal-widget .cal-days { gap: 3px; margin-top: 4px; }
+  .cal-widget .cw-cell {
+    aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 13px; border-radius: 9px; color: var(--kp-ink); position: relative; gap: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .cal-widget .cw-cell.out { color: var(--kp-line); }
+  .cal-widget .cw-cell.sun { color: #a8524e; }
+  .cal-widget .cw-cell.has { font-weight: 700; }
+  .cal-widget .cw-cell.today { background: var(--kp-maroon); color: #fff; }
+  .cal-widget .cw-mdots { display: flex; gap: 2px; position: absolute; bottom: 4px; }
+  .cal-widget .cw-mdot { width: 5px; height: 5px; border-radius: 50%; }
+
+  /* 다가오는 일정 */
+  .cal-widget .cal-up-title { font-size: 13px; font-weight: 700; color: var(--kp-brand); letter-spacing: 0.08em; text-transform: uppercase; margin: 2px 0 14px; }
+  .cal-widget .cal-up { display: flex; flex-direction: column; }
+  .cal-widget .cw-urow { display: flex; gap: 15px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--kp-line); }
+  .cal-widget .cw-urow:last-child { border-bottom: 0; }
+  .cal-widget .cw-ubar { width: 4px; align-self: stretch; border-radius: 3px; flex-shrink: 0; min-height: 34px; }
+  .cal-widget .cw-udate { flex-shrink: 0; font-size: 14px; color: var(--kp-ink); font-weight: 600; width: 64px; font-variant-numeric: tabular-nums; }
+  .cal-widget .cw-udate em { font-style: normal; color: var(--kp-olive); font-weight: 400; font-size: 13px; }
+  .cal-widget .cw-utitle { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: var(--kp-ink); }
+  .cal-widget .cw-uwhere { font-weight: 400; color: var(--kp-olive); font-size: 13.5px; }
+  .cal-widget .cw-utype { flex-shrink: 0; font-size: 12px; font-weight: 700; }
+  .cal-widget .cw-empty { color: var(--kp-olive); font-size: 15px; padding: 20px 0; }
+
+  @media (max-width: 820px) {
+    .cal-widget .cal-hybrid { grid-template-columns: 1fr; gap: 30px; }
+    .cal-widget .cal-mini { max-width: 380px; margin-inline: auto; width: 100%; }
+    .cal-widget .cw-utype { display: none; }
+  }
+</style>

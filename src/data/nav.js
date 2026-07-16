@@ -15,6 +15,7 @@ export const navGroups = [
     children: [
       { label: '커리큘럼', href: '/curriculum' },
       { label: '교육일정', href: '/coursedate' },
+      { label: '일정 달력', href: '/schedule' },
       { label: 'KPA 교육어플', href: '/kpaapp' },
       { label: '심화과정 수강신청', href: '/category/all-products' },
       { label: 'NCPT 국제공인 자격증', href: '/ncpt' },

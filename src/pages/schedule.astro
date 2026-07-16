@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Calendar from '../components/Calendar.astro';
+---
+<BaseLayout title="일정 달력" description="KPA 대한필라테스협회 교육·수련·워크샵·세미나·통역 일정 달력.">
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">SCHEDULE</p>
+      <h1>일정 달력</h1>
+      <p class="page-hero-sub">
+        개강·교육·수련·멘토 트레이닝·워크샵·통역까지, 협회의 살아있는 일정을 한눈에 확인하세요.
+      </p>
+    </div>
+  </section>
+
+  <!-- 달력 -->
+  <section class="section">
+    <div class="wrap">
+      <Calendar />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* 페이지 히어로 (다른 페이지와 동일 패턴) */
+  .page-hero { background: var(--kp-maroon); color: #fff; text-align: center; padding-block: clamp(70px, 12vw, 130px); }
+  .page-hero .eyebrow { color: var(--kp-cream); }
+  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
+  .page-hero-sub { color: var(--kp-pink); font-size: clamp(15px, 2vw, 19px); margin-top: 16px; max-width: 720px; margin-inline: auto; }
+</style>

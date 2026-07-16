@@ -1,0 +1,1223 @@
+{
+  "_comment": "데모용 샘플 일정(규칙 생성). type은 4종: academic(정규수업·개강·수료·시험) / practice(수련·실습) / events(심화과정·워크샵·세미나) / support(멘토 트레이닝·통역). 개인정보 금지, 수련은 익명(오전반/야간반 등)으로만. 실운영 시 KPA-student 공개 피드로 대체.",
+  "events": [
+    {
+      "date": "2026-03-02",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-04",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-06",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-07",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-09",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-11",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-13",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-14",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-14",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-16",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-17",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-18",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-20",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-21",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-23",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-25",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-27",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-28",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-29",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-03-30",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-01",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-03",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-04",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-06",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-08",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-10",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-11",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-11",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-13",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-15",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-17",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-18",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-20",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-21",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-22",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-24",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-25",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-26",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-27",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-04-29",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-01",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-02",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-04",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-06",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-08",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-09",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-09",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-11",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-13",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-15",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-16",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-18",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-19",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-20",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-22",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-23",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-25",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-27",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-29",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-30",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-05-31",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-01",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-02",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-03",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-04",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-04",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-05",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-06",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-08",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-09",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-10",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-11",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-11",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-12",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-13",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-13",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-15",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-16",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-16",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-17",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-18",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-18",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-19",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-20",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-22",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-23",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-24",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-25",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-25",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-26",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-27",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-28",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-29",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-06-30",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-01",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-02",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-02",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-03",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-04",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-05",
+      "title": "155기 수료식",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-06",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-07",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-08",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-09",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-09",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-10",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-11",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-11",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-13",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-14",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-15",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-16",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-16",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-17",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-18",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-20",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-21",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-21",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-22",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-23",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-23",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-24",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-25",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-26",
+      "title": "8월 지도자과정 오픈 상담회",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-26",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-27",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-28",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-29",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-30",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-30",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-07-31",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-01",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-03",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-04",
+      "title": "156기 지도자과정 개강",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-04",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-05",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-06",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-06",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-07",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-08",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-08",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-09",
+      "title": "Franklin Method® 에릭 프랭클린 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-10",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-11",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-12",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-13",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-13",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-14",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-15",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-17",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-18",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-18",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-19",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-20",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-20",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-21",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-22",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-23",
+      "title": "'Innovations in Pilates' 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-24",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-25",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-26",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-27",
+      "title": "기수 정규수업",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-27",
+      "title": "교육생 수련 (야간반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-28",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-29",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-30",
+      "title": "졸업생 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-30",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-08-31",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-02",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-04",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-05",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-07",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-09",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-11",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-11",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-12",
+      "title": "소도구 활용 워크샵",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-12",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-13",
+      "title": "156기 중간 실기평가",
+      "type": "academic",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-14",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-15",
+      "title": "심화과정 (체형교정)",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-16",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-18",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-19",
+      "title": "실습 (주말반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-21",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-23",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-25",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-25",
+      "title": "해외 강사 세미나 통역",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-26",
+      "title": "멘토 트레이닝",
+      "type": "support",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-27",
+      "title": "월례 오픈 세미나",
+      "type": "events",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-28",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    },
+    {
+      "date": "2026-09-30",
+      "title": "교육생 수련 (오전반)",
+      "type": "practice",
+      "where": "본원"
+    }
+  ]
+}
