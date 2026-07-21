@@ -4,10 +4,10 @@
 import schedule from '../data/schedule.json';
 
 const TYPES = {
-  academic: { label: '정규수업·개강·수료·시험', short: '정규수업',      color: 'var(--c-academic)' },
-  practice: { label: '교육생 수련·실습',        short: '수련',          color: 'var(--c-practice)' },
-  events:   { label: '심화과정·워크샵·세미나',  short: '워크샵·세미나', color: 'var(--c-events)' },
-  support:  { label: '멘토 트레이닝·통역',      short: '멘토·통역',     color: 'var(--c-support)' },
+  academic: { label: 'KPA 정규과정', short: '정규과정',        color: 'var(--c-academic)' },
+  practice: { label: '수련·실습',      short: '수련·실습',      color: 'var(--c-practice)' },
+  events:   { label: '심화과정·워크샵', short: '심화과정·워크샵', color: 'var(--c-events)' },
+  support:  { label: '멘토링·통역',     short: '멘토링·통역',     color: 'var(--c-support)' },
 };
 
 const events = schedule.events;
@@ -95,10 +95,11 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
 
     // 이 달 활동 요약
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    const chips = Object.entries(counts).sort((a, b) => b[1] - a[1])
+    const order = Object.keys(TYPES);
+    const chips = Object.entries(counts).sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
       .map(([t, n]) => `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).short} <b>${n}</b></span>`).join('');
     document.getElementById('cw-stats').innerHTML = total
-      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${total}건</span><div class="cw-chips">${chips}</div>`
+      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${total}시간</span><div class="cw-chips">${chips}</div>`
       : `<span class="cw-live cw-live--off"></span><span class="cw-total">이 달 등록된 일정 없음</span>`;
   }
 

@@ -61,6 +61,17 @@ const partners = [
     </div>
   </section>
 
+  <!-- 협회 일정 달력 -->
+  <section class="section home-schedule">
+    <div class="wrap">
+      <p class="eyebrow">SCHEDULE</p>
+      <h2>생생하게 전하는 KPA의 오늘</h2>
+      <p class="home-schedule-sub">성장하는 분들을 위한 KPA의 활동은 지금도 진행 중입니다.</p>
+      <Calendar />
+      <a class="btn home-schedule-cta" href={withBase('/schedule')}>일정 달력 전체 보기</a>
+    </div>
+  </section>
+
   <!-- 메인 메시지 -->
   <section class="section message">
     <div class="wrap">
@@ -118,17 +129,6 @@ const partners = [
         너무 너무 만족한 6개월 수강이었어요.”
       </blockquote>
       <cite>— 155기 졸업생 박○○ —</cite>
-    </div>
-  </section>
-
-  <!-- 협회 일정 달력 -->
-  <section class="section home-schedule">
-    <div class="wrap">
-      <p class="eyebrow">SCHEDULE</p>
-      <h2>지금, 협회는 이렇게 움직입니다</h2>
-      <p class="home-schedule-sub">교육생 수련부터 개강·워크샵·통역·멘토 트레이닝까지 — 매일 돌아가는 협회의 실제 일정입니다.</p>
-      <Calendar />
-      <a class="btn home-schedule-cta" href={withBase('/schedule')}>일정 달력 전체 보기</a>
     </div>
   </section>
 
