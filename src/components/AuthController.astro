@@ -1,0 +1,79 @@
+---
+// 전역 인증 컨트롤러 — 모든 페이지(BaseLayout)에 1회 포함됩니다.
+//
+// 사용법(마크업 어디서나):
+//   <html> 의 data-auth 값: "in"(로그인) / "out"(비로그인) / "off"(인증 미설정)
+//   • data-auth-show="in"      → 로그인 상태에서만 보임
+//   • data-auth-show="out"     → 비로그인 상태에서만 보임
+//   • data-auth-login          → 클릭 시 앱 로그인 페이지로 이동(로그인 시작)
+//   • data-auth-logout         → 클릭 시 로그아웃
+//   • data-auth-name / -email  → 로그인 사용자 이름/이메일 자동 표시
+---
+<script>
+  import { supabase, isAuthConfigured, APP_LOGIN_URL } from '../lib/auth.js';
+
+  const root = document.documentElement;
+
+  const setState = (state) => { root.dataset.auth = state; };
+
+  const fill = (session) => {
+    const user = session?.user;
+    const meta = user?.user_metadata || {};
+    const name = meta.full_name || meta.name || user?.email?.split('@')[0] || '';
+    document.querySelectorAll('[data-auth-name]').forEach((el) => { el.textContent = name; });
+    document.querySelectorAll('[data-auth-email]').forEach((el) => { el.textContent = user?.email || ''; });
+  };
+
+  // 로그인 시작 = 앱의 로그인 페이지로 이동(돌아올 주소를 next 로 전달).
+  // OAuth 콜백/세션 발급은 앱이 전담하고, 홈페이지는 발급된 공유 쿠키만 읽습니다.
+  const startLogin = () => {
+    if (!APP_LOGIN_URL) {
+      console.warn('[auth] PUBLIC_APP_LOGIN_URL 미설정 — 앱 로그인 주소가 필요합니다.');
+      return;
+    }
+    const next = encodeURIComponent(location.href);
+    location.href = `${APP_LOGIN_URL}?next=${next}`;
+  };
+
+  const wire = () => {
+    document.querySelectorAll('[data-auth-login]').forEach((el) => {
+      el.addEventListener('click', (e) => { e.preventDefault(); startLogin(); });
+    });
+    document.querySelectorAll('[data-auth-logout]').forEach((el) => {
+      el.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (supabase) await supabase.auth.signOut();
+        location.reload();
+      });
+    });
+  };
+
+  wire();
+
+  if (!isAuthConfigured || !supabase) {
+    // 인증 미설정(로컬/키 없음): 로그인 버튼은 앱 로그인 주소가 있으면 그쪽으로만 동작.
+    setState('off');
+  } else {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) { setState('in'); fill(data.session); }
+      else setState('out');
+    });
+
+    // 로그인/로그아웃/토큰갱신을 실시간 반영(다른 탭·앱에서 바뀌어도 동기화).
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) { setState('in'); fill(session); }
+      else { setState('out'); fill(null); }
+    });
+  }
+</script>
+
+<style is:global>
+  /* 인증 상태 표시/숨김.
+     "보여줄 때"는 아무 규칙도 얹지 않아 요소 본래 display(inline-block, list-item 등)를 보존하고,
+     "숨길 때만" display:none 을 얹는다 → .btn/<li> 같은 요소 레이아웃이 깨지지 않음. */
+  html[data-auth="in"]  [data-auth-show="out"] { display: none; }
+  html[data-auth="out"] [data-auth-show="in"]  { display: none; }
+  html[data-auth="off"] [data-auth-show="in"]  { display: none; }
+  /* 상태 확정 전(초기): 로그인 UI만 숨겨 익명 사용자에게 '로그아웃'이 깜빡이는 것 방지 */
+  html:not([data-auth]) [data-auth-show="in"] { display: none; }
+</style>

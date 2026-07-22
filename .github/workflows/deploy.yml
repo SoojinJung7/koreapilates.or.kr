@@ -24,13 +24,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: npm ci
       - run: npm run build
         env:
           # GitHub 저장소 Secrets 에 등록 → 있으면 실제 인스타 피드로 갱신, 없으면 임시 데이터 유지
           INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
           INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+          # 통합 로그인(SSO) — 앱과 동일한 Supabase 프로젝트 값. 없으면 로그인 UI는 비활성(빌드 안 깨짐).
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_AUTH_COOKIE_DOMAIN: ${{ vars.PUBLIC_AUTH_COOKIE_DOMAIN }}
+          PUBLIC_APP_LOGIN_URL: ${{ vars.PUBLIC_APP_LOGIN_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist

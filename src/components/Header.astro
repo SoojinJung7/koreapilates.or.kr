@@ -35,17 +35,24 @@ const isActive = (href) => pathname === withBase(href);
             </li>
           )
         ))}
-        <li class="nav-item auth-mobile">
-          <a class="nav-top nav-top--link" href={withBase('/members')}>인증강사 로그인</a>
+        <li class="nav-item auth-mobile" data-auth-show="out">
+          <button type="button" class="nav-top nav-top--link auth-mobile-btn" data-auth-login>인증강사 로그인 / 회원가입</button>
         </li>
-        <li class="nav-item auth-mobile">
-          <a class="nav-top nav-top--link" href={withBase('/members')}>회원가입</a>
+        <li class="nav-item auth-mobile" data-auth-show="in">
+          <span class="nav-top"><b data-auth-name></b> 님</span>
+        </li>
+        <li class="nav-item auth-mobile" data-auth-show="in">
+          <button type="button" class="nav-top nav-top--link auth-mobile-btn" data-auth-logout>로그아웃</button>
         </li>
       </ul>
     </nav>
 
     <div class="header-right">
-      <a class="login-link" href={withBase('/members')}>인증강사 로그인 <span>|</span> 회원가입</a>
+      <button type="button" class="login-link auth-desktop-btn" data-auth-login data-auth-show="out">인증강사 로그인 <span>|</span> 회원가입</button>
+      <span class="auth-user" data-auth-show="in">
+        <b class="auth-user__name" data-auth-name></b> 님
+        <button type="button" class="auth-desktop-btn auth-logout" data-auth-logout>로그아웃</button>
+      </span>
       <button class="nav-toggle" aria-label="메뉴 열기" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -107,6 +114,17 @@ const isActive = (href) => pathname === withBase(href);
   .login-link { font-size: 13px; color: #fff; opacity: .92; white-space: nowrap; letter-spacing: 0.02em; }
   .login-link span { opacity: .45; margin: 0 4px; }
   .login-link:hover { color: var(--kp-cream); }
+  /* 로그인 링크가 button 이 되어 기본 버튼 외형 리셋 */
+  .auth-desktop-btn { background: none; border: 0; cursor: pointer; font-family: inherit; }
+  /* 로그인된 상태: 이름 + 로그아웃 */
+  .auth-user { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #fff; white-space: nowrap; }
+  .auth-user__name { color: var(--kp-cream); font-weight: 700; }
+  .auth-logout {
+    font-size: 12px; color: #fff; opacity: .92; letter-spacing: .02em;
+    border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 5px 12px;
+  }
+  .auth-logout:hover { color: var(--kp-cream); border-color: var(--kp-cream); }
+  .auth-mobile-btn { text-align: left; }
 
   /* 로그인/회원가입은 데스크톱에선 헤더 우측 링크로만 노출, 메뉴 안 항목은 숨김 */
   .auth-mobile { display: none; }
@@ -144,8 +162,8 @@ const isActive = (href) => pathname === withBase(href);
     .dropdown a:hover, .dropdown a.active { background: rgba(0,0,0,0.13); color: var(--kp-cream); }
     .nav-item.expanded .caret { transform: rotate(180deg); }
     .nav-toggle { display: inline-flex; }
-    /* 모바일: 헤더 바의 로그인/회원가입 링크 숨기고, 햄버거 메뉴 안으로 이동 */
-    .login-link { display: none; }
+    /* 모바일: 헤더 바의 로그인/회원가입·로그인상태 UI 숨기고, 햄버거 메뉴 안으로 이동 */
+    .login-link, .auth-user { display: none; }
     .auth-mobile { display: block; }
     .auth-mobile .nav-top { color: var(--kp-cream); font-weight: 700; }
     .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }

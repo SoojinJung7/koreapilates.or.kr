@@ -15,6 +15,7 @@ RALPH_DONE
 *.log
 .env
 .env.*
+!.env.example
 .DS_Store
 
 # 빌드 시 인스타 API로 내려받는 이미지 (매 빌드마다 재생성)
