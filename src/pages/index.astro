@@ -209,13 +209,12 @@ const partners = [
   .kpa-intro {
     position: fixed; inset: 0; z-index: 9999;
     display: flex; align-items: center; justify-content: center;
-    background: var(--kp-brand);
+    background: #80685c;
     opacity: 1; transition: opacity 0.6s ease;
   }
   .kpa-intro.is-done { opacity: 0; pointer-events: none; }
   .kpa-intro-video {
-    width: min(24vw, 128px); height: auto; display: block;
-    transform: translateX(-8%);
+    width: min(78vw, 560px); height: auto; display: block;
   }
   /* 인트로 표시 중 스크롤 잠금 */
   :global(html.kpa-intro-lock), :global(html.kpa-intro-lock body) { overflow: hidden; }
