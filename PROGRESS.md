@@ -14,7 +14,7 @@
 - 파비콘: ficons/6f7ec1_3d0c9ecdd37b4dcbaff4d9b8bcb4d4fd
 
 ## 페이지 목록 & 상태
-미리보기: https://soojinjung7.github.io/koreapilates.or.kr/ (실제 도메인 미변경)
+주소: https://koreapilates.or.kr (2026-09-01 실도메인 전환 — DNS 작업은 docs/도메인전환.md)
 
 | 경로 | 이름 | 상태 |
 |---|---|---|
@@ -43,12 +43,16 @@
 - ✅ 폰트 파일 다운로드 & 로컬 호스팅
 - ✅ 홈페이지 이미지 다운로드 & 로컬 호스팅
 - ✅ GitHub Pages 자동배포 워크플로우 (base 경로 대응)
-- ⬜ 나머지 페이지 이미지 다운로드 (_source/fetch_images.sh <페이지명>)
+- ✅ 실도메인 전환 코드 (base '/' + public/CNAME) — docs/도메인전환.md
+- ✅ 파비콘 로컬 호스팅 → 빌드 산출물에 Wix 의존성 0
+- ✅ 통합 로그인(SSO) 코드 — 홈페이지·앱 양쪽 (docs/SSO-앱연동.md)
 - ⬜ 폰트 역할(본문/제목) 화면 대조 후 확정
-- ⬜ 이미지 최적화 (원본 일부 18MB+)
+- ⬜ 이미지 최적화 (public/images 21MB, 1MB+ PNG 5장)
 
 ## 다음 할 일
-1. 서브페이지 순차 제작 (kpa → faculty → curriculum → coursedate → ...)
-   - 각 페이지: _source/pages/<name>.html 참고 + 이미지 다운로드 + Astro 페이지 작성
-2. 폰트 역할 확정 및 미세 조정
-3. 2단계(로그인/결제/게시판) 별도 개발
+1. **가비아 DNS 전환** (사용자) → docs/도메인전환.md 2~3번
+2. Pages 커스텀 도메인 지정 + 인증서 확인 → 같은 문서 4~5번
+3. SSO 마무리: Vercel 커스텀 도메인 + 환경변수, Supabase Redirect URL,
+   홈페이지 저장소 Secrets → docs/SSO-앱연동.md
+4. 메일 실수신 확인 후 **Wix 해지**
+5. 이미지 최적화 / 일정·인스타 실데이터 / 심화과정 온라인 신청

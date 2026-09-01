@@ -34,7 +34,36 @@
 
 ---
 
-## 앱 쪽 (KPA-student 저장소 — 여기를 맞춰줘야 함)
+## 앱 쪽 (KPA-student 저장소) — 코드는 ✅ 완료 (commit f00dcb4)
+
+현재 앱 주소는 `kpa-student.vercel.app` 입니다. `*.vercel.app` 로는 쿠키 공유가
+불가능하므로 **`student.koreapilates.or.kr` 커스텀 도메인 연결이 필수**입니다.
+
+코드에 이미 반영된 것:
+- `lib/supabase/cookie-options.ts` — `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN` 이 있을 때만
+  세션 쿠키를 `.koreapilates.or.kr` 에 심음. **미설정이면 기존 동작 그대로**라
+  localhost·프리뷰 배포가 깨지지 않습니다.
+- 브라우저/서버/미들웨어 3개 Supabase 클라이언트에 동일 적용
+- `lib/safe-next.ts` — `?next=` 를 KPA 도메인으로만 제한 해석(오픈 리다이렉트 방지)
+- `/login?next=…` → OAuth `redirectTo` 로 전달 → 콜백이 홈페이지로 복귀
+- 이미 로그인된 사용자가 `/login` 에 와도 `next` 로 곧장 복귀
+
+### 남은 설정 (사용자 작업)
+
+1. **Vercel 커스텀 도메인**: KPA-student 프로젝트 → Settings → Domains →
+   `student.koreapilates.or.kr` 추가 → 가비아에 `CNAME student → cname.vercel-dns.com.`
+2. **Vercel 환경변수**: Production 에만 `NEXT_PUBLIC_AUTH_COOKIE_DOMAIN=.koreapilates.or.kr`
+   (Preview/Development 에는 넣지 말 것 — 넣으면 프리뷰 로그인이 깨짐)
+3. **Supabase 대시보드** → Authentication → URL Configuration
+   - Site URL: `https://student.koreapilates.or.kr`
+   - Redirect URLs 에 추가: `https://student.koreapilates.or.kr/**`, `https://koreapilates.or.kr/**`
+4. **Google Cloud OAuth** 승인된 리디렉션 URI 는 Supabase 콜백 주소라 변경 불필요
+   (앱 도메인이 바뀌어도 Google 쪽은 `https://<ref>.supabase.co/auth/v1/callback` 그대로)
+5. **홈페이지 GitHub 저장소** Secrets/Variables 등록 (위 표 참고)
+
+---
+
+## (참고) 원래 계획했던 앱 쪽 변경 내용
 
 ### 1. Vercel 커스텀 도메인 연결
 - Vercel 프로젝트 → Settings → Domains → `student.koreapilates.or.kr` 추가
