@@ -1,15 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// 배포(build/preview)는 GitHub Pages 프로젝트 경로(/koreapilates.or.kr)를 씁니다.
-// 로컬 개발(dev)에서는 base 를 '/' 로 둬서 http://localhost:4321/ 루트로 바로 접속되게 합니다.
-// (링크·에셋은 src/utils/url.js 의 withBase 가 base 를 자동으로 붙여줌)
-const isDev = process.argv.includes('dev');
-
+// 커스텀 도메인(koreapilates.or.kr) 배포.
+// GitHub Pages 는 public/CNAME 파일을 보고 이 도메인으로 서빙합니다.
+// (프로젝트 경로 /koreapilates.or.kr 로 되돌리려면 base 를 그 값으로 바꾸면 됨)
 export default defineConfig({
-  // 미리보기: GitHub Pages 프로젝트 경로. 커스텀 도메인 전환 시 base 를 '/' 로 변경.
-  site: 'https://soojinjung7.github.io',
-  base: isDev ? '/' : '/koreapilates.or.kr',
+  site: 'https://koreapilates.or.kr',
+  base: '/',
   build: {
     format: 'directory',
   },

@@ -18,7 +18,7 @@ const pretendard = withBase('/fonts/PretendardVariable.woff2');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDesc} />
-    <link rel="icon" href={siteMeta.favicon} />
+    <link rel="icon" href={withBase(siteMeta.favicon)} />
     <style is:inline set:html={`
       @font-face {
         font-family: 'Pretendard';

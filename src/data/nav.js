@@ -52,5 +52,6 @@ export const siteMeta = {
   description: '사단법인 대한필라테스협회 — 실무에 강한 250시간 필라테스 지도자과정. 경기도 성남시 분당.',
   logo: '/images/kpa-logo-2023.png',
   logoLight: '/images/6f7ec1_5c492f6a24374bb2a3d5f1ae302f183d~mv2.png',
-  favicon: 'https://static.wixstatic.com/ficons/6f7ec1_3d0c9ecdd37b4dcbaff4d9b8bcb4d4fd%7Emv2.ico',
+  // Wix 해지 후에도 깨지지 않도록 로컬 호스팅(로고 좌측 KPa 심볼을 정사각으로 잘라 생성)
+  favicon: '/favicon.png',
 };
