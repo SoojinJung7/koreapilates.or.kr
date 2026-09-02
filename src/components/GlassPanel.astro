@@ -1,0 +1,73 @@
+---
+/**
+ * GlassPanel — 뒤가 비치는 유리 프레임.
+ *
+ * 불투명 카드가 아닙니다. 뒤의 오브젝트와 배경이 은은하게 읽혀야
+ * layered composition 이 성립하므로 white overlay 는 아주 낮게 유지합니다.
+ *
+ * props
+ *   tone  : 'light'(어두운 배경 위) | 'dark'(밝은 배경 위)
+ *   as    : 렌더할 태그 (기본 div)
+ *   class : 추가 클래스
+ */
+const { tone = 'light', as: Tag = 'div', class: className = '', ...rest } = Astro.props;
+---
+<Tag class={`glass glass--${tone} ${className}`} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .glass {
+    position: relative;
+    /* 레퍼런스처럼 "거의 직각" — 과한 라운드는 쓰지 않는다 */
+    border-radius: 4px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.18);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.18);
+    box-shadow: var(--glass-shadow);
+    transition: border-color .6s var(--ease), background-color .6s var(--ease);
+  }
+
+  /* 유리의 모서리 반사 — 위쪽에서 빛이 들어온 것처럼 */
+  .glass::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      132deg,
+      rgba(255,255,255,.26) 0%,
+      rgba(255,255,255,.05) 34%,
+      rgba(255,255,255,0) 62%
+    );
+  }
+
+  /* 아래쪽 얇은 반사선 — 두께 1px 이라 장식으로 읽히지 않는다 */
+  .glass::after {
+    content: '';
+    position: absolute; left: 12%; right: 12%; bottom: -1px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+    pointer-events: none;
+  }
+
+  .glass:hover { border-color: rgba(255,255,255,.5); }
+
+  /* 밝은 배경 위에서는 흰 유리가 안 보이므로 잉크 쪽으로 기운 유리 */
+  .glass--dark {
+    border-color: rgba(28,16,18,.14);
+    background: rgba(255,255,255,.42);
+    box-shadow: 0 34px 80px -40px rgba(48,28,16,.34);
+  }
+  .glass--dark::before {
+    background: linear-gradient(132deg, rgba(255,255,255,.7) 0%, rgba(255,255,255,.14) 40%, transparent 66%);
+  }
+  .glass--dark::after { background: linear-gradient(90deg, transparent, rgba(28,16,18,.10), transparent); }
+  .glass--dark:hover { border-color: rgba(28,16,18,.22); }
+
+  /* backdrop-filter 미지원(구형 파이어폭스 등): 불투명도를 올려 가독성 확보 */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass       { background: rgba(30, 18, 14, .46); }
+    .glass--dark { background: rgba(255, 255, 255, .82); }
+  }
+</style>

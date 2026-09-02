@@ -20,3 +20,6 @@ RALPH_DONE
 
 # 빌드 시 인스타 API로 내려받는 이미지 (매 빌드마다 재생성)
 public/instagram/
+
+# 캡처 전용 임시 프레임 (로컬 검토용 — 배포되면 안 됨)
+public/_shot.html
