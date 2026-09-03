@@ -76,10 +76,10 @@ const zones = [
   </section>
 
   <!-- CTA -->
-  <section class="section facility-cta">
+  <section class="section cta-band">
     <div class="wrap">
       <h2>직접 방문하여 공간을 경험해 보세요</h2>
-      <div class="facility-cta-btns">
+      <div class="cta-band__actions">
         <a class="btn btn--filled" href={withBase('/pilatesequipment')}>장비 둘러보기</a>
         <a class="btn" href={withBase('/address')}>오시는길</a>
       </div>
@@ -94,12 +94,12 @@ const zones = [
   .intro-wrap { max-width: 820px; }
   .intro .lead {
     font-size: clamp(21px, 2.8vw, 30px);
-    color: var(--kp-maroon);
+    color: var(--ink-strong);
     font-weight: 700;
     line-height: 1.45;
     margin-bottom: 18px;
   }
-  .intro p { color: var(--kp-olive); }
+  .intro p { color: var(--ink-muted); }
 
   /* ZONES */
   .zones { padding-top: 0; }
@@ -125,21 +125,13 @@ const zones = [
   .zone-en {
     font-family: var(--font-display);
     letter-spacing: 0.18em;
-    color: var(--kp-sage);
+    color: var(--accent-text);
     font-size: 14px;
     margin: 0 0 10px;
   }
-  .zone-body h2 { color: var(--kp-maroon); margin: 0 0 18px; }
-  .zone-desc { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.75; margin: 0; }
-
-  /* CTA */
-  .facility-cta { background: var(--kp-ink); color: #fff; text-align: center; }
-  .facility-cta h2 { color: #fff; margin-bottom: 30px; }
-  .facility-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .facility-cta .btn { border-color: var(--kp-cream); color: #fff; }
-  .facility-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .facility-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .facility-cta .btn--filled:hover { background: #fff; }
+  .zone-body h2 { color: var(--ink-strong); margin: 0 0 18px; }
+  .zone-desc { color: var(--ink-muted); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.75; margin: 0; }
+  .cta-band h2 { margin-bottom: 30px; }
 
   @media (max-width: 760px) {
     .zone { grid-template-columns: 1fr; }

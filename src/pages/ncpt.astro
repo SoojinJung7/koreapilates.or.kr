@@ -148,12 +148,12 @@ const reviews = [
   ))}
 
   <!-- CTA -->
-  <section class="section ncpt-cta">
+  <section class="section cta-band">
     <div class="wrap">
       <p class="eyebrow">YOUR TURN</p>
       <h2>다음은 여러분들의 차례입니다!</h2>
       <p>바라는 곳에 길이 있으니, 한번 두드려 보세요.</p>
-      <div class="ncpt-cta-btns">
+      <div class="cta-band__actions">
         <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
         <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
       </div>
@@ -170,9 +170,9 @@ const reviews = [
     gap: clamp(28px, 5vw, 64px);
     align-items: start;
   }
-  .intro-copy h2 { color: var(--kp-maroon); font-size: clamp(26px, 3.6vw, 40px); margin: 6px 0 18px; line-height: 1.25; }
-  .intro-lead { color: var(--kp-ink); font-size: clamp(16px, 1.9vw, 19px); line-height: 1.7; margin-bottom: 22px; font-weight: 700; }
-  .intro-body { color: var(--kp-olive); font-size: clamp(14px, 1.7vw, 16px); line-height: 1.9; margin: 0 0 16px; }
+  .intro-copy h2 { color: var(--ink-strong); font-size: clamp(26px, 3.6vw, 40px); margin: 6px 0 18px; line-height: 1.25; }
+  .intro-lead { color: var(--ink); font-size: clamp(16px, 1.9vw, 19px); line-height: 1.7; margin-bottom: 22px; font-weight: 700; }
+  .intro-body { color: var(--ink-muted); font-size: clamp(14px, 1.7vw, 16px); line-height: 1.9; margin: 0 0 16px; }
   .intro-media {
     display: flex;
     flex-direction: column;
@@ -182,7 +182,7 @@ const reviews = [
   }
   .badge-card {
     background: #fff;
-    border: 1px solid var(--kp-line);
+    border: 1px solid var(--line);
     border-radius: 16px;
     padding: 26px 24px;
     box-shadow: 0 14px 34px rgba(28, 16, 18, 0.08);
@@ -195,7 +195,7 @@ const reviews = [
   .badge-card--emblem img { max-width: 170px; }
   .badge-caption {
     font-family: var(--font-display);
-    color: var(--kp-maroon);
+    color: var(--ink-strong);
     font-weight: 800;
     letter-spacing: 0.04em;
     text-align: center;
@@ -205,10 +205,10 @@ const reviews = [
   }
 
   /* REVIEWS INTRO */
-  .reviews-intro { background: var(--kp-cream); text-align: center; }
+  .reviews-intro { background: var(--surface-2); text-align: center; }
   .reviews-intro-inner { max-width: 780px; }
-  .reviews-intro h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 20px; }
-  .reviews-lead { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 18px); line-height: 1.85; margin: 0; }
+  .reviews-intro h2 { color: var(--ink-strong); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 20px; }
+  .reviews-lead { color: var(--ink-muted); font-size: clamp(15px, 1.9vw, 18px); line-height: 1.85; margin: 0; }
 
   /* REVIEW */
   .review--alt { background: #fbf7ef; }
@@ -222,7 +222,7 @@ const reviews = [
   .review-media { display: flex; flex-direction: column; gap: clamp(18px, 3vw, 26px); }
   .cert-frame {
     background: #fff;
-    border: 1px solid var(--kp-line);
+    border: 1px solid var(--line);
     border-radius: 12px;
     padding: 10px;
     box-shadow: 0 12px 30px rgba(28, 16, 18, 0.1);
@@ -232,7 +232,7 @@ const reviews = [
     max-width: 300px;
     width: 100%;
     margin-inline: auto;
-    border: 6px solid var(--kp-ink);
+    border: 6px solid var(--ink);
     border-radius: 26px;
     padding: 6px;
     background: #fff;
@@ -242,14 +242,14 @@ const reviews = [
 
   .review-en {
     font-family: var(--font-display);
-    color: var(--kp-sage);
+    color: var(--accent-text);
     font-weight: 800;
     letter-spacing: 0.04em;
     font-size: clamp(16px, 2.2vw, 20px);
     margin: 0 0 6px;
   }
-  .review-title { color: var(--kp-maroon); font-size: clamp(22px, 3vw, 30px); margin: 0 0 18px; line-height: 1.3; }
-  .review-story { color: var(--kp-ink); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.85; margin: 0 0 26px; font-weight: 600; }
+  .review-title { color: var(--ink-strong); font-size: clamp(22px, 3vw, 30px); margin: 0 0 18px; line-height: 1.3; }
+  .review-story { color: var(--ink); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.85; margin: 0 0 26px; font-weight: 600; }
   .tip-list {
     list-style: none;
     margin: 0 0 26px;
@@ -263,7 +263,7 @@ const reviews = [
     padding: 16px 18px 16px 44px;
     background: rgba(122, 105, 94, 0.1);
     border-radius: 12px;
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-size: 15px;
     line-height: 1.8;
   }
@@ -276,31 +276,22 @@ const reviews = [
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.06em;
-    color: var(--kp-maroon);
-    background: var(--kp-cream);
+    color: var(--ink-strong);
+    background: var(--surface-2);
     padding: 2px 6px;
     border-radius: 6px;
   }
   .review-headline {
-    color: var(--kp-maroon);
+    color: var(--ink-strong);
     font-weight: 800;
     font-size: clamp(17px, 2.2vw, 21px);
     line-height: 1.5;
     margin: 0;
     padding-top: 20px;
-    border-top: 2px solid var(--kp-cream);
+    border-top: 2px solid var(--on-ink);
   }
-
-  /* CTA */
-  .ncpt-cta { background: var(--kp-ink); color: #fff; text-align: center; }
-  .ncpt-cta .eyebrow { color: var(--kp-pink); }
-  .ncpt-cta h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
-  .ncpt-cta p { color: var(--kp-pink); margin-bottom: 28px; line-height: 1.8; }
-  .ncpt-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .ncpt-cta .btn { border-color: var(--kp-cream); color: #fff; }
-  .ncpt-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .ncpt-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .ncpt-cta .btn--filled:hover { background: #fff; }
+  .cta-band h2 { margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
+  .cta-band p { margin-bottom: 28px; line-height: 1.8; }
 
   @media (max-width: 900px) {
     .intro-grid { grid-template-columns: 1fr; }

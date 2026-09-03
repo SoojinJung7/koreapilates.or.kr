@@ -74,7 +74,7 @@ const { overHero = false } = Astro.props;
     /* 전경색은 상속에 맡기지 않고 변수로 명시한다.
        button/a 의 기본 color 규칙과 전환 타이밍이 얽혀 항목마다
        색이 어긋나는 문제가 있었다. */
-    --nav-fg: var(--kp-ink);
+    --nav-fg: var(--ink);
     --nav-fg-dim: rgba(28, 16, 18, .62);
 
     position: sticky; top: 0; z-index: 100;
@@ -99,7 +99,7 @@ const { overHero = false } = Astro.props;
   }
   /* 스크롤하면 (b) 로 되돌아온다 */
   .site-header--over.is-scrolled {
-    --nav-fg: var(--kp-ink);
+    --nav-fg: var(--ink);
     --nav-fg-dim: rgba(28, 16, 18, .62);
 
     background: rgba(251, 248, 244, .86);
@@ -149,9 +149,9 @@ const { overHero = false } = Astro.props;
     opacity: .82;
     transition: opacity .3s var(--ease);
   }
-  .nav-top:hover, .nav-item:hover > .nav-top { opacity: 1; color: var(--kp-orange-ink); }
+  .nav-top:hover, .nav-item:hover > .nav-top { opacity: 1; color: var(--accent-text); }
   .site-header--over:not(.is-scrolled) .nav-top:hover,
-  .site-header--over:not(.is-scrolled) .nav-item:hover > .nav-top { color: var(--kp-orange-lit); }
+  .site-header--over:not(.is-scrolled) .nav-item:hover > .nav-top { color: var(--accent-lit); }
 
   .caret { flex-shrink: 0; transition: transform .3s var(--ease); opacity: .6; }
   .nav-item:hover .caret { transform: rotate(180deg); }
@@ -161,7 +161,7 @@ const { overHero = false } = Astro.props;
     background: rgba(251, 248, 244, .94);
     -webkit-backdrop-filter: blur(20px) saturate(1.2);
     backdrop-filter: blur(20px) saturate(1.2);
-    color: var(--kp-ink);
+    color: var(--ink);
     border: 1px solid rgba(28,16,18,.08);
     border-radius: 4px;
     box-shadow: 0 26px 50px -26px rgba(40, 24, 16, .45);
@@ -174,7 +174,7 @@ const { overHero = false } = Astro.props;
   .dropdown ul { list-style: none; margin: 0; padding: 8px 0; }
   .dropdown a {
     position: relative; display: block;
-    padding: 10px 22px; font-size: 14px; color: var(--kp-ink);
+    padding: 10px 22px; font-size: 14px; color: var(--ink);
     white-space: nowrap; opacity: .84;
     transition: opacity .2s var(--ease), color .2s var(--ease), padding-left .24s var(--ease);
   }
@@ -182,11 +182,11 @@ const { overHero = false } = Astro.props;
   .dropdown a::before {
     content: ''; position: absolute; left: 22px; top: 50%;
     width: 0; height: 1px; margin-top: -.5px;
-    background: var(--kp-orange-ink);
+    background: var(--accent-text);
     transition: width .28s var(--ease);
   }
   .dropdown a:hover, .dropdown a.active {
-    opacity: 1; color: var(--kp-orange-ink); padding-left: 42px;
+    opacity: 1; color: var(--accent-text); padding-left: 42px;
   }
   .dropdown a:hover::before, .dropdown a.active::before { width: 13px; }
 
@@ -197,19 +197,19 @@ const { overHero = false } = Astro.props;
     white-space: nowrap; transition: opacity .3s var(--ease);
   }
   .login-link span { opacity: .4; margin: 0 4px; }
-  .login-link:hover { opacity: 1; color: var(--kp-orange-ink); }
-  .site-header--over:not(.is-scrolled) .login-link:hover { color: var(--kp-orange-lit); }
+  .login-link:hover { opacity: 1; color: var(--accent-text); }
+  .site-header--over:not(.is-scrolled) .login-link:hover { color: var(--accent-lit); }
 
   .auth-desktop-btn { background: none; border: 0; cursor: pointer; font-family: inherit; color: var(--nav-fg); }
   .auth-user { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; white-space: nowrap; color: var(--nav-fg); }
-  .auth-user__name { color: var(--kp-orange-ink); font-weight: 700; }
-  .site-header--over:not(.is-scrolled) .auth-user__name { color: var(--kp-orange-lit); }
+  .auth-user__name { color: var(--accent-text); font-weight: 700; }
+  .site-header--over:not(.is-scrolled) .auth-user__name { color: var(--accent-lit); }
   .auth-logout {
     font-size: 11px; letter-spacing: .1em; opacity: .8;
     border: 1px solid currentColor; border-radius: 999px; padding: 5px 12px;
     transition: opacity .3s var(--ease), color .3s var(--ease);
   }
-  .auth-logout:hover { opacity: 1; color: var(--kp-orange-ink); }
+  .auth-logout:hover { opacity: 1; color: var(--accent-text); }
   .auth-mobile-btn { text-align: left; }
   .auth-mobile { display: none; }
 
@@ -234,8 +234,8 @@ const { overHero = false } = Astro.props;
       position: absolute; top: 62px; left: 0; right: 0;
       background: rgba(251, 248, 244, .97);
       -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
-      --nav-fg: var(--kp-ink);
-      color: var(--kp-ink);
+      --nav-fg: var(--ink);
+      color: var(--ink);
       max-height: 0; overflow: hidden;
       transition: max-height .45s var(--ease);
       border-bottom: 1px solid rgba(28,16,18,.08);
@@ -249,7 +249,7 @@ const { overHero = false } = Astro.props;
     .nav-top {
       width: 100%; justify-content: space-between;
       padding: 15px 24px; font-size: 14px; letter-spacing: .08em; opacity: 1;
-      color: var(--kp-ink);
+      color: var(--ink);
     }
     .dropdown {
       position: static; opacity: 1; visibility: visible; transform: none;
@@ -267,7 +267,7 @@ const { overHero = false } = Astro.props;
     .nav-toggle { display: inline-flex; }
     .login-link, .auth-user { display: none; }
     .auth-mobile { display: block; }
-    .auth-mobile .nav-top { color: var(--kp-orange-ink); font-weight: 700; }
+    .auth-mobile .nav-top { color: var(--accent-text); font-weight: 700; }
 
     .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }

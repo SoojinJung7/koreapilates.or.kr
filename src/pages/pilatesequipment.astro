@@ -102,10 +102,10 @@ const equipment = [
   </section>
 
   <!-- CTA -->
-  <section class="section equip-cta">
+  <section class="section cta-band">
     <div class="wrap">
       <h2>기구를 직접 만져보고 경험해 보세요</h2>
-      <div class="equip-cta-btns">
+      <div class="cta-band__actions">
         <a class="btn btn--filled" href={withBase('/projects')}>시설 둘러보기</a>
         <a class="btn" href={withBase('/address')}>오시는길</a>
       </div>
@@ -120,12 +120,12 @@ const equipment = [
   .intro-wrap { max-width: 820px; }
   .intro .lead {
     font-size: clamp(21px, 2.8vw, 30px);
-    color: var(--kp-maroon);
+    color: var(--ink-strong);
     font-weight: 700;
     line-height: 1.45;
     margin-bottom: 18px;
   }
-  .intro p { color: var(--kp-olive); }
+  .intro p { color: var(--ink-muted); }
 
   /* EQUIPMENT */
   .equip { padding-top: 0; }
@@ -151,28 +151,20 @@ const equipment = [
   .equip-en {
     font-family: var(--font-display);
     letter-spacing: 0.18em;
-    color: var(--kp-sage);
+    color: var(--accent-text);
     font-size: 14px;
     margin: 0 0 10px;
   }
-  .equip-body h2 { color: var(--kp-maroon); margin: 0 0 18px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; }
+  .equip-body h2 { color: var(--ink-strong); margin: 0 0 18px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; }
   .equip-note {
     font-size: 13px; font-weight: 500;
-    color: var(--kp-sage);
-    border: 1px solid var(--kp-sage);
+    color: var(--accent-text);
+    border: 1px solid var(--accent-text);
     border-radius: 999px;
     padding: 3px 11px;
   }
-  .equip-desc { color: var(--kp-olive); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.75; margin: 0; }
-
-  /* CTA */
-  .equip-cta { background: var(--kp-ink); color: #fff; text-align: center; }
-  .equip-cta h2 { color: #fff; margin-bottom: 30px; }
-  .equip-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .equip-cta .btn { border-color: var(--kp-cream); color: #fff; }
-  .equip-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .equip-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .equip-cta .btn--filled:hover { background: #fff; }
+  .equip-desc { color: var(--ink-muted); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.75; margin: 0; }
+  .cta-band h2 { margin-bottom: 30px; }
 
   @media (max-width: 760px) {
     .equip-item { grid-template-columns: 1fr; }

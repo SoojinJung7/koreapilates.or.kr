@@ -121,7 +121,7 @@ const posts = [
   </section>
 
   <!-- GUIDE -->
-  <section class="section guide">
+  <section class="section cta-band">
     <div class="wrap">
       <div class="guide-inner">
         <p class="eyebrow">Notice</p>
@@ -130,7 +130,7 @@ const posts = [
           자료 이용 및 회원가입 관련 문의는 카카오채널로 연락 주시기 바랍니다.<br />
           자료 이용 시 개인정보 수집 및 이용 약관에 동의하게 됩니다.
         </p>
-        <div class="guide-actions">
+        <div class="cta-band__actions">
           <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
           <a class="btn" href={withBase('/community')}>KPA 커뮤니티 바로가기</a>
         </div>
@@ -143,13 +143,13 @@ const posts = [
 
   /* INTRO */
   .intro-inner { max-width: 860px; margin: 0 auto; text-align: center; }
-  .intro-body { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.95; margin: 0 0 16px; }
-  .intro-note { color: var(--kp-maroon); font-weight: 700; font-size: clamp(13px, 1.6vw, 15px); margin: 0; }
+  .intro-body { color: var(--ink-muted); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.95; margin: 0 0 16px; }
+  .intro-note { color: var(--ink-strong); font-weight: 700; font-size: clamp(13px, 1.6vw, 15px); margin: 0; }
 
   /* CATEGORIES */
-  .cats { background: var(--kp-cream); }
+  .cats { background: var(--surface-2); }
   .cats .eyebrow { text-align: center; }
-  .cats h2 { color: var(--kp-maroon); text-align: center; font-size: clamp(26px, 4vw, 42px); margin: 6px 0 clamp(24px, 3.5vw, 40px); }
+  .cats h2 { color: var(--ink-strong); text-align: center; font-size: clamp(26px, 4vw, 42px); margin: 6px 0 clamp(24px, 3.5vw, 40px); }
   .cat-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -157,13 +157,13 @@ const posts = [
   }
   .cat-card {
     background: #fff;
-    border: 1px solid var(--kp-line);
+    border: 1px solid var(--line);
     border-radius: 18px;
     padding: clamp(24px, 3vw, 34px);
     box-shadow: 0 12px 30px rgba(28, 16, 18, 0.08);
   }
-  .cat-card h3 { color: var(--kp-maroon); font-size: clamp(18px, 2.4vw, 22px); margin: 0 0 12px; }
-  .cat-card p { color: var(--kp-olive); font-size: 15px; line-height: 1.8; margin: 0; }
+  .cat-card h3 { color: var(--ink-strong); font-size: clamp(18px, 2.4vw, 22px); margin: 0 0 12px; }
+  .cat-card p { color: var(--ink-muted); font-size: 15px; line-height: 1.8; margin: 0; }
 
   /* BOARD */
   .board-head {
@@ -174,8 +174,8 @@ const posts = [
     gap: 16px;
     margin-bottom: clamp(16px, 2.5vw, 24px);
   }
-  .board-head h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 0; }
-  .board-desc { color: var(--kp-olive); font-size: 15px; margin: 8px 0 0; }
+  .board-head h2 { color: var(--ink-strong); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 0; }
+  .board-desc { color: var(--ink-muted); font-size: 15px; margin: 8px 0 0; }
 
   .board-locked { position: relative; }
   .board-table {
@@ -186,23 +186,23 @@ const posts = [
   .board-table th, .board-table td {
     text-align: left;
     padding: 16px 14px;
-    border-bottom: 1px solid var(--kp-line);
+    border-bottom: 1px solid var(--line);
   }
   .board-table thead th {
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-weight: 800;
     font-size: 13.5px;
     letter-spacing: 0.02em;
-    border-top: 2px solid var(--kp-maroon);
-    border-bottom: 1px solid var(--kp-line);
+    border-top: 2px solid var(--ink-strong);
+    border-bottom: 1px solid var(--line);
   }
-  .board-table .col-title { color: var(--kp-ink); font-weight: 600; }
+  .board-table .col-title { color: var(--ink); font-weight: 600; }
   .board-table .col-cat, .board-table .col-date, .board-table .col-file { white-space: nowrap; }
-  .board-table .col-date { color: var(--kp-sage); }
+  .board-table .col-date { color: var(--accent-text); }
   .tag {
     display: inline-block;
-    background: var(--kp-cream);
-    color: var(--kp-maroon);
+    background: var(--surface-2);
+    color: var(--ink-strong);
     font-weight: 700;
     font-size: 12.5px;
     padding: 4px 11px;
@@ -227,20 +227,11 @@ const posts = [
     border-radius: 8px;
   }
   .gate-lock { font-size: 40px; margin: 0; }
-  .gate-title { color: var(--kp-maroon); font-weight: 800; font-size: clamp(18px, 2.6vw, 24px); margin: 0; }
-  .gate-body { color: var(--kp-olive); font-size: 15px; margin: 0 0 8px; line-height: 1.7; }
-
-  /* GUIDE */
-  .guide { background: var(--kp-ink); color: #fff; text-align: center; }
-  .guide-inner { max-width: 760px; margin: 0 auto; }
-  .guide .eyebrow { color: var(--kp-pink); }
-  .guide h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(24px, 4vw, 38px); }
-  .guide-body { color: var(--kp-pink); margin-bottom: 28px; line-height: 1.8; }
-  .guide-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .guide .btn { border-color: var(--kp-cream); color: #fff; }
-  .guide .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .guide .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .guide .btn--filled:hover { background: #fff; }
+  .gate-title { color: var(--ink-strong); font-weight: 800; font-size: clamp(18px, 2.6vw, 24px); margin: 0; }
+  .gate-body { color: var(--ink-muted); font-size: 15px; margin: 0 0 8px; line-height: 1.7; }
+  .guide-inner { max-width: 760px; margin: 0; }
+  .cta-band h2 { margin: 6px 0 12px; font-size: clamp(24px, 4vw, 38px); }
+  .guide-body { color: var(--on-ink-soft); margin-bottom: 28px; line-height: 1.8; }
 
   @media (max-width: 900px) {
     .cat-grid { grid-template-columns: 1fr; }
