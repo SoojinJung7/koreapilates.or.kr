@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { withBase, img } from '../../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
@@ -16,18 +17,13 @@ const courses2025 = [
   { no: 6, title: '정규과정 외 동작 + 말단 해부학 (상지)', image: '6f7ec1_63777a879c29431291cb523f302ee949~mv2.jpg', alt: 'KPA 아카데미 실습실에서 진행되는 동작 실기 교육' },
 ];
 ---
-<BaseLayout title="심화과정 수강신청">
+<BaseLayout title="심화과정 수강신청" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">ADVANCED PROGRAM</p>
-      <h1>심화과정 수강신청</h1>
-      <p class="page-hero-sub">
-        이론과 실기를 아우르는 균형 잡힌 커리큘럼으로, 현장에서 강사로서의 전문성을 한층 높여드립니다.
-        수강 시 수료증이 발급되는 교육 과정입니다.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="ADVANCED PROGRAM"
+    title="심화과정 수강신청"
+    sub="이론과 실기를 아우르는 균형 잡힌 커리큘럼으로, 현장에서 강사로서의 전문성을 한층 높여드립니다. 수강 시 수료증이 발급되는 교육 과정입니다."
+  />
 
   <!-- 프로그램 소개 -->
   <section class="section intro">
@@ -133,11 +129,11 @@ const courses2025 = [
   </section>
 
   <!-- CTA -->
-  <section class="section course-cta">
+  <section class="section cta-band">
     <div class="wrap">
       <h2>심화과정으로 전문성을 완성하세요</h2>
       <p>개강 일정을 확인하고, 궁금한 점은 카카오톡 혹은 전화로 상담하세요.</p>
-      <div class="course-cta-btns">
+      <div class="cta-band__actions">
         <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
         <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
         <a class="btn" href={withBase('/coursedate')}>교육일정 보기</a>
@@ -167,37 +163,20 @@ const courses2025 = [
 </script>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    background: var(--kp-maroon);
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(70px, 12vw, 130px);
-  }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub {
-    color: var(--kp-pink);
-    font-size: clamp(15px, 2vw, 19px);
-    margin-top: 16px;
-    max-width: 760px;
-    margin-inline: auto;
-    line-height: 1.8;
-  }
 
   /* INTRO */
   .intro { text-align: center; }
-  .intro h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 40px); margin: 6px 0 22px; }
+  .intro h2 { color: var(--ink-strong); font-size: clamp(26px, 4vw, 40px); margin: 6px 0 22px; }
   .intro-lead {
-    color: var(--kp-ink);
+    color: var(--ink);
     font-size: clamp(16px, 2vw, 19px);
     line-height: 1.85;
     max-width: 780px;
     margin: 0 auto 18px;
   }
-  .intro-lead strong { color: var(--kp-maroon); }
+  .intro-lead strong { color: var(--ink-strong); }
   .intro-body {
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-size: clamp(15px, 1.8vw, 17px);
     line-height: 1.9;
     max-width: 780px;
@@ -205,8 +184,8 @@ const courses2025 = [
   }
   .intro-tag {
     display: inline-block;
-    background: var(--kp-cream);
-    color: var(--kp-maroon);
+    background: var(--surface-2);
+    color: var(--ink-strong);
     font-weight: 700;
     font-size: clamp(14px, 1.7vw, 16px);
     padding: 14px 26px;
@@ -214,14 +193,14 @@ const courses2025 = [
   }
   .intro-tag span {
     display: block;
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-weight: 500;
     font-size: 13px;
     margin-top: 4px;
   }
 
   /* PRODUCTS */
-  .products { background: var(--kp-cream); }
+  .products { background: var(--surface-2); }
   .products-head {
     display: flex;
     align-items: flex-end;
@@ -230,7 +209,7 @@ const courses2025 = [
     flex-wrap: wrap;
     margin-bottom: clamp(24px, 4vw, 40px);
   }
-  .products-head h2 { color: var(--kp-maroon); font-size: clamp(24px, 3.4vw, 34px); margin: 6px 0 0; }
+  .products-head h2 { color: var(--ink-strong); font-size: clamp(24px, 3.4vw, 34px); margin: 6px 0 0; }
   .tabs {
     display: inline-flex;
     background: #fff;
@@ -241,7 +220,7 @@ const courses2025 = [
   .tab {
     border: 0;
     background: transparent;
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-family: inherit;
     font-size: 14px;
     font-weight: 700;
@@ -250,7 +229,7 @@ const courses2025 = [
     cursor: pointer;
     transition: background 0.18s, color 0.18s;
   }
-  .tab.is-active { background: var(--kp-maroon); color: #fff; }
+  .tab.is-active { background: var(--surface-ink); color: #fff; }
 
   .tab-panel { display: none; }
   .tab-panel.is-active { display: block; }
@@ -283,7 +262,7 @@ const courses2025 = [
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: var(--kp-maroon);
+    background: var(--surface-ink);
     color: #fff;
     font-family: var(--font-display);
     font-weight: 800;
@@ -310,12 +289,12 @@ const courses2025 = [
     flex: 1;
   }
   .product-body h3 {
-    color: var(--kp-ink);
+    color: var(--ink);
     font-size: clamp(16px, 1.9vw, 18px);
     line-height: 1.5;
     margin: 0 0 8px;
   }
-  .product-meta { color: var(--kp-sage); font-size: 13px; margin: 0 0 18px; }
+  .product-meta { color: var(--accent-text); font-size: 13px; margin: 0 0 18px; }
   .product-foot {
     margin-top: auto;
     display: flex;
@@ -325,14 +304,14 @@ const courses2025 = [
   }
   .product-price {
     font-family: var(--font-display);
-    color: var(--kp-maroon);
+    color: var(--ink-strong);
     font-weight: 800;
     font-size: clamp(18px, 2.2vw, 21px);
   }
   .btn--sm { padding: 8px 18px; font-size: 13px; }
   .btn--disabled {
-    color: var(--kp-sage);
-    border-color: var(--kp-line);
+    color: var(--accent-text);
+    border-color: var(--line);
     background: transparent;
     cursor: default;
     pointer-events: none;
@@ -346,15 +325,15 @@ const courses2025 = [
     text-align: center;
   }
   .soon-eyebrow {
-    color: var(--kp-sage);
+    color: var(--accent-text);
     font-weight: 800;
     letter-spacing: 0.14em;
     font-size: 13px;
     margin: 0 0 12px;
   }
-  .soon h3 { color: var(--kp-maroon); font-size: clamp(20px, 3vw, 28px); margin: 0 0 14px; }
+  .soon h3 { color: var(--ink-strong); font-size: clamp(20px, 3vw, 28px); margin: 0 0 14px; }
   .soon p {
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-size: 15px;
     line-height: 1.8;
     max-width: 560px;
@@ -373,10 +352,10 @@ const courses2025 = [
     border-radius: 12px;
     padding: clamp(24px, 3vw, 34px);
   }
-  .notice-card h3 { color: var(--kp-maroon); font-size: clamp(18px, 2.2vw, 21px); margin: 0 0 16px; }
+  .notice-card h3 { color: var(--ink-strong); font-size: clamp(18px, 2.2vw, 21px); margin: 0 0 16px; }
   .notice-card ul { list-style: none; margin: 0; padding: 0; }
   .notice-card li {
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-size: 15px;
     line-height: 1.75;
     padding-left: 18px;
@@ -384,33 +363,25 @@ const courses2025 = [
     margin-bottom: 10px;
   }
   .notice-card li:last-child { margin-bottom: 0; }
-  .notice-card li::before { content: '·'; position: absolute; left: 5px; color: var(--kp-sage); font-weight: 700; }
-  .notice-card li strong { color: var(--kp-maroon); }
-  .notice-card--terms p { color: var(--kp-olive); font-size: 15px; line-height: 1.8; margin: 0 0 16px; }
+  .notice-card li::before { content: '·'; position: absolute; left: 5px; color: var(--accent-text); font-weight: 700; }
+  .notice-card li strong { color: var(--ink-strong); }
+  .notice-card--terms p { color: var(--ink-muted); font-size: 15px; line-height: 1.8; margin: 0 0 16px; }
   .terms-agree {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--kp-ink);
+    color: var(--ink);
     font-size: 14px;
     font-weight: 600;
     background: #fff;
-    border: 1px solid var(--kp-line);
+    border: 1px solid var(--line);
     border-radius: 8px;
     padding: 12px 16px;
   }
-  .terms-agree input { width: 16px; height: 16px; accent-color: var(--kp-maroon); }
-  .terms-hint { color: var(--kp-sage) !important; font-size: 13px !important; margin: 14px 0 0 !important; }
-
-  /* CTA */
-  .course-cta { background: var(--kp-ink); color: #fff; text-align: center; }
-  .course-cta h2 { color: #fff; margin-bottom: 12px; }
-  .course-cta p { color: var(--kp-pink); margin-bottom: 28px; }
-  .course-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .course-cta .btn { border-color: var(--kp-cream); color: #fff; }
-  .course-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .course-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .course-cta .btn--filled:hover { background: #fff; }
+  .terms-agree input { width: 16px; height: 16px; accent-color: var(--ink-strong); }
+  .terms-hint { color: var(--accent-text) !important; font-size: 13px !important; margin: 14px 0 0 !important; }
+  .cta-band h2 { margin-bottom: 12px; }
+  .cta-band p { margin-bottom: 28px; }
 
   @media (max-width: 900px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); }

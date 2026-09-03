@@ -3,8 +3,11 @@ import { navGroups, siteMeta } from '../data/nav.js';
 import { withBase } from '../utils/url.js';
 const { pathname } = Astro.url;
 const isActive = (href) => pathname === withBase(href);
+
+// overHero: 홈처럼 히어로가 있는 페이지에서 헤더를 영상 위에 투명하게 띄웁니다.
+const { overHero = false } = Astro.props;
 ---
-<header class="site-header">
+<header class={`site-header${overHero ? ' site-header--over' : ''}`}>
   <div class="wrap header-inner">
     <a class="brand" href={withBase('/')} aria-label={siteMeta.name}>
       <img src={withBase(siteMeta.logo)} alt={siteMeta.name} width="110" height="55" />
@@ -17,7 +20,7 @@ const isActive = (href) => pathname === withBase(href);
             <li class="nav-item has-children">
               <button class="nav-top" aria-haspopup="true" aria-expanded="false">
                 {group.label}
-                <svg class="caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                <svg class="caret" width="9" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
               </button>
               <div class="dropdown">
                 <ul>
@@ -61,114 +64,231 @@ const isActive = (href) => pathname === withBase(href);
 </header>
 
 <style>
+  /* =========================================================
+     작고 정교한 헤더.
+     두 가지 상태만 존재한다.
+       (a) 히어로 위 투명   — 홈 최상단
+       (b) 밝은 유리 바     — 스크롤 후 · 모든 서브페이지
+     ========================================================= */
   .site-header {
+    /* 전경색은 상속에 맡기지 않고 변수로 명시한다.
+       button/a 의 기본 color 규칙과 전환 타이밍이 얽혀 항목마다
+       색이 어긋나는 문제가 있었다. */
+    --nav-fg: var(--ink);
+    --nav-fg-dim: rgba(28, 16, 18, .62);
+
     position: sticky; top: 0; z-index: 100;
-    background: var(--kp-brand);
-    color: #fff;
-    border-bottom: 1px solid rgba(250,233,190,0.18);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+    color: var(--nav-fg);
+    background: rgba(251, 248, 244, .82);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    backdrop-filter: blur(16px) saturate(1.1);
+    border-bottom: 1px solid rgba(28, 16, 18, .07);
+    transition: background-color .5s var(--ease), border-color .5s var(--ease),
+                box-shadow .5s var(--ease);
   }
-  .header-inner { display: flex; align-items: center; gap: 32px; height: 78px; }
-  .brand { flex-shrink: 0; }
-  /* 마룬(진밤) 배경에 맞춰 로고를 흰색으로 */
-  .brand img { height: 33px; width: auto; object-fit: contain; display: block; filter: brightness(0) invert(1); }
+
+  /* (a) 히어로 위 — 배경 없이 콘텐츠 위에 떠 있다 */
+  .site-header--over {
+    --nav-fg: #fff;
+    --nav-fg-dim: rgba(255, 255, 255, .78);
+
+    position: fixed; left: 0; right: 0;
+    background: transparent;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    border-bottom-color: transparent;
+  }
+  /* 투명 헤더 자신의 스크림.
+     히어로 베일로는 해결되지 않는다 — 오렌지 오브젝트가 베일보다 위에 있어서
+     그 위에 놓인 흰 글자는 2.1:1 까지 떨어졌다. 헤더 스택 안에 두어야
+     뒤에 무엇이 오든(영상·구·토러스) 가독성이 보장된다. */
+  .site-header--over::before {
+    content: '';
+    position: absolute; left: 0; right: 0; top: 0; height: 170px;
+    z-index: -1; pointer-events: none;
+    background: linear-gradient(to bottom,
+      rgba(18, 12, 8, .70) 0%,
+      rgba(18, 12, 8, .34) 46%,
+      rgba(18, 12, 8, 0) 100%);
+    transition: opacity .5s var(--ease);
+  }
+  .site-header--over.is-scrolled::before { opacity: 0; }
+
+  /* 스크롤하면 (b) 로 되돌아온다 */
+  .site-header--over.is-scrolled {
+    --nav-fg: var(--ink);
+    --nav-fg-dim: rgba(28, 16, 18, .62);
+
+    background: rgba(251, 248, 244, .86);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    backdrop-filter: blur(16px) saturate(1.1);
+    border-bottom-color: rgba(28, 16, 18, .07);
+    box-shadow: 0 10px 30px -22px rgba(40, 24, 16, .5);
+  }
+
+  .header-inner {
+    display: flex; align-items: center;
+    gap: clamp(20px, 3.4vw, 56px);
+    height: 66px;
+    transition: height .5s var(--ease);
+  }
+  .site-header--over .header-inner { height: 84px; }
+  .site-header--over.is-scrolled .header-inner { height: 66px; }
+
+  .brand { flex-shrink: 0; display: flex; align-items: center; }
+  .brand img {
+    height: 26px; width: auto; object-fit: contain; display: block;
+    transition: filter .5s var(--ease), height .5s var(--ease);
+  }
+  /* 투명 상태에서만 로고를 흰색으로 — 유리 바에서는 브랜드 원색을 보여준다 */
+  .site-header--over .brand img { filter: brightness(0) invert(1); height: 30px; }
+  .site-header--over.is-scrolled .brand img { filter: none; height: 26px; }
 
   /* ---------- Desktop nav ---------- */
   .primary-nav { flex: 1; }
-  .nav-list { list-style: none; display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; }
+  .nav-list { list-style: none; display: flex; align-items: center; gap: 0; margin: 0; padding: 0; }
   .nav-item { position: relative; }
-  .nav-top {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--font-sans); font-size: 16px; font-weight: 600; line-height: 1;
-    color: #fff; background: none; border: 0; cursor: pointer;
-    padding: 14px 18px; letter-spacing: 0.01em;
+
+  /* 항목 사이 얇은 구분선 — 여백만으로는 잡히지 않는 리듬을 준다 */
+  .nav-item + .nav-item::before {
+    content: ''; position: absolute; left: 0; top: 50%;
+    width: 1px; height: 11px; margin-top: -5.5px;
+    background: currentColor; opacity: .2;
   }
-  /* 캐럿 없는 링크도 캐럿 있는 항목과 세로 정렬이 어긋나지 않도록 */
-  .nav-top .caret { flex-shrink: 0; }
-  .nav-top:hover, .nav-item:hover .nav-top { color: var(--kp-cream); }
-  .caret { transition: transform .25s; opacity: .85; }
+
+  .nav-top {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-sans);
+    font-size: 12.5px; font-weight: 600; line-height: 1;
+    color: var(--nav-fg); background: none; border: 0; cursor: pointer;
+    padding: 13px clamp(14px, 1.5vw, 22px);
+    letter-spacing: 0.11em;
+    opacity: .82;
+    transition: opacity .3s var(--ease);
+  }
+  .nav-top:hover, .nav-item:hover > .nav-top { opacity: 1; color: var(--accent-text); }
+  .site-header--over:not(.is-scrolled) .nav-top:hover,
+  .site-header--over:not(.is-scrolled) .nav-item:hover > .nav-top { color: var(--accent-lit); }
+
+  .caret { flex-shrink: 0; transition: transform .3s var(--ease); opacity: .6; }
   .nav-item:hover .caret { transform: rotate(180deg); }
 
   .dropdown {
-    position: absolute; top: 100%; left: 0; min-width: 210px;
-    background: #fff; color: var(--kp-ink);
-    box-shadow: 0 14px 30px rgba(28,16,18,0.14);
-    border-top: 3px solid var(--kp-brand);
-    opacity: 0; visibility: hidden; transform: translateY(8px);
-    transition: opacity .22s, transform .22s, visibility .22s;
+    position: absolute; top: 100%; left: 0; min-width: 218px;
+    background: rgba(251, 248, 244, .94);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    backdrop-filter: blur(20px) saturate(1.2);
+    color: var(--ink);
+    border: 1px solid rgba(28,16,18,.08);
+    border-radius: 4px;
+    box-shadow: 0 26px 50px -26px rgba(40, 24, 16, .45);
+    opacity: 0; visibility: hidden; transform: translateY(6px);
+    transition: opacity .26s var(--ease), transform .26s var(--ease), visibility .26s;
   }
   .nav-item:hover .dropdown, .nav-item:focus-within .dropdown {
     opacity: 1; visibility: visible; transform: translateY(0);
   }
   .dropdown ul { list-style: none; margin: 0; padding: 8px 0; }
   .dropdown a {
-    display: block; padding: 11px 22px; font-size: 15px; color: var(--kp-ink);
-    white-space: nowrap; transition: background .18s, color .18s, padding-left .18s;
+    position: relative; display: block;
+    padding: 10px 22px; font-size: 14px; color: var(--ink);
+    white-space: nowrap; opacity: .84;
+    transition: opacity .2s var(--ease), color .2s var(--ease), padding-left .24s var(--ease);
+  }
+  /* 배경 블록 대신 왼쪽 오렌지 룰 — 카드로 뒤덮지 않는 강조 */
+  .dropdown a::before {
+    content: ''; position: absolute; left: 22px; top: 50%;
+    width: 0; height: 1px; margin-top: -.5px;
+    background: var(--accent-text);
+    transition: width .28s var(--ease);
   }
   .dropdown a:hover, .dropdown a.active {
-    background: var(--kp-cream); color: var(--kp-brand); padding-left: 28px;
+    opacity: 1; color: var(--accent-text); padding-left: 42px;
   }
+  .dropdown a:hover::before, .dropdown a.active::before { width: 13px; }
 
   /* ---------- Right ---------- */
-  .header-right { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
-  .login-link { font-size: 13px; color: #fff; opacity: .92; white-space: nowrap; letter-spacing: 0.02em; }
-  .login-link span { opacity: .45; margin: 0 4px; }
-  .login-link:hover { color: var(--kp-cream); }
-  /* 로그인 링크가 button 이 되어 기본 버튼 외형 리셋 */
-  .auth-desktop-btn { background: none; border: 0; cursor: pointer; font-family: inherit; }
-  /* 로그인된 상태: 이름 + 로그아웃 */
-  .auth-user { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #fff; white-space: nowrap; }
-  .auth-user__name { color: var(--kp-cream); font-weight: 700; }
-  .auth-logout {
-    font-size: 12px; color: #fff; opacity: .92; letter-spacing: .02em;
-    border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 5px 12px;
+  .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .login-link {
+    font-size: 11.5px; letter-spacing: .1em; color: var(--nav-fg); opacity: .72;
+    white-space: nowrap; transition: opacity .3s var(--ease);
   }
-  .auth-logout:hover { color: var(--kp-cream); border-color: var(--kp-cream); }
-  .auth-mobile-btn { text-align: left; }
+  .login-link span { opacity: .4; margin: 0 4px; }
+  .login-link:hover { opacity: 1; color: var(--accent-text); }
+  .site-header--over:not(.is-scrolled) .login-link { opacity: 1; }
+  .site-header--over:not(.is-scrolled) .login-link:hover { color: var(--accent-lit); }
 
-  /* 로그인/회원가입은 데스크톱에선 헤더 우측 링크로만 노출, 메뉴 안 항목은 숨김 */
+  .auth-desktop-btn { background: none; border: 0; cursor: pointer; font-family: inherit; color: var(--nav-fg); }
+  .auth-user { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; white-space: nowrap; color: var(--nav-fg); }
+  .auth-user__name { color: var(--accent-text); font-weight: 700; }
+  .site-header--over:not(.is-scrolled) .auth-user__name { color: var(--accent-lit); }
+  .auth-logout {
+    font-size: 11px; letter-spacing: .1em; opacity: .8;
+    border: 1px solid currentColor; border-radius: 999px; padding: 5px 12px;
+    transition: opacity .3s var(--ease), color .3s var(--ease);
+  }
+  .auth-logout:hover { opacity: 1; color: var(--accent-text); }
+  .auth-mobile-btn { text-align: left; }
   .auth-mobile { display: none; }
 
   .nav-toggle {
-    display: none; width: 42px; height: 42px; border: 0; background: transparent;
-    flex-direction: column; justify-content: center; gap: 6px; cursor: pointer; padding: 9px;
+    display: none; width: 40px; height: 40px; border: 0; background: transparent;
+    flex-direction: column; justify-content: center; gap: 5px; cursor: pointer; padding: 9px;
+    color: var(--nav-fg);
   }
-  .nav-toggle span { display: block; height: 2px; width: 100%; background: #fff; transition: transform .3s, opacity .3s; }
+  .nav-toggle span {
+    display: block; height: 1.5px; width: 100%; background: currentColor;
+    transition: transform .34s var(--ease), opacity .34s var(--ease);
+  }
 
   /* ---------- Mobile ---------- */
-  @media (max-width: 940px) {
-    .header-inner { gap: 16px; }
-    /* 모바일: 가운데 메뉴가 absolute라 흐름에서 빠지므로, 우측 영역(햄버거)을 오른쪽 끝으로 민다 */
+  @media (max-width: 1080px) {
+    .header-inner { gap: 14px; height: 62px; }
+    .site-header--over .header-inner,
+    .site-header--over.is-scrolled .header-inner { height: 62px; }
     .header-right { margin-left: auto; }
+
     .primary-nav {
-      position: absolute; top: 78px; left: 0; right: 0;
-      background: var(--kp-brand);
-      max-height: 0; overflow: hidden; transition: max-height .4s ease;
+      position: absolute; top: 62px; left: 0; right: 0;
+      background: rgba(251, 248, 244, .97);
+      -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+      --nav-fg: var(--ink);
+      color: var(--ink);
+      max-height: 0; overflow: hidden;
+      transition: max-height .45s var(--ease);
+      border-bottom: 1px solid rgba(28,16,18,.08);
     }
-    .primary-nav.open { max-height: 80vh; overflow-y: auto; box-shadow: 0 14px 24px rgba(0,0,0,.28); border-top: 1px solid rgba(250,233,190,0.18); }
-    /* 모바일: 세로 배치 — 데스크톱의 align-items:center 를 덮어써 항목을 꽉 채우고 왼쪽 정렬 */
-    .nav-list { flex-direction: column; align-items: stretch; gap: 0; padding: 6px 0; text-align: left; }
-    .nav-item { border-top: 1px solid rgba(255,255,255,0.12); }
-    .nav-top { width: 100%; justify-content: space-between; padding: 16px 24px; font-size: 17px; }
+    .primary-nav.open { max-height: 82vh; overflow-y: auto; box-shadow: 0 24px 40px -26px rgba(40,24,16,.5); }
+
+    .nav-list { flex-direction: column; align-items: stretch; gap: 0; padding: 4px 0; text-align: left; }
+    .nav-item { border-top: 1px solid rgba(28,16,18,.07); }
+    .nav-item:first-child { border-top: 0; }
+    .nav-item + .nav-item::before { display: none; }
+    .nav-top {
+      width: 100%; justify-content: space-between;
+      padding: 15px 24px; font-size: 14px; letter-spacing: .08em; opacity: 1;
+      color: var(--ink);
+    }
     .dropdown {
       position: static; opacity: 1; visibility: visible; transform: none;
-      box-shadow: none; border-top: 0; min-width: 0;
-      max-height: 0; overflow: hidden; transition: max-height .3s ease;
-      background: rgba(0,0,0,0.07);
+      box-shadow: none; border: 0; border-radius: 0; min-width: 0;
+      background: rgba(234, 225, 213, .5);
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+      max-height: 0; overflow: hidden; transition: max-height .34s var(--ease);
     }
-    .nav-item.expanded .dropdown { max-height: 500px; }
-    .nav-item:hover .dropdown { opacity: 1; } /* reset desktop rule */
-    .dropdown a { color: #fff; padding: 13px 40px; }
-    .dropdown a:hover, .dropdown a.active { background: rgba(0,0,0,0.13); color: var(--kp-cream); }
+    .nav-item.expanded .dropdown { max-height: 520px; }
+    .dropdown a { padding: 12px 24px 12px 40px; font-size: 13.5px; }
+    .dropdown a::before { left: 24px; }
+    .dropdown a:hover, .dropdown a.active { padding-left: 52px; }
     .nav-item.expanded .caret { transform: rotate(180deg); }
+
     .nav-toggle { display: inline-flex; }
-    /* 모바일: 헤더 바의 로그인/회원가입·로그인상태 UI 숨기고, 햄버거 메뉴 안으로 이동 */
     .login-link, .auth-user { display: none; }
     .auth-mobile { display: block; }
-    .auth-mobile .nav-top { color: var(--kp-cream); font-weight: 700; }
-    .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .auth-mobile .nav-top { color: var(--accent-text); font-weight: 700; }
+
+    .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-    .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
   }
 </style>
 
@@ -186,7 +306,7 @@ const isActive = (href) => pathname === withBase(href);
   // 모바일: 카테고리 클릭 시 하위 메뉴 펼치기 (데스크톱은 hover라 무시됨)
   header?.querySelectorAll('.has-children > .nav-top').forEach((btn) => {
     btn.addEventListener('click', (e) => {
-      if (window.matchMedia('(max-width: 940px)').matches) {
+      if (window.matchMedia('(max-width: 1080px)').matches) {
         e.preventDefault();
         btn.parentElement?.classList.toggle('expanded');
         const exp = btn.parentElement?.classList.contains('expanded');
@@ -194,4 +314,16 @@ const isActive = (href) => pathname === withBase(href);
       }
     });
   });
+
+  // 히어로 위 투명 헤더 → 조금만 내려가도 유리 바로 전환.
+  // 모바일 메뉴가 열려 있으면 배경이 필요하므로 항상 유리 상태를 유지한다.
+  if (header?.classList.contains('site-header--over')) {
+    const sync = () => {
+      const scrolled = window.scrollY > 40 || nav?.classList.contains('open');
+      header.classList.toggle('is-scrolled', !!scrolled);
+    };
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    toggle?.addEventListener('click', () => requestAnimationFrame(sync));
+  }
 </script>

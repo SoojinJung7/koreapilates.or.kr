@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
@@ -53,19 +54,16 @@ const groups = [
   },
 ];
 ---
-<BaseLayout title="KPA커뮤니티">
+<BaseLayout title="KPA커뮤니티" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <img class="page-hero-bg" src={img(heroImg)} alt="" aria-hidden="true" />
-    <div class="wrap page-hero-inner">
-      <p class="eyebrow">KPA COMMUNITY</p>
-      <h1>KPA 커뮤니티</h1>
-      <p class="page-hero-sub">
-        교육생 - 졸업생 간의 소통과 나눔을 통한<br />
-        지속적인 성장이 이루어지는 커뮤니티입니다.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="KPA COMMUNITY"
+    title="KPA 커뮤니티"
+    image={heroImg}
+  >
+    교육생 - 졸업생 간의 소통과 나눔을 통한<br />
+    지속적인 성장이 이루어지는 커뮤니티입니다.
+  </PageHero>
 
   <!-- INTRO -->
   <section class="section intro">
@@ -123,13 +121,13 @@ const groups = [
   </section>
 
   <!-- GUIDE -->
-  <section class="section guide">
+  <section class="section cta-band">
     <div class="wrap">
       <div class="guide-inner">
         <p class="eyebrow">Notice</p>
         <h2>게시글 작성 안내</h2>
         <p class="guide-body">게시판의 취지에 맞는 주제의 글을 작성해 주세요.</p>
-        <div class="guide-actions">
+        <div class="cta-band__actions">
           <a class="btn btn--filled" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
           <a class="btn" href={withBase('/file-share')}>자료게시판 바로가기</a>
         </div>
@@ -139,41 +137,14 @@ const groups = [
 </BaseLayout>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    position: relative;
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(80px, 14vw, 150px);
-    overflow: hidden;
-    background: var(--kp-maroon);
-  }
-  .page-hero-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.32;
-    filter: saturate(0.9);
-  }
-  .page-hero-inner { position: relative; z-index: 1; }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub {
-    color: var(--kp-pink);
-    font-size: clamp(15px, 2vw, 19px);
-    margin-top: 16px;
-    line-height: 1.7;
-  }
 
   /* INTRO */
   .intro-inner { max-width: 860px; margin: 0 auto; text-align: center; }
-  .intro-body { color: var(--kp-olive); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.95; margin: 0 0 16px; }
-  .intro-note { color: var(--kp-maroon); font-weight: 700; font-size: clamp(13px, 1.6vw, 15px); margin: 0; }
+  .intro-body { color: var(--ink-muted); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.95; margin: 0 0 16px; }
+  .intro-note { color: var(--ink-strong); font-weight: 700; font-size: clamp(13px, 1.6vw, 15px); margin: 0; }
 
   /* GROUPS */
-  .groups { background: var(--kp-cream); }
+  .groups { background: var(--surface-2); }
   .groups-head {
     display: flex;
     align-items: flex-end;
@@ -182,14 +153,14 @@ const groups = [
     gap: 16px;
     margin-bottom: clamp(16px, 2.5vw, 24px);
   }
-  .groups-head h2 { color: var(--kp-maroon); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 0; }
-  .groups-desc { color: var(--kp-olive); font-size: 15px; margin: 8px 0 0; }
+  .groups-head h2 { color: var(--ink-strong); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 0; }
+  .groups-desc { color: var(--ink-muted); font-size: 15px; margin: 8px 0 0; }
 
   .groups-count {
-    color: var(--kp-olive);
+    color: var(--ink-muted);
     font-weight: 700;
     font-size: 14px;
-    border-top: 1px solid var(--kp-line);
+    border-top: 1px solid var(--line);
     padding-top: 16px;
     margin: 0 0 clamp(20px, 3vw, 28px);
   }
@@ -201,7 +172,7 @@ const groups = [
   }
   .group-card {
     background: #fff;
-    border: 1px solid var(--kp-line);
+    border: 1px solid var(--line);
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(28, 16, 18, 0.08);
@@ -226,28 +197,19 @@ const groups = [
     border-radius: 999px;
     color: #fff;
   }
-  .group-badge.is-public { background: var(--kp-olive); }
-  .group-badge.is-private { background: var(--kp-maroon); }
+  .group-badge.is-public { background: var(--surface-2); }
+  .group-badge.is-private { background: var(--surface-ink); }
 
   .group-body { padding: clamp(18px, 2.4vw, 24px); display: flex; flex-direction: column; gap: 10px; flex: 1; }
-  .group-body h3 { color: var(--kp-maroon); font-size: clamp(17px, 2.2vw, 20px); margin: 0; line-height: 1.35; }
-  .group-meta { color: var(--kp-sage); font-weight: 700; font-size: 13.5px; margin: 0; }
+  .group-body h3 { color: var(--ink-strong); font-size: clamp(17px, 2.2vw, 20px); margin: 0; line-height: 1.35; }
+  .group-meta { color: var(--accent-text); font-weight: 700; font-size: 13.5px; margin: 0; }
   .group-actions { margin-top: auto; padding-top: 6px; }
 
   .btn--sm { padding: 9px 20px; font-size: 13.5px; }
   .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
-
-  /* GUIDE */
-  .guide { background: var(--kp-ink); color: #fff; text-align: center; }
-  .guide-inner { max-width: 760px; margin: 0 auto; }
-  .guide .eyebrow { color: var(--kp-pink); }
-  .guide h2 { color: #fff; margin: 6px 0 12px; font-size: clamp(24px, 4vw, 38px); }
-  .guide-body { color: var(--kp-pink); margin-bottom: 28px; line-height: 1.8; }
-  .guide-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .guide .btn { border-color: var(--kp-cream); color: #fff; }
-  .guide .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .guide .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .guide .btn--filled:hover { background: #fff; }
+  .guide-inner { max-width: 760px; margin: 0; }
+  .cta-band h2 { margin: 6px 0 12px; font-size: clamp(24px, 4vw, 38px); }
+  .guide-body { color: var(--on-ink-soft); margin-bottom: 28px; line-height: 1.8; }
 
   @media (max-width: 900px) {
     .group-grid { grid-template-columns: repeat(2, 1fr); }

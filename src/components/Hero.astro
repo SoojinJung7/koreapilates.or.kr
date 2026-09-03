@@ -1,0 +1,209 @@
+---
+/**
+ * Hero — 첫 화면 composition.
+ *
+ * 레이어 순서(뒤 → 앞):
+ *   1. 브랜드 영상 (선명하게 — 대비는 유리가 책임진다)
+ *   2. 웜 베일 + 상·하단 스크림
+ *   3. 유리 프레임 + 카피
+ *
+ * 카피는 좌상단 라벨 → 우하단 헤드라인으로 흐르는 비대칭 배치입니다.
+ * 가운데 정렬을 쓰지 않아 시선에 방향이 생깁니다.
+ */
+import GlassPanel from './GlassPanel.astro';
+import { withBase, img } from '../utils/url.js';
+
+const { poster } = Astro.props;
+---
+<section class="hero">
+  <video
+    class="hero-video"
+    autoplay muted loop playsinline preload="auto"
+    poster={img(poster)}
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <source src={withBase('/videos/main-2025.mp4')} type="video/mp4" />
+  </video>
+  <div class="hero-veil"></div>
+
+  <div class="hero-stage">
+    <GlassPanel class="hero-panel">
+      <p class="hero-label">The first Pilates Educating Corporation in Korea</p>
+
+      <div class="hero-copy">
+        <h1>국내최초 사단법인<br />필라테스 교육기관</h1>
+        <p class="hero-sub">6인 소수정예, 250시간 정규 커리큘럼.<br />실무에 강한 필라테스 지도자를 길러냅니다.</p>
+        <a class="btn btn--glass hero-cta" href={withBase('/coursedate')}>
+          지도자과정 교육일정
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+            <path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </GlassPanel>
+  </div>
+
+  <a class="hero-scroll" href="#kpa-today" aria-label="아래 내용으로 이동">
+    <span class="hero-scroll-line" aria-hidden="true"></span>
+    <span class="hero-scroll-text">SCROLL</span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    /* 100vh 를 쓰지 않는다 — 다음 섹션이 살짝 보여야 스크롤 유도가 된다 */
+    min-height: clamp(560px, 88vh, 940px);
+    display: flex; align-items: center;
+    overflow: hidden;
+    background: #2A1D16;
+    isolation: isolate;
+  }
+
+  .hero-video {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 0;
+    /* 영상은 선명하게 둔다. 패널 뒤쪽은 유리의 backdrop-filter 가 알아서 흐리므로
+       배경까지 미리 흐릴 필요가 없다 (그러면 브랜드 영상이 뭉개진다).
+       채도만 살짝 낮춰 오렌지 오브젝트가 화면의 유일한 채도로 남게 한다. */
+    filter: saturate(.82);
+  }
+
+  /* 웜 베일 — 배경을 beige/mocha 계열로 통일해 오렌지 오브젝트가 유일한 채도가 되게 */
+  .hero-veil {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      linear-gradient(118deg,
+        rgba(30, 20, 15, .58) 0%,
+        rgba(48, 36, 28, .44) 38%,
+        rgba(78, 63, 51, .36) 72%,
+        rgba(96, 79, 64, .34) 100%),
+      radial-gradient(130% 100% at 80% 6%, rgba(247, 148, 28, .14), transparent 60%),
+      /* 상단 스크림 — 영상을 선명하게 두면 밝은 꽃 위의 흰 헤더가 1.5:1 까지 떨어진다.
+         투명 헤더를 유지하면서 가독성을 확보하는 최소한의 장치. */
+      linear-gradient(to bottom, rgba(20, 13, 9, .34) 0%, transparent 20%),
+      /* 하단 스크림 — 좌하단 오렌지 구 위에 놓이는 SCROLL 큐 확보 */
+      linear-gradient(to top, rgba(20, 13, 9, .45) 0%, transparent 26%);
+  }
+
+  /* ---------- 유리 프레임 ---------- */
+  .hero-stage {
+    position: relative; z-index: 4;
+    width: 100%;
+    padding-inline: clamp(24px, 6vw, 92px);
+  }
+
+  .hero-panel {
+    /* 레퍼런스처럼 화면의 큰 비중을 차지하되 가장자리 여백을 남긴다 */
+    width: min(100%, 1120px);
+    margin-inline: auto;
+    min-height: clamp(360px, 56vh, 560px);
+    padding: clamp(30px, 4.2vw, 60px);
+    /* 스모크 글라스 — 밝은 배경 위에 흰 서리를 얹으면 대비가 계속 깎여
+       서브카피가 3.4:1 에 머물렀다. 어둡게 물린 유리는 유리감을 지키면서
+       텍스트 바닥을 보장한다. */
+    background: rgba(26, 17, 12, .46);
+    display: flex;
+    flex-direction: column;
+    /* 좌상단 라벨 ↔ 우하단 카피 : 대각선 구도 */
+    justify-content: space-between;
+  }
+
+  .hero-label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .94);
+    max-width: 30ch;
+    line-height: 1.7;
+  }
+
+  .hero-copy {
+    align-self: flex-end;
+    text-align: right;
+    max-width: 34rem;
+    margin-top: clamp(40px, 7vw, 90px);
+  }
+
+  .hero h1 {
+    margin: 0 0 20px;
+    color: #fff;
+    /* 무작정 키우지 않고 weight·tracking 으로 밀도를 만든다 */
+    font-size: clamp(32px, 5.1vw, 66px);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    text-wrap: balance;
+    text-shadow: 0 2px 30px rgba(20, 12, 8, .34);
+  }
+
+  .hero-sub {
+    margin: 0 0 34px;
+    color: rgba(255, 255, 255, .95);
+    font-size: clamp(14px, 1.35vw, 16.5px);
+    line-height: 1.85;
+    letter-spacing: 0.005em;
+  }
+
+  .hero-cta svg { transition: transform .4s var(--ease); }
+  .hero-cta:hover svg { transform: translateX(4px); }
+
+  /* ---------- 스크롤 큐 ---------- */
+  .hero-scroll {
+    position: absolute; z-index: 5;
+    left: clamp(24px, 6vw, 92px); bottom: 30px;
+    display: inline-flex; align-items: center; gap: 14px;
+    color: rgba(255,255,255,.92);
+    font-size: 10px; font-weight: 600; letter-spacing: 0.34em;
+    transition: color .4s var(--ease);
+  }
+  .hero-scroll:hover { color: #fff; }
+  .hero-scroll-line {
+    display: block; width: 46px; height: 1px;
+    background: currentColor; transform-origin: left;
+    animation: scroll-cue 3.4s var(--ease) infinite;
+  }
+  @keyframes scroll-cue {
+    0%, 100% { transform: scaleX(.45); opacity: .55; }
+    50%      { transform: scaleX(1);   opacity: 1; }
+  }
+
+  /* =========================================================
+     반응형 — 축소가 아니라 재구성
+     ========================================================= */
+  /* 태블릿: 대각선 구도를 유지하되 패널을 화면에 더 붙인다 */
+  @media (max-width: 1024px) {
+    .hero { min-height: clamp(540px, 80vh, 780px); }
+    .hero-panel { min-height: clamp(340px, 52vh, 480px); }
+    .hero-copy { max-width: 30rem; }
+  }
+
+  /* 모바일: 우측 정렬은 좁은 폭에서 읽기 어려우므로 좌측 정렬 세로 흐름으로 전환 */
+  @media (max-width: 768px) {
+    .hero { min-height: auto; padding-block: 108px 84px; }
+    .hero-stage { padding-inline: 20px; }
+    .hero-panel {
+      min-height: 0;
+      padding: 28px 24px 32px;
+      gap: 46px;
+    }
+    .hero-label { font-size: 10px; letter-spacing: .26em; max-width: 26ch; }
+    .hero-copy {
+      align-self: stretch;
+      text-align: left;
+      max-width: none;
+      margin-top: 0;
+    }
+    .hero h1 { font-size: clamp(28px, 8vw, 40px); }
+    .hero-sub { font-size: 14px; line-height: 1.8; margin-bottom: 26px; }
+    .hero-cta { width: 100%; justify-content: center; }
+    .hero-scroll { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scroll-line { animation: none; transform: scaleX(1); }
+  }
+</style>

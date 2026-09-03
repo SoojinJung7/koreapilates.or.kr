@@ -6,7 +6,9 @@ import AuthController from '../components/AuthController.astro';
 import { siteMeta } from '../data/nav.js';
 import { withBase } from '../utils/url.js';
 
-const { title, description } = Astro.props;
+// overHero: 헤더를 히어로 위에 투명하게 띄울지 여부(홈 전용).
+// 서브페이지는 기본값 false 라 기존 불투명 헤더 그대로입니다.
+const { title, description, overHero = false } = Astro.props;
 const pageTitle = title ? `${title} | ${siteMeta.short}` : siteMeta.title;
 const pageDesc = description || siteMeta.description;
 const pretendard = withBase('/fonts/PretendardVariable.woff2');
@@ -32,12 +34,38 @@ const pretendard = withBase('/fonts/PretendardVariable.woff2');
     <meta property="og:description" content={pageDesc} />
     <meta property="og:type" content="website" />
   </head>
-  <body>
-    <Header />
+  <body class={overHero ? 'has-over-hero' : ''}>
+    <Header overHero={overHero} />
     <main>
       <slot />
     </main>
     <Footer />
     <AuthController />
+
+    <script>
+      // 전역 미세 인터랙션: 섹션 등장.
+      // prefers-reduced-motion 이면 아예 실행하지 않습니다.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      if (!reduce.matches) {
+        const root = document.documentElement;
+
+        // --- 섹션 등장 ---
+        // JS 가 살아있을 때만 숨김 클래스를 켜서, 스크립트 실패 시 콘텐츠가 사라지지 않게 한다.
+        const targets = document.querySelectorAll('.reveal');
+        if (targets.length) {
+          root.classList.add('js-reveal');
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              e.target.classList.add('is-in');
+              io.unobserve(e.target);
+            });
+          }, { rootMargin: '0px 0px -12% 0px', threshold: 0.06 });
+          targets.forEach((el) => io.observe(el));
+        }
+
+      }
+    </script>
   </body>
 </html>

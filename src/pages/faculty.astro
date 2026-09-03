@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
 
 // 강사진 데이터 — 원본 순서대로
@@ -176,17 +177,13 @@ const faculty = [
   },
 ];
 ---
-<BaseLayout title="강사소개">
+<BaseLayout title="강사소개" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">FACULTY</p>
-      <h1>강사소개</h1>
-      <p class="page-hero-sub">
-        필라테스 지도자과정 교육을 통해 필라테스의 대중화에 기여하기 위해 노력하고 있습니다.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="FACULTY"
+    title="강사소개"
+    sub="필라테스 지도자과정 교육을 통해 필라테스의 대중화에 기여하기 위해 노력하고 있습니다."
+  />
 
   <!-- 강사진 -->
   <section class="section faculty">
@@ -222,10 +219,10 @@ const faculty = [
   </section>
 
   <!-- CTA -->
-  <section class="section faculty-cta">
+  <section class="section cta-band">
     <div class="wrap">
       <h2>KPA의 강사진과 함께 성장하세요</h2>
-      <div class="faculty-cta-btns">
+      <div class="cta-band__actions">
         <a class="btn btn--filled" href={withBase('/coursedate')}>지도자과정 교육일정</a>
         <a class="btn" href={withBase('/curriculum')}>커리큘럼 보기</a>
       </div>
@@ -234,19 +231,6 @@ const faculty = [
 </BaseLayout>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    background: var(--kp-maroon);
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(70px, 12vw, 130px);
-  }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub {
-    color: var(--kp-pink); font-size: clamp(15px, 2vw, 19px);
-    margin-top: 14px; max-width: 640px; margin-inline: auto;
-  }
 
   /* FACULTY LIST */
   .faculty-list { display: grid; gap: clamp(48px, 8vw, 90px); }
@@ -258,8 +242,8 @@ const faculty = [
   }
   .prof-photo {
     position: sticky; top: 110px;
-    border: 1px solid var(--kp-line);
-    background: var(--kp-cream);
+    border: 1px solid var(--line);
+    background: var(--surface-2);
     overflow: hidden;
   }
   .prof-photo img { display: block; width: 100%; height: auto; }
@@ -267,48 +251,40 @@ const faculty = [
   .prof-head {
     display: flex; align-items: baseline; flex-wrap: wrap; gap: 14px;
     padding-bottom: 18px; margin-bottom: 26px;
-    border-bottom: 2px solid var(--kp-sage);
+    border-bottom: 2px solid var(--accent-text);
   }
   .prof-head h2 {
-    margin: 0; color: var(--kp-maroon);
+    margin: 0; color: var(--ink-strong);
     font-size: clamp(26px, 3.4vw, 34px);
     display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
   }
   .prof-role {
     font-size: clamp(14px, 1.7vw, 17px);
-    color: var(--kp-olive); font-weight: 600;
+    color: var(--ink-muted); font-weight: 600;
   }
   .prof-badge {
     font-family: var(--font-display); letter-spacing: 0.04em;
     font-size: 13px; font-weight: 700; color: #fff;
-    background: var(--kp-sage); padding: 6px 12px; border-radius: 999px;
+    background: var(--accent-deep); padding: 6px 12px; border-radius: 999px;
   }
 
   .prof-section { margin-bottom: 26px; }
   .prof-section:last-child { margin-bottom: 0; }
   .prof-section-title {
-    font-size: 15px; color: var(--kp-olive);
+    font-size: 15px; color: var(--ink-muted);
     margin: 0 0 12px; font-weight: 700; letter-spacing: 0.02em;
   }
   .prof-items { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
   .prof-items li {
     position: relative; padding-left: 20px;
-    color: var(--kp-ink); font-size: 15.5px; line-height: 1.55;
+    color: var(--ink); font-size: 15.5px; line-height: 1.55;
   }
   .prof-items li::before {
     content: ''; position: absolute; left: 4px; top: 10px;
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--kp-pink);
+    background: var(--surface-3);
   }
-
-  /* CTA */
-  .faculty-cta { background: var(--kp-ink); color: #fff; text-align: center; }
-  .faculty-cta h2 { color: #fff; margin-bottom: 30px; }
-  .faculty-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .faculty-cta .btn { border-color: var(--kp-cream); color: #fff; }
-  .faculty-cta .btn:hover { background: var(--kp-cream); color: var(--kp-ink); }
-  .faculty-cta .btn--filled { background: var(--kp-cream); color: var(--kp-ink); border-color: var(--kp-cream); }
-  .faculty-cta .btn--filled:hover { background: #fff; }
+  .cta-band h2 { margin-bottom: 30px; }
 
   @media (max-width: 820px) {
     .prof { grid-template-columns: 1fr; gap: 24px; }
