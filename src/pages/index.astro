@@ -5,7 +5,6 @@ import instagram from '../data/instagram.json';
 import Calendar from '../components/Calendar.astro';
 import Hero from '../components/Hero.astro';
 import GlassPanel from '../components/GlassPanel.astro';
-import BackgroundObjects from '../components/BackgroundObjects.astro';
 
 const hero = '6f7ec1_f36aeed6d4d946d2b906ca35afd19f27~mv2.jpg';
 
@@ -57,7 +56,6 @@ const partners = [
 
   <!-- ===== SCHEDULE — 유리 위의 달력 ===== -->
   <section id="kpa-today" class="section schedule-sec">
-    <BackgroundObjects variant="quiet" />
     <div class="wrap schedule-inner">
       <header class="split reveal">
         <div class="split-lead">
@@ -119,7 +117,6 @@ const partners = [
 
   <!-- ===== ADVANCED — 떠 있는 유리 패널 ===== -->
   <section class="section advanced">
-    <BackgroundObjects variant="quiet" />
     <div class="wrap advanced-inner">
       <GlassPanel tone="dark" class="advanced-panel reveal">
         <div class="advanced-head">
@@ -291,11 +288,9 @@ const partners = [
      SCHEDULE
      ========================================================= */
   .schedule-sec {
-    position: relative; overflow: hidden;
     background:
       linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 60%);
   }
-  .schedule-inner { position: relative; z-index: 4; }
   /* 달력은 기능 위젯이라 유리로 또 감싸지 않는다.
      헤어라인 하나로 영역만 구분하고 바탕 위에 그대로 올린다. */
   .schedule-body { border-top: 1px solid var(--line-strong); padding-top: clamp(22px, 3vw, 40px); }
@@ -403,10 +398,8 @@ const partners = [
      ADVANCED — 떠 있는 유리 패널
      ========================================================= */
   .advanced {
-    position: relative; overflow: hidden;
     background: linear-gradient(168deg, var(--surface-3) 0%, var(--surface-2) 55%, var(--surface) 100%);
   }
-  .advanced-inner { position: relative; z-index: 4; }
   .advanced-panel { padding: clamp(30px, 4.6vw, 68px); }
   .advanced-head {
     display: grid;

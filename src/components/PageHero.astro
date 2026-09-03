@@ -5,7 +5,6 @@
  * 홈 히어로와 같은 언어(웜 그라운드 · 유리 프레임 · 오렌지 조형)를 쓰되,
  * 17개 페이지에서 반복되므로 훨씬 절제된 버전입니다.
  *   • 높이를 홈의 절반 이하로
- *   • 오브젝트는 우측 2개만 (좌측 텍스트와 충돌 방지)
  *   • 카피는 좌측 정렬 — 대각선 구도는 홈의 시그니처로 남겨둔다
  *
  * props
@@ -14,7 +13,6 @@
  *   sub     : 보조 문구. 마크업이 필요하면 기본 slot 사용.
  *   image   : 배경 사진 파일명(public/images 기준). 없으면 웜 그라디언트만.
  */
-import BackgroundObjects from './BackgroundObjects.astro';
 import GlassPanel from './GlassPanel.astro';
 import { img } from '../utils/url.js';
 
@@ -24,8 +22,6 @@ const hasSlot = Astro.slots.has('default');
 <section class:list={['page-hero', image && 'page-hero--photo']}>
   {image && <img class="page-hero-bg" src={img(image)} alt="" aria-hidden="true" />}
   <div class="page-hero-veil"></div>
-
-  <BackgroundObjects variant="page" />
 
   <div class="wrap page-hero-stage">
     <GlassPanel class="page-hero-panel">

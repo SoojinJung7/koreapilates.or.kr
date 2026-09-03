@@ -3,15 +3,13 @@
  * Hero — 첫 화면 composition.
  *
  * 레이어 순서(뒤 → 앞):
- *   1. 기존 브랜드 영상 (질감으로만 남도록 웜 베일을 덮음)
- *   2. BackgroundObjects 의 back/mid 오브젝트
+ *   1. 브랜드 영상 (선명하게 — 대비는 유리가 책임진다)
+ *   2. 웜 베일 + 상·하단 스크림
  *   3. 유리 프레임 + 카피
- *   4. BackgroundObjects 의 front 오브젝트 (패널 위로 넘어옴)
  *
  * 카피는 좌상단 라벨 → 우하단 헤드라인으로 흐르는 비대칭 배치입니다.
  * 가운데 정렬을 쓰지 않아 시선에 방향이 생깁니다.
  */
-import BackgroundObjects from './BackgroundObjects.astro';
 import GlassPanel from './GlassPanel.astro';
 import { withBase, img } from '../utils/url.js';
 
@@ -28,8 +26,6 @@ const { poster } = Astro.props;
     <source src={withBase('/videos/main-2025.mp4')} type="video/mp4" />
   </video>
   <div class="hero-veil"></div>
-
-  <BackgroundObjects variant="hero" />
 
   <div class="hero-stage">
     <GlassPanel class="hero-panel">
@@ -185,8 +181,7 @@ const { poster } = Astro.props;
     .hero-copy { max-width: 30rem; }
   }
 
-  /* 모바일: 우측 정렬은 좁은 폭에서 읽기 어려우므로 좌측 정렬 세로 흐름으로 전환.
-     오브젝트는 BackgroundObjects 쪽에서 가장자리로 물러난다. */
+  /* 모바일: 우측 정렬은 좁은 폭에서 읽기 어려우므로 좌측 정렬 세로 흐름으로 전환 */
   @media (max-width: 768px) {
     .hero { min-height: auto; padding-block: 108px 84px; }
     .hero-stage { padding-inline: 20px; }
