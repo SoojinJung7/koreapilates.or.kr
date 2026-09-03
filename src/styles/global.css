@@ -118,10 +118,11 @@ h2 { letter-spacing: -0.03em; }
 .btn:hover { background: var(--surface-ink); color: var(--surface); transform: translateY(-1px); }
 .btn--filled { background: var(--surface-ink); color: var(--surface); border-color: var(--ink); }
 .btn--filled:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
-/* 유리 위에 얹는 버튼 */
+/* 유리 위에 얹는 버튼.
+   흰색을 얹으면 배경이 밝아져 13px 글자가 4.5:1 을 못 넘긴다 → 어둡게 물린다. */
 .btn--glass {
   border-color: rgba(255,255,255,0.55); color: #fff;
-  background: rgba(255,255,255,0.08);
+  background: rgba(22, 14, 10, 0.24);
   -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
 }
 .btn--glass:hover { background: #fff; color: var(--ink); border-color: #fff; }
