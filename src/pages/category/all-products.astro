@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { withBase, img } from '../../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
@@ -16,18 +17,13 @@ const courses2025 = [
   { no: 6, title: '정규과정 외 동작 + 말단 해부학 (상지)', image: '6f7ec1_63777a879c29431291cb523f302ee949~mv2.jpg', alt: 'KPA 아카데미 실습실에서 진행되는 동작 실기 교육' },
 ];
 ---
-<BaseLayout title="심화과정 수강신청">
+<BaseLayout title="심화과정 수강신청" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">ADVANCED PROGRAM</p>
-      <h1>심화과정 수강신청</h1>
-      <p class="page-hero-sub">
-        이론과 실기를 아우르는 균형 잡힌 커리큘럼으로, 현장에서 강사로서의 전문성을 한층 높여드립니다.
-        수강 시 수료증이 발급되는 교육 과정입니다.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="ADVANCED PROGRAM"
+    title="심화과정 수강신청"
+    sub="이론과 실기를 아우르는 균형 잡힌 커리큘럼으로, 현장에서 강사로서의 전문성을 한층 높여드립니다. 수강 시 수료증이 발급되는 교육 과정입니다."
+  />
 
   <!-- 프로그램 소개 -->
   <section class="section intro">
@@ -167,23 +163,6 @@ const courses2025 = [
 </script>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    background: var(--kp-maroon);
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(70px, 12vw, 130px);
-  }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub {
-    color: var(--kp-pink);
-    font-size: clamp(15px, 2vw, 19px);
-    margin-top: 16px;
-    max-width: 760px;
-    margin-inline: auto;
-    line-height: 1.8;
-  }
 
   /* INTRO */
   .intro { text-align: center; }

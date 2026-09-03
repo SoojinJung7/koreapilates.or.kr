@@ -33,6 +33,13 @@ const { variant = 'hero' } = Astro.props;
       <span class="obj obj--sphere o-hero-6" data-depth="mid"  data-parallax="-4"></span>
     </>
   )}
+  {variant === 'page' && (
+    <>
+      {/* 우상단에서 크게 잘려 들어오는 구 하나 — 페이지마다 반복되므로 최소한으로 */}
+      <span class="obj obj--sphere o-p-1" data-depth="back" data-parallax="6"></span>
+      <span class="obj obj--torus  o-p-2" data-depth="mid"  data-parallax="-4"></span>
+    </>
+  )}
   {variant === 'quiet' && (
     <>
       <span class="obj obj--torus  o-q-1" data-depth="back" data-parallax="5"></span>
@@ -120,6 +127,19 @@ const { variant = 'hero' } = Astro.props;
     animation: drift-b 28s ease-in-out infinite reverse;
   }
 
+  /* ---- page: 서브페이지 헤더용 ---- */
+  .o-p-1 {
+    width: clamp(220px, 26vw, 400px); aspect-ratio: 1;
+    top: -30%; right: -6%;
+    animation: drift-a 30s ease-in-out infinite;
+  }
+  .o-p-2 {
+    width: clamp(90px, 10vw, 150px); aspect-ratio: 1;
+    bottom: -14%; right: 16%;
+    rotate: -14deg; scale: 1 .8;
+    animation: drift-b 24s ease-in-out infinite reverse;
+  }
+
   /* ---- quiet: 하위 섹션용, 훨씬 절제 ---- */
   .o-q-1 {
     width: clamp(200px, 24vw, 360px); aspect-ratio: 1;
@@ -164,6 +184,8 @@ const { variant = 'hero' } = Astro.props;
     .o-hero-4 { top: 14%; left: auto; right: 6%; width: 46px; }
     .o-hero-5 { bottom: 3%; left: auto; right: -8%; width: 110px; }
     .o-hero-6 { display: none; }
+    .o-p-1 { top: -16%; right: -24%; width: clamp(190px, 50vw, 280px); }
+    .o-p-2 { right: 4%; bottom: -10%; width: 92px; }
     .o-q-1, .o-q-2 { opacity: .18; filter: blur(30px); }
   }
 

@@ -101,6 +101,10 @@ const { poster } = Astro.props;
     margin-inline: auto;
     min-height: clamp(360px, 56vh, 560px);
     padding: clamp(30px, 4.2vw, 60px);
+    /* 스모크 글라스 — 밝은 배경 위에 흰 서리를 얹으면 대비가 계속 깎여
+       서브카피가 3.4:1 에 머물렀다. 어둡게 물린 유리는 유리감을 지키면서
+       텍스트 바닥을 보장한다. */
+    background: rgba(30, 19, 13, .30);
     display: flex;
     flex-direction: column;
     /* 좌상단 라벨 ↔ 우하단 카피 : 대각선 구도 */

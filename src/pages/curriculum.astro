@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
@@ -159,17 +160,13 @@ const curriculum = [
   },
 ];
 ---
-<BaseLayout title="커리큘럼">
+<BaseLayout title="커리큘럼" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">CURRICULUM</p>
-      <h1>커리큘럼</h1>
-      <p class="page-hero-sub">
-        필라테스 운동법의 이해력을 높이고 교육 종료 직후 트레이닝이 가능한 교육입니다.
-      </p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="CURRICULUM"
+    title="커리큘럼"
+    sub="필라테스 운동법의 이해력을 높이고 교육 종료 직후 트레이닝이 가능한 교육입니다."
+  />
 
   <!-- INTRO -->
   <section class="section intro">
@@ -281,22 +278,6 @@ const curriculum = [
 </BaseLayout>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    background: var(--kp-maroon);
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(70px, 12vw, 130px);
-  }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub {
-    color: var(--kp-pink);
-    font-size: clamp(15px, 2vw, 19px);
-    margin-top: 16px;
-    max-width: 720px;
-    margin-inline: auto;
-  }
 
   /* INTRO */
   .intro-grid {

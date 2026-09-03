@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
 
 // 시설(존)별 소개 — 원본 순서 그대로
@@ -34,15 +35,13 @@ const zones = [
   },
 ];
 ---
-<BaseLayout title="시설 둘러보기">
+<BaseLayout title="시설 둘러보기" overHero={true}>
   <!-- PAGE HERO -->
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">FACILITY</p>
-      <h1>시설 둘러보기</h1>
-      <p class="page-hero-sub">국내 최대 규모의 통합 수련 공간, 더 스파이럴 분당</p>
-    </div>
-  </section>
+  <PageHero
+    eyebrow="FACILITY"
+    title="시설 둘러보기"
+    sub="국내 최대 규모의 통합 수련 공간, 더 스파이럴 분당"
+  />
 
   <!-- INTRO -->
   <section class="section intro">
@@ -89,16 +88,6 @@ const zones = [
 </BaseLayout>
 
 <style>
-  /* PAGE HERO */
-  .page-hero {
-    background: var(--kp-maroon);
-    color: #fff;
-    text-align: center;
-    padding-block: clamp(70px, 12vw, 130px);
-  }
-  .page-hero .eyebrow { color: var(--kp-cream); }
-  .page-hero h1 { color: #fff; font-size: clamp(34px, 6vw, 60px); margin: 0; }
-  .page-hero-sub { color: var(--kp-pink); font-size: clamp(16px, 2vw, 20px); margin-top: 14px; }
 
   /* INTRO */
   .intro { text-align: center; }

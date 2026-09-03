@@ -8,20 +8,23 @@
    브랜드에서 자라난 색입니다.
    ========================================================= */
 :root {
-  /* --- Brand colors (원본 Wix 테마에서 추출 · 기존 페이지 호환) --- */
+  /* --- 레거시 토큰 --------------------------------------------------
+     18개 서브페이지가 이 이름들을 350회 넘게 쓰고 있습니다.
+     이름은 그대로 두고 "값만" 새 팔레트로 옮겨, 페이지를 건드리지 않고
+     테마가 전체에 따라오게 합니다. (구 Wix 테마 값 → warm minimalism)  */
   --kp-white: #ffffff;
-  --kp-cream: rgb(250, 233, 190);
   --kp-ink: rgb(28, 16, 18);
-  --kp-maroon: rgb(59, 30, 34);
-  --kp-brand: #7a695e;
-  --kp-brand-dark: #5f5149;
-  --kp-brand-soft: #9c8679;
-  --kp-sage: var(--kp-brand);
-  --kp-olive: rgb(70, 83, 65);
-  --kp-pink: rgb(214, 192, 195);
+  --kp-cream: #F1E9DD;        /* 구 크림옐로 → 밝은 웜 바탕/온다크 텍스트 */
+  --kp-maroon: #241812;       /* 구 마룬 → 제목용 딥 웜 잉크 */
+  --kp-olive: #6E635A;        /* 구 올리브그린 → 본문 보조 텍스트 */
+  --kp-sage: #A8500C;         /* 구 브라운 → 포인트(밝은 바탕용 오렌지) */
+  --kp-brand: #5A4638;
+  --kp-brand-dark: #3B2C22;
+  --kp-brand-soft: #9C8679;
+  --kp-pink: #D9CCC0;         /* 구 더스티핑크 → 온다크 보조 텍스트 */
   --kp-mugwort: #6f7d53;
   --kp-mugwort-dark: #5c6944;
-  --kp-line: rgba(28, 16, 18, 0.12);
+  --kp-line: rgba(28, 16, 18, 0.10);
 
   /* --- Warm ground scale (배경 · 레이어) --- */
   --kp-sand-50:  #FBF8F4;
@@ -32,9 +35,10 @@
   --kp-stone-dk: #6E635A;
 
   /* --- Accent: 로고에서 추출 --- */
-  --kp-orange:      #F7941C;  /* 로고 'a' */
-  --kp-orange-lit:  #FFB35C;
-  --kp-orange-deep: #DE6B18;
+  --kp-orange:      #F7941C;  /* 로고 'a' — 어두운 바탕·오브젝트용 */
+  --kp-orange-lit:  #FFB35C;  /* 어두운 바탕의 작은 글자용 */
+  --kp-orange-deep: #DE6B18;  /* 큰 글자·장식용 (밝은 바탕 본문에는 3.15:1 이라 부적합) */
+  --kp-orange-ink:  #A8500C;  /* 밝은 바탕의 작은 글자용 — 샌드 위 5.3:1 로 AA 통과 */
   --kp-coral:       #F2683C;
   --kp-lime:        #BABF45;  /* 로고 'P' */
 
@@ -126,7 +130,7 @@ h2 { letter-spacing: -0.03em; }
   color: var(--kp-stone-dk);
   margin-bottom: 18px;
 }
-.eyebrow--accent { color: var(--kp-orange-deep); }
+.eyebrow--accent { color: var(--kp-orange-ink); }
 
 /* 라벨 앞의 짧은 룰 — 카드 대신 선으로 위계를 만든다 */
 .eyebrow--rule { display: inline-flex; align-items: center; gap: 14px; }
@@ -155,6 +159,14 @@ h2 { letter-spacing: -0.03em; }
   transition: opacity .9s var(--ease), transform .9s var(--ease);
 }
 .js-reveal .reveal.is-in { opacity: 1; transform: none; }
+
+/* 좁은 화면에서 중앙정렬 본문은 줄 끝이 들쭉날쭉해 가독성이 떨어진다.
+   (서브페이지 다수가 섹션 단위로 text-align:center 를 쓰고 있음)
+   컨테이너의 정렬은 그대로 두고, 글자 요소에만 직접 좌측 정렬을 건다.
+   상속값은 직접 선언을 이길 수 없으므로 !important 없이 덮인다. */
+@media (max-width: 640px) {
+  main :where(p, h1, h2, h3, h4, blockquote, li, dt, dd) { text-align: left; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

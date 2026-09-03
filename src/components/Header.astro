@@ -149,7 +149,7 @@ const { overHero = false } = Astro.props;
     opacity: .82;
     transition: opacity .3s var(--ease);
   }
-  .nav-top:hover, .nav-item:hover > .nav-top { opacity: 1; color: var(--kp-orange-deep); }
+  .nav-top:hover, .nav-item:hover > .nav-top { opacity: 1; color: var(--kp-orange-ink); }
   .site-header--over:not(.is-scrolled) .nav-top:hover,
   .site-header--over:not(.is-scrolled) .nav-item:hover > .nav-top { color: var(--kp-orange-lit); }
 
@@ -182,11 +182,11 @@ const { overHero = false } = Astro.props;
   .dropdown a::before {
     content: ''; position: absolute; left: 22px; top: 50%;
     width: 0; height: 1px; margin-top: -.5px;
-    background: var(--kp-orange-deep);
+    background: var(--kp-orange-ink);
     transition: width .28s var(--ease);
   }
   .dropdown a:hover, .dropdown a.active {
-    opacity: 1; color: var(--kp-orange-deep); padding-left: 42px;
+    opacity: 1; color: var(--kp-orange-ink); padding-left: 42px;
   }
   .dropdown a:hover::before, .dropdown a.active::before { width: 13px; }
 
@@ -197,19 +197,19 @@ const { overHero = false } = Astro.props;
     white-space: nowrap; transition: opacity .3s var(--ease);
   }
   .login-link span { opacity: .4; margin: 0 4px; }
-  .login-link:hover { opacity: 1; color: var(--kp-orange-deep); }
+  .login-link:hover { opacity: 1; color: var(--kp-orange-ink); }
   .site-header--over:not(.is-scrolled) .login-link:hover { color: var(--kp-orange-lit); }
 
   .auth-desktop-btn { background: none; border: 0; cursor: pointer; font-family: inherit; color: var(--nav-fg); }
   .auth-user { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; white-space: nowrap; color: var(--nav-fg); }
-  .auth-user__name { color: var(--kp-orange-deep); font-weight: 700; }
+  .auth-user__name { color: var(--kp-orange-ink); font-weight: 700; }
   .site-header--over:not(.is-scrolled) .auth-user__name { color: var(--kp-orange-lit); }
   .auth-logout {
     font-size: 11px; letter-spacing: .1em; opacity: .8;
     border: 1px solid currentColor; border-radius: 999px; padding: 5px 12px;
     transition: opacity .3s var(--ease), color .3s var(--ease);
   }
-  .auth-logout:hover { opacity: 1; color: var(--kp-orange-deep); }
+  .auth-logout:hover { opacity: 1; color: var(--kp-orange-ink); }
   .auth-mobile-btn { text-align: left; }
   .auth-mobile { display: none; }
 
@@ -267,7 +267,7 @@ const { overHero = false } = Astro.props;
     .nav-toggle { display: inline-flex; }
     .login-link, .auth-user { display: none; }
     .auth-mobile { display: block; }
-    .auth-mobile .nav-top { color: var(--kp-orange-deep); font-weight: 700; }
+    .auth-mobile .nav-top { color: var(--kp-orange-ink); font-weight: 700; }
 
     .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }

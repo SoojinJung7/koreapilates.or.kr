@@ -1,0 +1,125 @@
+---
+/**
+ * PageHero — 서브페이지 공통 헤더.
+ *
+ * 홈 히어로와 같은 언어(웜 그라운드 · 유리 프레임 · 오렌지 조형)를 쓰되,
+ * 17개 페이지에서 반복되므로 훨씬 절제된 버전입니다.
+ *   • 높이를 홈의 절반 이하로
+ *   • 오브젝트는 우측 2개만 (좌측 텍스트와 충돌 방지)
+ *   • 카피는 좌측 정렬 — 대각선 구도는 홈의 시그니처로 남겨둔다
+ *
+ * props
+ *   eyebrow : 상단 라벨 (예: 'ABOUT KPA')
+ *   title   : h1
+ *   sub     : 보조 문구. 마크업이 필요하면 기본 slot 사용.
+ *   image   : 배경 사진 파일명(public/images 기준). 없으면 웜 그라디언트만.
+ */
+import BackgroundObjects from './BackgroundObjects.astro';
+import GlassPanel from './GlassPanel.astro';
+import { img } from '../utils/url.js';
+
+const { eyebrow, title, sub, image } = Astro.props;
+const hasSlot = Astro.slots.has('default');
+---
+<section class:list={['page-hero', image && 'page-hero--photo']}>
+  {image && <img class="page-hero-bg" src={img(image)} alt="" aria-hidden="true" />}
+  <div class="page-hero-veil"></div>
+
+  <BackgroundObjects variant="page" />
+
+  <div class="wrap page-hero-stage">
+    <GlassPanel class="page-hero-panel">
+      {eyebrow && <p class="page-hero-eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {(hasSlot || sub) && (
+        <p class="page-hero-sub">{hasSlot ? <slot /> : sub}</p>
+      )}
+    </GlassPanel>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    /* 헤더가 위에 떠 있으므로(overHero) 그만큼 상단 여유를 준다 */
+    padding-block: clamp(120px, 15vw, 176px) clamp(52px, 7vw, 84px);
+    background: #2A1D16;
+    color: #fff;
+  }
+
+  .page-hero-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: .34;
+    filter: saturate(.55) contrast(.92) blur(2px);
+    transform: scale(1.05);
+    z-index: 0;
+  }
+
+  /* 웜 그라운드 — 사진이 있든 없든 같은 색조로 수렴시켜 페이지마다 톤이 튀지 않게 */
+  .page-hero-veil {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      linear-gradient(112deg,
+        rgba(34, 23, 17, .94) 0%,
+        rgba(62, 47, 37, .86) 44%,
+        rgba(104, 84, 68, .78) 100%),
+      radial-gradient(120% 120% at 88% 0%, rgba(247, 148, 28, .18), transparent 58%);
+  }
+  /* 사진이 깔린 경우엔 베일을 조금 더 눌러 대비를 확보 */
+  .page-hero--photo .page-hero-veil {
+    background:
+      linear-gradient(112deg,
+        rgba(28, 19, 14, .90) 0%,
+        rgba(52, 40, 31, .84) 46%,
+        rgba(88, 71, 57, .80) 100%),
+      radial-gradient(120% 120% at 88% 0%, rgba(247, 148, 28, .16), transparent 58%);
+  }
+
+  .page-hero-stage { position: relative; z-index: 4; }
+
+  .page-hero-panel {
+    /* 홈보다 얕고 좁게 — 헤더 역할이지 화면 하나를 통째로 쓰는 구성이 아니다 */
+    max-width: 940px;
+    padding: clamp(28px, 3.6vw, 52px) clamp(26px, 3.6vw, 56px);
+    /* 스모크 글라스: 밝은 서리를 얹으면 대비가 깎여 본문이 AA 를 못 넘긴다 */
+    background: rgba(26, 17, 12, .26);
+  }
+
+  .page-hero-eyebrow {
+    margin: 0 0 16px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.30em; text-transform: uppercase;
+    color: var(--kp-orange-lit);
+  }
+
+  .page-hero h1 {
+    margin: 0;
+    font-size: clamp(30px, 4.6vw, 58px);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .page-hero-sub {
+    margin: 18px 0 0;
+    max-width: 52ch;
+    font-size: clamp(14.5px, 1.35vw, 17px);
+    line-height: 1.85;
+    color: rgba(255, 255, 255, .90);
+  }
+
+  @media (max-width: 768px) {
+    .page-hero { padding-block: 104px 44px; }
+    .page-hero-panel { padding: 24px 22px 28px; }
+    .page-hero-eyebrow { font-size: 10px; letter-spacing: .26em; margin-bottom: 12px; }
+    .page-hero-sub { font-size: 14.5px; margin-top: 14px; }
+  }
+</style>
