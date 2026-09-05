@@ -629,12 +629,15 @@ const partners = [
     }
 
     // 재생 종료 시 닫기 + 안전장치(자동재생 차단·오류 대비)
+    // 원본 영상이 길어 2배속으로 재생한다 (2026-09-06).
     if (video) {
+      video.defaultPlaybackRate = 2; // 소스 교체(loadstart) 후에도 유지되도록
+      video.playbackRate = 2;
       video.addEventListener('ended', dismiss);
       video.addEventListener('error', dismiss);
       const p = video.play();
       if (p && typeof p.catch === 'function') p.catch(dismiss);
-      setTimeout(dismiss, 15000);
+      setTimeout(dismiss, 8000);
     } else {
       dismiss();
     }
