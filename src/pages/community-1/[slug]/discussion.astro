@@ -1,0 +1,10 @@
+---
+import WixRedirect from '../../../components/WixRedirect.astro';
+import { wixGroups, wixGroupUrl } from '../../../data/wix-groups.js';
+
+export function getStaticPaths() {
+  return wixGroups.map((g) => ({ params: { slug: g.slug }, props: { group: g } }));
+}
+const { group } = Astro.props;
+---
+<WixRedirect to={wixGroupUrl(group.slug, 'discussion')} title={`${group.name} 게시판으로 이동 중`} />
