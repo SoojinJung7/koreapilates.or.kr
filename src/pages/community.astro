@@ -8,7 +8,7 @@ const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
 // 페이지 대표 이미지
 const heroImg = '6f7ec1_a83cbb7373c448a18e9b390df45c6eb1~mv2.jpeg';
 
-// KPA 커뮤니티 그룹 목록 (원본 Wix 그룹)
+// KPA 커뮤니티 그룹 목록 (원본 Wix 그룹). visibility/members 는 화면에 표시하지 않음 (2026-09-06 결정).
 const groups = [
   {
     n: 1,
@@ -101,17 +101,11 @@ const groups = [
           <article class="group-card">
             <div class="group-media">
               <img src={img(g.image)} alt={g.name} loading="lazy" />
-              <span class={`group-badge ${g.visibility === '공개' ? 'is-public' : 'is-private'}`}>
-                {g.visibility}
-              </span>
             </div>
             <div class="group-body">
               <h3>{g.n}. {g.name}</h3>
-              <p class="group-meta">{g.visibility} · 회원 {g.members}명</p>
               <div class="group-actions">
-                <button class="btn btn--filled btn--sm" type="button" disabled>
-                  {g.visibility === '공개' ? '가입' : '가입 요청하기'}
-                </button>
+                <button class="btn btn--filled btn--sm" type="button" disabled>가입</button>
               </div>
             </div>
           </article>
@@ -186,23 +180,9 @@ const groups = [
   }
   .group-media { position: relative; aspect-ratio: 16 / 9; background: #f1f1f1; }
   .group-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .group-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    padding: 4px 11px;
-    border-radius: 999px;
-    color: #fff;
-  }
-  .group-badge.is-public { background: var(--surface-2); }
-  .group-badge.is-private { background: var(--surface-ink); }
 
   .group-body { padding: clamp(18px, 2.4vw, 24px); display: flex; flex-direction: column; gap: 10px; flex: 1; }
   .group-body h3 { color: var(--ink-strong); font-size: clamp(17px, 2.2vw, 20px); margin: 0; line-height: 1.35; }
-  .group-meta { color: var(--accent-text); font-weight: 700; font-size: 13.5px; margin: 0; }
   .group-actions { margin-top: auto; padding-top: 6px; }
 
   .btn--sm { padding: 9px 20px; font-size: 13.5px; }
