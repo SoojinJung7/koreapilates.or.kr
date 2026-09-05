@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
+import { cohorts, CLASS_PATTERNS, dotDate } from '../data/cohorts.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
 
@@ -19,24 +20,15 @@ const subjects =
   '기초해부학, 필라테스이론, 필라테스 자세측정, 필라테스 프로그램(시퀀스), 매트, 리포머, 캐딜락, 체어, 배럴, 소도구, 필라테스 실전교육';
 const capacity = '총 6명 정원';
 
-// 기수별 교육일정 (최신순)
-const schedule = [
-  { gen: '169기', date: '2026.09.06', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'open', note: '잔여 1자리' },
-  { gen: '168기', date: '2026.05.11', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '167기', date: '2026.01.18', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '166기', date: '2025.10.22', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '165기', date: '2025.06.29', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '164기', date: '2025.04.23', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '163기', date: '2024.12.01', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '162기', date: '2024.09.25', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '161기', date: '2024.04.07', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '160기', date: '2024.01.31', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '159기', date: '2023.11.04', day: '토요반', time: '토요일 12:00 ~ 18:00', status: 'closed' },
-  { gen: '158기', date: '2023.09.10', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '157기', date: '2023.07.12', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-  { gen: '156기', date: '2023.02.26', day: '일요반', time: '일요일 11:00 ~ 17:00', status: 'closed' },
-  { gen: '155기', date: '2023.01.16', day: '월/수반', time: '월요일 10:30~13:30 / 수요일 10:30~13:30', status: 'closed' },
-];
+// 기수별 교육일정 — src/data/cohorts.js 한 곳에서 관리 (달력과 공유)
+const schedule = cohorts.map((c) => ({
+  gen: c.gen,
+  date: dotDate(c.start),
+  day: c.cls,
+  time: CLASS_PATTERNS[c.cls]?.label ?? '',
+  status: c.status,
+  note: c.note,
+}));
 
 const openBatch = schedule.find((s) => s.status === 'open');
 

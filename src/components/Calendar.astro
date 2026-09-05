@@ -8,16 +8,25 @@
 // 색/카테고리는 아래 TYPES 한 곳에서 관리.
 import schedule from '../data/schedule.json';
 import reservations from '../data/reservations.json';
+import { cohortEvents } from '../data/cohorts.js';
 
 const TYPES = {
   academic: { label: 'KPA 정규과정', short: '정규과정',        color: 'var(--c-academic)' },
   practice: { label: '교육생 수련·실습', short: '수련·실습',    color: 'var(--c-practice)' },
   events:   { label: '심화과정·워크샵', short: '심화과정·워크샵', color: 'var(--c-events)' },
-  support:  { label: '멘토링·통역',     short: '멘토링·통역',     color: 'var(--c-support)' },
+  support:  { label: '원장 통역·해외 교육', short: '통역·해외',   color: 'var(--c-support)' },
 };
 
+// 지도자과정 개강·정규수업은 cohorts.js 규칙으로 자동 생성 (빌드일 기준 ±12개월, 매일 재빌드로 갱신).
+const pad2 = (n) => String(n).padStart(2, '0');
+const ym = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const now = new Date();
+const genFrom = ym(new Date(now.getFullYear() - 1, now.getMonth(), 1));
+const genTo = ym(new Date(now.getFullYear() + 1, now.getMonth() + 1, 0));
+const generated = cohortEvents(genFrom, genTo);
+
 // 수동 일정에서 practice 는 제외 — 예약 데이터가 그 자리를 채운다.
-const manual = schedule.events.filter((e) => e.type !== 'practice');
+const manual = schedule.events.filter((e) => e.type !== 'practice').concat(generated);
 const seed = Array.isArray(reservations.items) ? reservations.items : [];
 const seedUpdatedAt = reservations.updatedAt || null;
 
@@ -97,8 +106,9 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     start: it.start, end: it.end, hours: Number(it.hours) || 0,
   });
   const allEvents = () => manual.concat(Array.from(resv.values()).map(toEvent));
+  const startOf = (e) => e.start || (e.time ? String(e.time).split(/[–\-~]/)[0].trim() : '');
   const evOn = (k) => allEvents().filter((e) => e.date === k)
-    .sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+    .sort((a, b) => startOf(a).localeCompare(startOf(b)));
 
   async function loadRange(from, to, keys) {
     if (!apiUrl) return false;
@@ -205,7 +215,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     if (!evs.length) { el.innerHTML = `<p class="cw-empty">${isToday ? '오늘은' : '이 날은'} 등록된 일정이 없습니다.</p>`; return; }
     el.innerHTML = evs.map((e) => {
       const t = meta(e.type);
-      const time = e.start ? `${e.start}–${e.end}` : '종일';
+      const time = e.start ? `${e.start}–${e.end}` : (e.time || '종일');
       // 수련·실습은 제목에 종류가 이미 들어 있으므로 오른쪽 분류 라벨은 생략
       const typeTag = e.type === 'practice' ? '' : `<span class="cw-utype" style="color:${t.color}">${t.short}</span>`;
       return `<div class="cw-drow">
@@ -218,9 +228,9 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   }
 
   function renderUpcoming() {
-    // 다가오는 일정 리스트는 '행사 위주'로 — 반복되는 수련은 제외(달력 점·통계·선택한 날엔 그대로 포함)
+    // 다가오는 일정 리스트는 '행사 위주'로 — 반복되는 수련·정규수업은 제외(달력 점·통계·선택한 날엔 그대로 포함)
     const up = manual
-      .filter((e) => parse(e.date) >= TODAY)
+      .filter((e) => parse(e.date) >= TODAY && !e.recurring)
       .sort((a, b) => a.date.localeCompare(b.date)).slice(0, 7);
     const el = document.getElementById('cw-up');
     if (!up.length) { el.innerHTML = '<p class="cw-empty">예정된 일정이 없습니다.</p>'; return; }
@@ -261,7 +271,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     --c-academic: #c0453b;   /* 🔴 정규수업·개강·수료·시험 */
     --c-practice: #5a9e6a;   /* 🟢 교육생 교육장 예약·수련 */
     --c-events: #e08a39;     /* 🟠 심화과정·워크샵·세미나 */
-    --c-support: #4677b0;    /* 🔵 멘토 트레이닝·통역 */
+    --c-support: #4677b0;    /* 🔵 원장 통역·해외 교육 */
   }
 
   /* 범례 */
@@ -336,7 +346,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   .cal-widget .cw-urow, .cal-widget .cw-drow { display: flex; gap: 15px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); }
   .cal-widget .cw-urow:last-child, .cal-widget .cw-drow:last-child { border-bottom: 0; }
   .cal-widget .cw-ubar { width: 4px; align-self: stretch; border-radius: 3px; flex-shrink: 0; min-height: 34px; }
-  .cal-widget .cw-udate { flex-shrink: 0; font-size: 14px; color: var(--ink); font-weight: 600; width: 64px; font-variant-numeric: tabular-nums; }
+  .cal-widget .cw-udate { flex-shrink: 0; font-size: 14px; color: var(--ink); font-weight: 600; width: 78px; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .cal-widget .cw-udate em { font-style: normal; color: var(--ink-muted); font-weight: 400; font-size: 13px; }
   .cal-widget .cw-dtime { flex-shrink: 0; font-size: 13.5px; color: var(--ink); font-weight: 600; width: 96px; font-variant-numeric: tabular-nums; }
   .cal-widget .cw-utitle { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: var(--ink); }
