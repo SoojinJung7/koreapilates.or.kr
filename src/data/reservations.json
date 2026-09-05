@@ -1,0 +1,8 @@
+{
+  "_comment": "빌드 시 KPA-student 공개 일정 API에서 자동 생성되는 폴백 사본(scripts/fetch-schedule.mjs). 직접 편집하지 말 것. 저장소에는 빈 상태로 두고 CI 빌드 때 채워진다.",
+  "source": null,
+  "updatedAt": null,
+  "from": null,
+  "to": null,
+  "items": []
+}

@@ -1,17 +1,34 @@
 ---
-// 공용 캘린더 위젯 — 미니 월 달력 + 이달 활동요약 + 다가오는 일정.
-// schedule.json 의 events 를 읽어 렌더한다. 색/카테고리는 아래 TYPES 한 곳에서 관리.
+// 공용 캘린더 위젯 — 미니 월 달력 + 이달 활동요약 + 선택한 날 상세 + 다가오는 일정.
+//
+// 데이터 소스 두 곳:
+//   1) src/data/schedule.json      — 수동 관리 일정(개강·워크샵·통역 등). 빌드 시 포함.
+//   2) KPA-student 공개 일정 API    — 교육생 교육장 예약. 방문자 브라우저가 실시간으로 읽고,
+//      앱이 응답하지 않으면 빌드 시 받아둔 src/data/reservations.json(폴백 사본)을 쓴다.
+// 색/카테고리는 아래 TYPES 한 곳에서 관리.
 import schedule from '../data/schedule.json';
+import reservations from '../data/reservations.json';
 
 const TYPES = {
   academic: { label: 'KPA 정규과정', short: '정규과정',        color: 'var(--c-academic)' },
-  practice: { label: '수련·실습',      short: '수련·실습',      color: 'var(--c-practice)' },
+  practice: { label: '교육생 수련·실습', short: '수련·실습',    color: 'var(--c-practice)' },
   events:   { label: '심화과정·워크샵', short: '심화과정·워크샵', color: 'var(--c-events)' },
   support:  { label: '멘토링·통역',     short: '멘토링·통역',     color: 'var(--c-support)' },
 };
 
-const events = schedule.events;
-const used = new Set(events.map((e) => e.type));
+// 수동 일정에서 practice 는 제외 — 예약 데이터가 그 자리를 채운다.
+const manual = schedule.events.filter((e) => e.type !== 'practice');
+const seed = Array.isArray(reservations.items) ? reservations.items : [];
+const seedUpdatedAt = reservations.updatedAt || null;
+
+// 앱 origin: PUBLIC_APP_URL 우선, 없으면 SSO 용 PUBLIC_APP_LOGIN_URL 의 origin.
+const appOrigin = (() => {
+  const raw = import.meta.env.PUBLIC_APP_URL || import.meta.env.PUBLIC_APP_LOGIN_URL || '';
+  try { return raw ? new URL(raw).origin : ''; } catch { return ''; }
+})();
+const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
+
+const used = new Set([...manual.map((e) => e.type), 'practice']);
 const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) => v);
 ---
 <div class="cal-widget">
@@ -34,62 +51,135 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
       </div>
       <div class="cal-weekdays" id="cw-week"></div>
       <div class="cal-days" id="cw-days"></div>
+      <p class="cal-sync" id="cw-sync" aria-live="polite"></p>
     </div>
-    <div class="cal-upcoming">
-      <p class="cal-up-title">다가오는 일정</p>
-      <div class="cal-up" id="cw-up"></div>
+    <div class="cal-side">
+      <div class="cal-day">
+        <p class="cal-up-title" id="cw-day-title">오늘</p>
+        <div class="cal-day-list" id="cw-day"></div>
+      </div>
+      <div class="cal-upcoming">
+        <p class="cal-up-title">다가오는 일정</p>
+        <div class="cal-up" id="cw-up"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<script define:vars={{ events, TYPES }}>
+<script define:vars={{ manual, seed, seedUpdatedAt, TYPES, apiUrl }}>
   const WD = ['일', '월', '화', '수', '목', '금', '토'];
   const pad = (n) => String(n).padStart(2, '0');
   const keyOf = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
-  const evOn = (k) => events.filter((e) => e.date === k);
   const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
   const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
   const meta = (t) => TYPES[t] || { label: '기타', short: '기타', color: '#9a9088' };
+  // 이름·시설명은 앱 사용자 입력값 → 반드시 이스케이프
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const lastDay = (y, m) => new Date(y, m + 1, 0).getDate();
+  const monthKey = (y, m) => `${y}-${pad(m + 1)}`;
 
   const now = new Date();
   const TODAY = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const TODAY_KEY = keyOf(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
 
-  // 기본 표시 월: 오늘 이후 가장 이른 일정이 있는 달 (없으면 이번 달) — 항상 '살아있는' 달을 보여준다
-  const future = events.map((e) => parse(e.date)).filter((d) => d >= TODAY).sort((a, b) => a - b);
-  const anchor = future.length ? future[0] : TODAY;
-  let view = { y: anchor.getFullYear(), m: anchor.getMonth() };
+  // ---------- 예약 데이터 (실시간 + 폴백) ----------
+  const resv = new Map();              // id → API item
+  seed.forEach((it) => resv.set(it.id, it));
+  const loaded = new Set();            // 실시간으로 받아온 월 키
+  let syncState = seed.length ? 'seed' : 'none';
+  let syncAt = null;
 
-  function init(root) {
-    root = root || document;
-    const $ = (id) => root.getElementById ? root.getElementById(id) : document.getElementById(id);
+  // 표시 형식은 한 줄로 고정: "168기 홍길동 수련" / "168기 홍길동 실습". 위치(시설)는 내보내지 않는다.
+  const cohortLabel = (c) => (/^\d+$/.test(String(c || '')) ? `${c}기` : String(c || ''));
+  const toEvent = (it) => ({
+    date: it.date, type: 'practice',
+    title: [cohortLabel(it.cohort), it.name, it.kind === 'with_guest' ? '실습' : '수련'].filter(Boolean).join(' '),
+    start: it.start, end: it.end, hours: Number(it.hours) || 0,
+  });
+  const allEvents = () => manual.concat(Array.from(resv.values()).map(toEvent));
+  const evOn = (k) => allEvents().filter((e) => e.date === k)
+    .sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+
+  async function loadRange(from, to, keys) {
+    if (!apiUrl) return false;
+    try {
+      const res = await fetch(`${apiUrl}?from=${from}&to=${to}`, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) throw new Error(String(res.status));
+      const json = await res.json();
+      if (!Array.isArray(json.items)) throw new Error('bad payload');
+      // 범위 안의 기존(폴백) 항목을 실시간 결과로 교체
+      for (const [id, it] of resv) if (it.date >= from && it.date <= to) resv.delete(id);
+      json.items.forEach((it) => resv.set(it.id, it));
+      keys.forEach((k) => loaded.add(k));
+      syncState = 'live'; syncAt = new Date();
+      return true;
+    } catch {
+      if (syncState !== 'live') syncState = seed.length ? 'seed' : 'off';
+      return false;
+    }
+  }
+  function monthRange(y, m) {
+    return { from: keyOf(y, m, 1), to: keyOf(y, m, lastDay(y, m)), keys: [monthKey(y, m)] };
+  }
+  async function ensureMonth(y, m) {
+    if (!apiUrl || loaded.has(monthKey(y, m))) return;
+    const r = monthRange(y, m);
+    if (await loadRange(r.from, r.to, r.keys)) { render(); renderDay(); }
+    renderSync();
+  }
+
+  // ---------- 상태 ----------
+  let view = { y: TODAY.getFullYear(), m: TODAY.getMonth() };
+  let selected = TODAY_KEY;
+
+  function init() {
     if (!document.getElementById('cw-week')) return;
     document.getElementById('cw-week').innerHTML =
       WD.map((w, i) => `<span class="${i === 0 ? 'sun' : ''}">${w}</span>`).join('');
-    document.getElementById('cw-prev').onclick = () => { view.m--; if (view.m < 0) { view.m = 11; view.y--; } render(); };
-    document.getElementById('cw-next').onclick = () => { view.m++; if (view.m > 11) { view.m = 0; view.y++; } render(); };
-    render();
-    renderUpcoming();
+    document.getElementById('cw-prev').onclick = () => { view.m--; if (view.m < 0) { view.m = 11; view.y--; } render(); ensureMonth(view.y, view.m); };
+    document.getElementById('cw-next').onclick = () => { view.m++; if (view.m > 11) { view.m = 0; view.y++; } render(); ensureMonth(view.y, view.m); };
+    document.getElementById('cw-days').addEventListener('click', (ev) => {
+      const cell = ev.target.closest('.cw-cell[data-key]');
+      if (!cell) return;
+      selected = cell.dataset.key; render(); renderDay();
+    });
+    document.getElementById('cw-days').addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      const cell = ev.target.closest('.cw-cell[data-key]');
+      if (!cell) return;
+      ev.preventDefault(); selected = cell.dataset.key; render(); renderDay();
+    });
+    render(); renderDay(); renderUpcoming(); renderSync();
+
+    // 첫 로드: 지난달 ~ 다다음달을 한 번에 (API 최대 130일 안쪽)
+    if (apiUrl) {
+      const a = new Date(view.y, view.m - 1, 1), b = new Date(view.y, view.m + 2, 1);
+      const keys = [];
+      for (let d = new Date(a); d < new Date(view.y, view.m + 3, 1); d.setMonth(d.getMonth() + 1)) keys.push(monthKey(d.getFullYear(), d.getMonth()));
+      loadRange(keyOf(a.getFullYear(), a.getMonth(), 1), keyOf(b.getFullYear(), b.getMonth(), lastDay(b.getFullYear(), b.getMonth())), keys)
+        .then(() => { render(); renderDay(); renderSync(); });
+    }
   }
 
   function render() {
     document.getElementById('cw-title').textContent = `${view.y}년 ${view.m + 1}월`;
     const first = new Date(view.y, view.m, 1);
     const start = new Date(first); start.setDate(1 - first.getDay());
-    const counts = {};
+    const counts = {}; let hours = 0;
     let html = '';
     for (let i = 0; i < 42; i++) {
       const d = new Date(start); d.setDate(start.getDate() + i);
       const out = d.getMonth() !== view.m;
-      const isSun = d.getDay() === 0;
-      const isToday = same(d, TODAY);
-      const evs = evOn(keyOf(d.getFullYear(), d.getMonth(), d.getDate()));
-      if (!out) evs.forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; });
+      const key = keyOf(d.getFullYear(), d.getMonth(), d.getDate());
+      const evs = evOn(key);
+      if (!out) evs.forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; if (e.type === 'practice') hours += e.hours; });
       const dots = evs.slice(0, 4)
         .map((e) => `<span class="cw-mdot" style="background:${meta(e.type).color}"></span>`).join('');
-      const cls = ['cw-cell', out ? 'out' : '', isSun ? 'sun' : '', isToday ? 'today' : '', evs.length ? 'has' : '']
-        .filter(Boolean).join(' ');
-      const tip = evs.map((e) => e.title).join(', ');
-      html += `<div class="${cls}" title="${tip}">${d.getDate()}${dots ? `<span class="cw-mdots">${dots}</span>` : ''}</div>`;
+      const cls = ['cw-cell', out ? 'out' : '', d.getDay() === 0 ? 'sun' : '', same(d, TODAY) ? 'today' : '',
+        key === selected ? 'sel' : '', evs.length ? 'has' : ''].filter(Boolean).join(' ');
+      const tip = esc(evs.map((e) => e.title).join(', '));
+      const attrs = out ? '' : ` data-key="${key}" role="button" tabindex="0" aria-label="${key} 일정 ${evs.length}건"`;
+      html += `<div class="${cls}"${attrs} title="${tip}">${d.getDate()}${dots ? `<span class="cw-mdots">${dots}</span>` : ''}</div>`;
     }
     document.getElementById('cw-days').innerHTML = html;
 
@@ -98,15 +188,39 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     const order = Object.keys(TYPES);
     const chips = Object.entries(counts).sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
       .map(([t, n]) => `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).short} <b>${n}</b></span>`).join('');
+    const manualN = total - (counts.practice || 0);
+    const summary = [hours ? `수련 ${Math.round(hours * 10) / 10}시간` : '', manualN ? `일정 ${manualN}건` : ''].filter(Boolean).join(' · ');
     document.getElementById('cw-stats').innerHTML = total
-      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${total}시간</span><div class="cw-chips">${chips}</div>`
+      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${summary}</span><div class="cw-chips">${chips}</div>`
       : `<span class="cw-live cw-live--off"></span><span class="cw-total">이 달 등록된 일정 없음</span>`;
   }
 
+  function renderDay() {
+    const dt = parse(selected);
+    const isToday = selected === TODAY_KEY;
+    document.getElementById('cw-day-title').textContent =
+      `${dt.getMonth() + 1}월 ${dt.getDate()}일 (${WD[dt.getDay()]})${isToday ? ' · 오늘' : ''}`;
+    const evs = evOn(selected);
+    const el = document.getElementById('cw-day');
+    if (!evs.length) { el.innerHTML = `<p class="cw-empty">${isToday ? '오늘은' : '이 날은'} 등록된 일정이 없습니다.</p>`; return; }
+    el.innerHTML = evs.map((e) => {
+      const t = meta(e.type);
+      const time = e.start ? `${e.start}–${e.end}` : '종일';
+      // 수련·실습은 제목에 종류가 이미 들어 있으므로 오른쪽 분류 라벨은 생략
+      const typeTag = e.type === 'practice' ? '' : `<span class="cw-utype" style="color:${t.color}">${t.short}</span>`;
+      return `<div class="cw-drow">
+        <span class="cw-ubar" style="background:${t.color}"></span>
+        <span class="cw-dtime">${esc(time)}</span>
+        <span class="cw-utitle">${esc(e.title)}${e.where ? `<span class="cw-uwhere"> · ${esc(e.where)}</span>` : ''}</span>
+        ${typeTag}
+      </div>`;
+    }).join('');
+  }
+
   function renderUpcoming() {
-    // 다가오는 일정 리스트는 '행사 위주'로 — 반복되는 수련은 제외(달력 점·통계엔 그대로 포함)
-    const up = events
-      .filter((e) => parse(e.date) >= TODAY && e.type !== 'practice')
+    // 다가오는 일정 리스트는 '행사 위주'로 — 반복되는 수련은 제외(달력 점·통계·선택한 날엔 그대로 포함)
+    const up = manual
+      .filter((e) => parse(e.date) >= TODAY)
       .sort((a, b) => a.date.localeCompare(b.date)).slice(0, 7);
     const el = document.getElementById('cw-up');
     if (!up.length) { el.innerHTML = '<p class="cw-empty">예정된 일정이 없습니다.</p>'; return; }
@@ -115,10 +229,22 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
       return `<div class="cw-urow">
         <span class="cw-ubar" style="background:${t.color}"></span>
         <span class="cw-udate">${dt.getMonth() + 1}.${dt.getDate()} <em>(${WD[dt.getDay()]})</em></span>
-        <span class="cw-utitle">${e.title}${e.where ? `<span class="cw-uwhere"> · ${e.where}</span>` : ''}</span>
+        <span class="cw-utitle">${esc(e.title)}${e.where ? `<span class="cw-uwhere"> · ${esc(e.where)}</span>` : ''}</span>
         <span class="cw-utype" style="color:${t.color}">${t.short}</span>
       </div>`;
     }).join('');
+  }
+
+  function renderSync() {
+    const el = document.getElementById('cw-sync');
+    if (syncState === 'live' && syncAt) {
+      el.innerHTML = `<i class="cw-sync-dot"></i>교육장 예약 실시간 반영 · ${pad(syncAt.getHours())}:${pad(syncAt.getMinutes())} 기준`;
+    } else if (syncState === 'seed' && seedUpdatedAt) {
+      const d = new Date(seedUpdatedAt);
+      el.textContent = `교육장 예약 ${d.getMonth() + 1}.${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())} 기준`;
+    } else {
+      el.textContent = '';
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init());
@@ -133,7 +259,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   .cal-widget {
     /* 4개 카테고리 색 */
     --c-academic: #c0453b;   /* 🔴 정규수업·개강·수료·시험 */
-    --c-practice: #5a9e6a;   /* 🟢 교육생 수련·실습 */
+    --c-practice: #5a9e6a;   /* 🟢 교육생 교육장 예약·수련 */
     --c-events: #e08a39;     /* 🟠 심화과정·워크샵·세미나 */
     --c-support: #4677b0;    /* 🔵 멘토 트레이닝·통역 */
   }
@@ -157,10 +283,11 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   .cal-widget .cw-chip i { width: 8px; height: 8px; border-radius: 2px; }
   .cal-widget .cw-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
   @keyframes cwpulse { 0% { box-shadow: 0 0 0 0 rgba(207,75,62,0.5); } 70% { box-shadow: 0 0 0 7px rgba(207,75,62,0); } 100% { box-shadow: 0 0 0 0 rgba(207,75,62,0); } }
-  @media (prefers-reduced-motion: reduce) { .cal-widget .cw-live i { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .cal-widget .cw-live i, .cal-widget .cw-sync-dot { animation: none; } }
 
   /* 레이아웃 */
   .cal-widget .cal-hybrid { display: grid; grid-template-columns: 360px 1fr; gap: 44px; align-items: start; text-align: left; }
+  .cal-widget .cal-side { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
 
   /* 달력 상단 바 */
   .cal-widget .cal-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -183,22 +310,35 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-size: 13px; border-radius: 9px; color: var(--ink); position: relative; gap: 3px;
     font-variant-numeric: tabular-nums;
+    transition: background .18s, box-shadow .18s;
   }
+  .cal-widget .cw-cell[data-key] { cursor: pointer; }
+  .cal-widget .cw-cell[data-key]:hover { background: var(--surface-2); }
+  .cal-widget .cw-cell[data-key]:focus-visible { outline: 2px solid var(--warm-600); outline-offset: 1px; }
   .cal-widget .cw-cell.out { color: var(--line); }
   .cal-widget .cw-cell.sun { color: #a8524e; }
   .cal-widget .cw-cell.has { font-weight: 700; }
+  .cal-widget .cw-cell.sel { box-shadow: inset 0 0 0 2px var(--warm-600); }
   .cal-widget .cw-cell.today { background: var(--surface-ink); color: #fff; }
+  .cal-widget .cw-cell.today.sel { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px var(--surface-ink); }
   .cal-widget .cw-mdots { display: flex; gap: 2px; position: absolute; bottom: 4px; }
   .cal-widget .cw-mdot { width: 5px; height: 5px; border-radius: 50%; }
 
-  /* 다가오는 일정 */
+  /* 동기화 상태 */
+  .cal-widget .cal-sync { display: flex; align-items: center; gap: 7px; margin: 12px 2px 0; font-size: 12px; color: var(--ink-muted); min-height: 1em; }
+  .cal-widget .cal-sync:empty { display: none; }
+  .cal-widget .cw-sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-practice); box-shadow: 0 0 0 0 rgba(90,158,106,0.6); animation: cwpulse-green 2.4s infinite; }
+  @keyframes cwpulse-green { 0% { box-shadow: 0 0 0 0 rgba(90,158,106,0.5); } 70% { box-shadow: 0 0 0 6px rgba(90,158,106,0); } 100% { box-shadow: 0 0 0 0 rgba(90,158,106,0); } }
+
+  /* 선택한 날 · 다가오는 일정 */
   .cal-widget .cal-up-title { font-size: 13px; font-weight: 700; color: var(--warm-600); letter-spacing: 0.08em; text-transform: uppercase; margin: 2px 0 14px; }
-  .cal-widget .cal-up { display: flex; flex-direction: column; }
-  .cal-widget .cw-urow { display: flex; gap: 15px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); }
-  .cal-widget .cw-urow:last-child { border-bottom: 0; }
+  .cal-widget .cal-up, .cal-widget .cal-day-list { display: flex; flex-direction: column; }
+  .cal-widget .cw-urow, .cal-widget .cw-drow { display: flex; gap: 15px; align-items: center; padding: 12px 4px; border-bottom: 1px solid var(--line); }
+  .cal-widget .cw-urow:last-child, .cal-widget .cw-drow:last-child { border-bottom: 0; }
   .cal-widget .cw-ubar { width: 4px; align-self: stretch; border-radius: 3px; flex-shrink: 0; min-height: 34px; }
   .cal-widget .cw-udate { flex-shrink: 0; font-size: 14px; color: var(--ink); font-weight: 600; width: 64px; font-variant-numeric: tabular-nums; }
   .cal-widget .cw-udate em { font-style: normal; color: var(--ink-muted); font-weight: 400; font-size: 13px; }
+  .cal-widget .cw-dtime { flex-shrink: 0; font-size: 13.5px; color: var(--ink); font-weight: 600; width: 96px; font-variant-numeric: tabular-nums; }
   .cal-widget .cw-utitle { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; color: var(--ink); }
   .cal-widget .cw-uwhere { font-weight: 400; color: var(--ink-muted); font-size: 13.5px; }
   .cal-widget .cw-utype { flex-shrink: 0; font-size: 12px; font-weight: 700; }
@@ -208,5 +348,6 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     .cal-widget .cal-hybrid { grid-template-columns: 1fr; gap: 30px; }
     .cal-widget .cal-mini { max-width: 380px; margin-inline: auto; width: 100%; }
     .cal-widget .cw-utype { display: none; }
+    .cal-widget .cw-dtime { width: 84px; font-size: 13px; }
   }
 </style>

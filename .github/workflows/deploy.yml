@@ -36,6 +36,8 @@ jobs:
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
           PUBLIC_AUTH_COOKIE_DOMAIN: ${{ vars.PUBLIC_AUTH_COOKIE_DOMAIN }}
           PUBLIC_APP_LOGIN_URL: ${{ vars.PUBLIC_APP_LOGIN_URL }}
+          # 달력 실데이터 — 앱 공개 일정 API origin. 없으면 PUBLIC_APP_LOGIN_URL 의 origin 을 씀.
+          PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
