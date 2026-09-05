@@ -37,16 +37,9 @@ const appOrigin = (() => {
 })();
 const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
 
-const used = new Set([...manual.map((e) => e.type), 'practice']);
-const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) => v);
 ---
 <div class="cal-widget">
-  <div class="cal-legend">
-    {legend.map((t) => (
-      <span><i class="cw-dot" style={`background:${t.color}`}></i>{t.label}</span>
-    ))}
-  </div>
-
+  <!-- 이 달 활동 요약 — 카테고리 칩이 범례 역할을 겸한다 -->
   <div class="cal-stats" id="cw-stats"></div>
 
   <div class="cal-hybrid">
@@ -107,6 +100,15 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   });
   const allEvents = () => manual.concat(Array.from(resv.values()).map(toEvent));
   const startOf = (e) => e.start || (e.time ? String(e.time).split(/[–\-~]/)[0].trim() : '');
+  // 일정 길이(시간): 예약은 hours, 수동·기수 일정은 time('10:30–13:30')에서 계산. 종일 항목은 0.
+  const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + (m || 0); };
+  const hoursOf = (e) => {
+    if (e.hours) return Number(e.hours) || 0;
+    const parts = e.time ? String(e.time).split(/[–\-~]/).map((x) => x.trim()) : [];
+    if (parts.length < 2 || !/^\d{1,2}:\d{2}$/.test(parts[0]) || !/^\d{1,2}:\d{2}$/.test(parts[1])) return 0;
+    return Math.max(0, (toMin(parts[1]) - toMin(parts[0])) / 60);
+  };
+  const fmtH = (h) => String(Math.round(h * 10) / 10);
   const evOn = (k) => allEvents().filter((e) => e.date === k)
     .sort((a, b) => startOf(a).localeCompare(startOf(b)));
 
@@ -134,7 +136,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
   async function ensureMonth(y, m) {
     if (!apiUrl || loaded.has(monthKey(y, m))) return;
     const r = monthRange(y, m);
-    if (await loadRange(r.from, r.to, r.keys)) { render(); renderDay(); }
+    if (await loadRange(r.from, r.to, r.keys)) { render(); renderStats(); renderDay(); }
     renderSync();
   }
 
@@ -159,7 +161,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
       if (!cell) return;
       ev.preventDefault(); selected = cell.dataset.key; render(); renderDay();
     });
-    render(); renderDay(); renderUpcoming(); renderSync();
+    render(); renderStats(); renderDay(); renderUpcoming(); renderSync();
 
     // 첫 로드: 지난달 ~ 다다음달을 한 번에 (API 최대 130일 안쪽)
     if (apiUrl) {
@@ -167,7 +169,7 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
       const keys = [];
       for (let d = new Date(a); d < new Date(view.y, view.m + 3, 1); d.setMonth(d.getMonth() + 1)) keys.push(monthKey(d.getFullYear(), d.getMonth()));
       loadRange(keyOf(a.getFullYear(), a.getMonth(), 1), keyOf(b.getFullYear(), b.getMonth(), lastDay(b.getFullYear(), b.getMonth())), keys)
-        .then(() => { render(); renderDay(); renderSync(); });
+        .then(() => { render(); renderStats(); renderDay(); renderSync(); });
     }
   }
 
@@ -175,14 +177,13 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     document.getElementById('cw-title').textContent = `${view.y}년 ${view.m + 1}월`;
     const first = new Date(view.y, view.m, 1);
     const start = new Date(first); start.setDate(1 - first.getDay());
-    const counts = {}; let hours = 0;
+
     let html = '';
     for (let i = 0; i < 42; i++) {
       const d = new Date(start); d.setDate(start.getDate() + i);
       const out = d.getMonth() !== view.m;
       const key = keyOf(d.getFullYear(), d.getMonth(), d.getDate());
       const evs = evOn(key);
-      if (!out) evs.forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; if (e.type === 'practice') hours += e.hours; });
       const dots = evs.slice(0, 4)
         .map((e) => `<span class="cw-mdot" style="background:${meta(e.type).color}"></span>`).join('');
       const cls = ['cw-cell', out ? 'out' : '', d.getDay() === 0 ? 'sun' : '', same(d, TODAY) ? 'today' : '',
@@ -193,16 +194,31 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     }
     document.getElementById('cw-days').innerHTML = html;
 
-    // 이 달 활동 요약
+  }
+
+  // 최근 30일 활동 요약 — 달력 월과 무관하게 오늘 기준 지난 30일을 합산 (월초에도 숫자가 비지 않게).
+  // 총 시간(정규과정+수련·실습+시간 있는 일정) + 건수. 칩은 범례를 겸한다.
+  function renderStats() {
+    const from = new Date(TODAY); from.setDate(from.getDate() - 29);
+    const fromKey = keyOf(from.getFullYear(), from.getMonth(), from.getDate());
+    const counts = {}; const hoursBy = {}; let hours = 0;
+    allEvents().forEach((e) => {
+      if (e.date < fromKey || e.date > TODAY_KEY) return;
+      counts[e.type] = (counts[e.type] || 0) + 1;
+      const h = hoursOf(e); hoursBy[e.type] = (hoursBy[e.type] || 0) + h; hours += h;
+    });
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
     const order = Object.keys(TYPES);
     const chips = Object.entries(counts).sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
-      .map(([t, n]) => `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).short} <b>${n}</b></span>`).join('');
-    const manualN = total - (counts.practice || 0);
-    const summary = [hours ? `수련 ${Math.round(hours * 10) / 10}시간` : '', manualN ? `일정 ${manualN}건` : ''].filter(Boolean).join(' · ');
+      .map(([t, n]) => {
+        const h = hoursBy[t] || 0;
+        const val = h ? `${fmtH(h)}시간` : `${n}건`;
+        return `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).label} <b>${val}</b></span>`;
+      }).join('');
+    const summary = hours ? `${fmtH(hours)}시간 <small>· ${total}건</small>` : `${total}건`;
     document.getElementById('cw-stats').innerHTML = total
-      ? `<span class="cw-live"><i></i>이 달 활동</span><span class="cw-total">${summary}</span><div class="cw-chips">${chips}</div>`
-      : `<span class="cw-live cw-live--off"></span><span class="cw-total">이 달 등록된 일정 없음</span>`;
+      ? `<span class="cw-live"><i></i>최근 30일 활동</span><span class="cw-total">${summary}</span><div class="cw-chips">${chips}</div>`
+      : `<span class="cw-live cw-live--off"></span><span class="cw-total">최근 30일 등록된 일정 없음</span>`;
   }
 
   function renderDay() {
@@ -274,23 +290,19 @@ const legend = Object.entries(TYPES).filter(([k]) => used.has(k)).map(([, v]) =>
     --c-support: #4677b0;    /* 🔵 원장 통역·해외 교육 */
   }
 
-  /* 범례 */
-  .cal-widget .cal-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; margin-bottom: 20px; }
-  .cal-widget .cal-legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-muted); }
-  .cal-widget .cw-dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
-
-  /* 이 달 활동 요약 */
+  /* 이 달 활동 요약 (범례 겸용) */
   .cal-widget .cal-stats {
-    display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; justify-content: center;
-    max-width: 860px; margin: 0 auto 30px; padding: 14px 18px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px 22px; justify-content: center;
+    max-width: 900px; margin: 0 auto 30px; padding: 16px 22px;
     background: #fff; border: 1px solid var(--line); border-radius: 12px;
   }
   .cal-widget .cw-live { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--ink-strong); }
   .cal-widget .cw-live i { width: 8px; height: 8px; border-radius: 50%; background: #cf4b3e; box-shadow: 0 0 0 0 rgba(207,75,62,0.6); animation: cwpulse 2s infinite; }
-  .cal-widget .cw-total { font-size: 15px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .cal-widget .cw-chips { display: flex; flex-wrap: wrap; gap: 6px 10px; }
-  .cal-widget .cw-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--ink-muted); }
-  .cal-widget .cw-chip i { width: 8px; height: 8px; border-radius: 2px; }
+  .cal-widget .cw-total { font-size: 20px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .cal-widget .cw-total small { font-size: 13px; font-weight: 600; color: var(--ink-muted); }
+  .cal-widget .cw-chips { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; }
+  .cal-widget .cw-chip { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-muted); }
+  .cal-widget .cw-chip i { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
   .cal-widget .cw-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
   @keyframes cwpulse { 0% { box-shadow: 0 0 0 0 rgba(207,75,62,0.5); } 70% { box-shadow: 0 0 0 7px rgba(207,75,62,0); } 100% { box-shadow: 0 0 0 0 rgba(207,75,62,0); } }
   @media (prefers-reduced-motion: reduce) { .cal-widget .cw-live i, .cal-widget .cw-sync-dot { animation: none; } }
