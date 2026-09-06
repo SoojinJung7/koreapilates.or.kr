@@ -36,6 +36,7 @@ export const CLASS_PATTERNS = {
 
 // 최신순
 export const cohorts = [
+  { gen: '170기', start: '2026-12-07', end: null, cls: '월/수반', status: 'open' },
   {
     // 169기 일요반 커리큘럼표(2026-09 기준) 반영. 교육순서·일정은 습득속도에 따라 유동적.
     gen: '169기', start: '2026-09-06', end: '2027-02-21', cls: '일요반', status: 'closed',
