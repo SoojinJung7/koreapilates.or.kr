@@ -4,6 +4,8 @@ import PageHero from '../components/PageHero.astro';
 import { withBase, img } from '../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
+// 정규과정(지도자과정) 수강신청 — 구글 폼
+const applyForm = 'https://forms.gle/7So1owSrovtzRoJa6';
 
 // 협회만의 차별화 교육 (원본 순서 그대로)
 const features = [
@@ -269,7 +271,7 @@ const curriculum = [
       <h2>지금 지도자과정을 시작하세요</h2>
       <p class="cta-lead">교육 개강 일정과 비용을 확인하고, 궁금한 점은 카카오톡으로 상담하세요.</p>
       <div class="cta-band__actions">
-        <a class="btn btn--filled cta-primary" href={withBase('/category/all-products')}>교육 신청하기</a>
+        <a class="btn btn--filled cta-primary" href={applyForm} target="_blank" rel="noopener">교육 신청하기</a>
         <a class="btn cta-ghost" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
       </div>
       <a class="cta-textlink" href={withBase('/coursedate')}>교육 개강 일정 보기 →</a>
