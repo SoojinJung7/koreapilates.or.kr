@@ -15,13 +15,25 @@
 // 색: 떠 있는 버튼과 손님 말풍선은 --accent-text(#A8500C). 흰 글자 대비 5.5:1 로 AA 통과다
 //     (--accent #F7941C 는 2.3:1, --accent-deep #DE6B18 은 3.4:1 이라 글자를 못 얹는다).
 // ---------------------------------------------------------------------------
+import mascotCfg from '../data/chat-mascot.json';
+import { withBase } from '../utils/url.js';
+
 const PHILLIPTALK_URL =
   import.meta.env.PUBLIC_PHILLIPTALK_URL || 'https://to-philip.vercel.app';
+
+// 시즌 마스코트(추석 토끼)가 알약을 들고 있는 영상으로 버튼을 대체한다.
+// ⚠️ 알약 문구('상담 문의' / 'Chat')가 영상 안에 그려져 있다 → 버튼 라벨(STRINGS.open)도
+//    같은 말로 맞춰 둔다. 문구를 바꾸려면 영상을 다시 만들어야 한다.
+// 파일은 `${MASCOT}-{ko|en}.{webm,mp4,webp}` 여섯 벌 — **알약 문구가 영상 안에 그려져 있어**
+// 한/영을 따로 만들어 뒀다(스포츠클럽필립에서 그대로 가져온 에셋이라 문구는 '상담 문의' / 'Chat').
+// 끄려면 src/data/chat-mascot.json 의 enabled 를 false 로. 그러면 평소 버튼이 그대로 나온다.
+const MASCOT_ON = mascotCfg.enabled === true;
+const MASCOT = withBase('/videos/chat-mascot-chuseok');
 
 // 위젯 문구(한/영). 상단 KR/EN 토글이 바꾸는 <html lang> 을 관찰해 갈아끼운다.
 const STRINGS = {
   ko: {
-    open: '문의하기',
+    open: '상담 문의',
     title: '대한필라테스협회',
     close: '닫기',
     namePh: '성함',
@@ -38,7 +50,7 @@ const STRINGS = {
     quicks: ['교육일정', '수강료', '커리큘럼', '오시는 길'],
   },
   en: {
-    open: 'Contact us',
+    open: 'Chat',
     title: 'Korea Pilates Association',
     close: 'Close',
     namePh: 'Name',
@@ -59,11 +71,20 @@ const STRINGS = {
 
 <!-- data-no-i18n: 이 안의 글자는 위젯이 직접 한/영을 관리한다.
      BaseLayout 의 사전 치환이 손대면 두 곳이 같은 글자를 다투게 된다. -->
-<div id="kpa-chat" data-no-i18n data-phillip-url={PHILLIPTALK_URL}>
+<div id="kpa-chat" data-no-i18n data-phillip-url={PHILLIPTALK_URL}
+  class:list={[{ 'has-mascot': MASCOT_ON }]}>
   <!-- 떠 있는 문의 버튼 -->
-  <button id="kpa-chat-toggle" type="button" class="kpa-chat-fab" aria-label="문의하기">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg>
-    <span data-t="open">문의하기</span>
+  <button id="kpa-chat-toggle" type="button" class="kpa-chat-fab" aria-label="상담 문의">
+    {MASCOT_ON && (
+      <!-- 마스코트 영상. 알약(상담 문의 / Chat)이 영상 안에 있어 아래 아이콘·글씨를 대신한다.
+           한/영 두 벌이라 스크립트가 `-ko`·`-en` 을 고르고, 확장자도 스크립트가 고른다 —
+           Safari 만 알파 HEVC(mp4), 나머지는 알파 VP9(webm). 재생이 막히면 poster 정지컷이 남는다. -->
+      <span class="kpa-mascot" aria-hidden="true" data-src={MASCOT}>
+        <video class="kpa-mascot-video" poster={`${MASCOT}-ko.webp`} autoplay loop muted playsinline preload="none"></video>
+      </span>
+    )}
+    <svg class="kpa-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg>
+    <span class="kpa-fab-label" data-t="open">상담 문의</span>
     <span id="kpa-chat-badge" class="kpa-chat-badge" hidden></span>
   </button>
 
@@ -127,6 +148,35 @@ const STRINGS = {
     background: #e5484d; box-shadow: 0 0 0 2px #fff;
   }
   .kpa-chat-badge[hidden] { display: none; }
+
+  /* ---- 시즌 마스코트(추석 토끼) ------------------------------------------
+     영상 안에 이미 오렌지 알약이 그려져 있으므로, 켜지면 버튼의 배경·아이콘·글씨를
+     걷어내고 영상만 남긴다. 'has-mascot' 은 빌드 때 붙으므로 깜빡임이 없다.
+     ── 크기 맞춤 (스포츠클럽필립에서 실측한 값 그대로) ──
+     원본 292×330 을 146px 폭으로 그리면 그 안의 알약이 119×44px 로 평소 버튼과 같아진다.
+     알약은 영상 오른쪽에서 3px, 아래에서 5px 안쪽이라 그만큼 버튼을 밀어내야
+     알약이 화면 모서리에서 20px 인 원래 자리에 앉는다. */
+  .kpa-mascot { display: none; }
+  #kpa-chat.has-mascot .kpa-mascot { display: block; width: 146px; }
+  #kpa-chat.has-mascot .kpa-fab-icon,
+  #kpa-chat.has-mascot .kpa-fab-label { display: none; }
+  #kpa-chat.has-mascot .kpa-chat-fab {
+    display: block; padding: 0; border-radius: 0;
+    background: none; box-shadow: none;
+    /* 음수 margin 은 컨테이너를 그만큼 줄인다 → 컨테이너(그리고 거기 붙는 패널)의 모서리는
+       화면 끝 20px 그대로 두고, 영상만 바깥으로 밀려난다. */
+    margin: 0 -3px -5px 0;
+    transform-origin: bottom right;
+  }
+  #kpa-chat.has-mascot .kpa-chat-fab:hover { background: none; }
+  .kpa-mascot-video {
+    display: block; width: 100%; height: auto; aspect-ratio: 292 / 330;
+    /* 알약 모양을 따라가는 그림자 — 네모 박스에 그림자가 지지 않게 filter 로 준다 */
+    filter: drop-shadow(0 4px 10px rgba(28, 16, 18, .18))
+            drop-shadow(0 0 14px rgba(247, 148, 28, .35));
+  }
+  /* 안읽음 배지: 알약(영상 아래쪽 67~97% 구간)의 오른쪽 위 모서리에 */
+  #kpa-chat.has-mascot .kpa-chat-badge { top: 64%; right: 3px; }
 
   /* ---- 패널 ---- */
   .kpa-chat-panel {
@@ -263,6 +313,29 @@ const STRINGS = {
       return /^(010\d{8}|01[16789]\d{7,8}|0[2-6]\d{7,8})$/.test(d);
     }
 
+    // ---- 시즌 마스코트(추석 토끼) ----
+    // 알약 문구가 영상에 박혀 있어 한국어('상담 문의')·영어('Chat') 두 벌을 언어에 맞춰 갈아끼운다.
+    // 필요한 한 벌만 내려받는다. 배경이 투명해야 하는데 Safari 는 WebM 의 알파를 무시하고
+    // 검게 칠하므로, Safari 에만 알파 HEVC(mp4)를 주고 나머지엔 알파 VP9(webm)를 준다.
+    // 동작 최소화를 켠 방문자에겐 src 를 안 붙여 poster(정지컷)만 남긴다.
+    var mascot = root.querySelector('.kpa-mascot');
+    function loadMascot() {
+      if (!mascot) return;
+      var want = lang();
+      if (mascot.dataset.loaded === want) return;
+      var v = mascot.querySelector('video');
+      var base = mascot.dataset.src + '-' + want;
+      v.poster = base + '.webp';
+      mascot.dataset.loaded = want;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        v.removeAttribute('src'); v.load(); return;
+      }
+      var isWebKit = /^((?!chrome|chromium|android|crios|fxios|edgios|opr).)*safari/i.test(navigator.userAgent);
+      v.src = base + (isWebKit ? '.mp4' : '.webm');
+      var p = v.play();              // 자동재생이 막히면 poster 가 그대로 남는다
+      if (p && p.catch) p.catch(function () {});
+    }
+
     // ---- 언어 (상단 KR/EN 토글이 바꾸는 <html lang> 을 따라간다) ----
     function lang() { return document.documentElement.lang === 'en' ? 'en' : 'ko'; }
     function applyStrings() {
@@ -282,6 +355,7 @@ const STRINGS = {
       if (greet) greet.textContent = s.greeting;
       var quicks = document.getElementById('kpa-quicks');
       if (quicks) { quicks.replaceWith(buildQuicks()); }
+      loadMascot();                  // 언어에 맞는 영상으로
     }
     new MutationObserver(applyStrings).observe(document.documentElement, {
       attributes: true, attributeFilter: ['lang'],
