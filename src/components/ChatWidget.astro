@@ -1,0 +1,553 @@
+---
+// ---------------------------------------------------------------------------
+// 홈페이지 실시간 상담 위젯 (손님용).
+// 규격: 필립톡 저장소 specs/WEBCHAT_CONTRACT.md v3.
+//   · 위젯은 필립톡의 HTTP API만 호출한다 (Supabase는 전혀 모름).
+//   · POST {PHILLIPTALK_URL}/api/webchat/message    — 손님 메시지 보내기
+//   · GET  {PHILLIPTALK_URL}/api/webchat/messages   — 답장 폴링(3초)
+//   · 방문자 토큰(web_ + 32자 이상 랜덤)을 localStorage['kpa-chat-token']에 저장.
+//
+// 스포츠클럽필립(sportsclubphillip.com)의 위젯을 옮겨온 것이지만 세 가지가 다르다.
+//   1) site:'kpa' 를 실어 보낸다 → 필립톡에서 'KPA 홈페이지 상담' 채널로 따로 쌓인다.
+//   2) 상담 가능 시간 안내가 없다 — 항상 열어 두고 "메시지를 남겨주시면 답변드려요".
+//   3) Tailwind 가 없으므로 스타일은 이 파일의 CSS + 사이트 토큰(--accent 등)을 쓴다.
+//
+// 색: 떠 있는 버튼과 손님 말풍선은 --accent-text(#A8500C). 흰 글자 대비 5.5:1 로 AA 통과다
+//     (--accent #F7941C 는 2.3:1, --accent-deep #DE6B18 은 3.4:1 이라 글자를 못 얹는다).
+// ---------------------------------------------------------------------------
+const PHILLIPTALK_URL =
+  import.meta.env.PUBLIC_PHILLIPTALK_URL || 'https://to-philip.vercel.app';
+
+// 위젯 문구(한/영). 상단 KR/EN 토글이 바꾸는 <html lang> 을 관찰해 갈아끼운다.
+const STRINGS = {
+  ko: {
+    open: '문의하기',
+    title: '대한필라테스협회',
+    close: '닫기',
+    namePh: '성함',
+    contactPh: '전화번호 (예: 010-1234-5678)',
+    phoneHint: '전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)',
+    start: '상담 시작',
+    inputPh: '메시지를 입력하세요…',
+    send: '보내기',
+    greeting: '안녕하세요! 사단법인 대한필라테스협회입니다 😊 무엇을 도와드릴까요?',
+    intro: '원활한 상담을 위해 성함과 전화번호를 남겨주세요. 상담 중 연결이 끊겨도 남겨주신 번호로 이어서 도와드릴 수 있어요.',
+    error: '전송에 실패했어요. 잠시 후 다시 시도해 주세요.',
+    status: '메시지를 남겨주시면 답변드려요',
+    edited: '수정됨',
+    quicks: ['교육일정', '수강료', '커리큘럼', '오시는 길'],
+  },
+  en: {
+    open: 'Contact us',
+    title: 'Korea Pilates Association',
+    close: 'Close',
+    namePh: 'Name',
+    contactPh: 'Phone number (e.g. 010-1234-5678)',
+    phoneHint: 'Please enter a complete phone number. (e.g. 010-1234-5678)',
+    start: 'Start chat',
+    inputPh: 'Type a message…',
+    send: 'Send',
+    greeting: 'Hello! This is the Korea Pilates Association 😊 How can we help?',
+    intro: 'Please leave your name and phone number so we can help you properly. If the chat disconnects, we can continue at the number you leave.',
+    error: 'Failed to send. Please try again in a moment.',
+    status: 'Leave a message and we will reply',
+    edited: 'Edited',
+    quicks: ['Course schedule', 'Tuition', 'Curriculum', 'Directions'],
+  },
+};
+---
+
+<!-- data-no-i18n: 이 안의 글자는 위젯이 직접 한/영을 관리한다.
+     BaseLayout 의 사전 치환이 손대면 두 곳이 같은 글자를 다투게 된다. -->
+<div id="kpa-chat" data-no-i18n data-phillip-url={PHILLIPTALK_URL}>
+  <!-- 떠 있는 문의 버튼 -->
+  <button id="kpa-chat-toggle" type="button" class="kpa-chat-fab" aria-label="문의하기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/></svg>
+    <span data-t="open">문의하기</span>
+    <span id="kpa-chat-badge" class="kpa-chat-badge" hidden></span>
+  </button>
+
+  <!-- 대화 패널 -->
+  <section id="kpa-chat-panel" class="kpa-chat-panel" aria-hidden="true">
+    <header class="kpa-chat-head">
+      <div class="kpa-chat-avatar" aria-hidden="true">K</div>
+      <div class="kpa-chat-who">
+        <p data-t="title" class="kpa-chat-title">대한필라테스협회</p>
+        <p class="kpa-chat-status"><span class="kpa-chat-dot"></span><span data-t="status">메시지를 남겨주시면 답변드려요</span></p>
+      </div>
+      <button id="kpa-chat-close" type="button" class="kpa-chat-x" aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <div id="kpa-chat-log" class="kpa-chat-log"></div>
+
+    <!-- 첫 문의 폼 (성함·전화번호 필수) -->
+    <form id="kpa-chat-intro" class="kpa-chat-intro">
+      <p data-t="intro" class="kpa-chat-introtext">원활한 상담을 위해 성함과 전화번호를 남겨주세요. 상담 중 연결이 끊겨도 남겨주신 번호로 이어서 도와드릴 수 있어요.</p>
+      <input id="kpa-chat-name" type="text" placeholder="성함" autocomplete="name" required aria-required="true" />
+      <input id="kpa-chat-contact" type="tel" inputmode="tel" placeholder="전화번호 (예: 010-1234-5678)" autocomplete="tel" required aria-required="true" />
+      <p id="kpa-chat-phone-hint" data-t="phoneHint" class="kpa-chat-hint" hidden>전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)</p>
+      <button data-t="start" type="submit" class="kpa-chat-start" disabled>상담 시작</button>
+    </form>
+
+    <!-- 메시지 입력 -->
+    <form id="kpa-chat-send" class="kpa-chat-send" hidden>
+      <textarea id="kpa-chat-input" rows="1" placeholder="메시지를 입력하세요…"></textarea>
+      <button type="submit" class="kpa-chat-sendbtn" aria-label="보내기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-8-6 16-3-6-7-2Z"/></svg>
+      </button>
+    </form>
+  </section>
+</div>
+
+<style is:global>
+  /* 말풍선은 JS 가 만들어 붙이므로 전역 스타일이어야 한다(클래스는 모두 kpa-chat- 접두). */
+  #kpa-chat {
+    position: fixed; right: 20px; bottom: 20px; z-index: 900;
+    font-family: var(--font-sans);
+  }
+
+  /* ---- 떠 있는 버튼 ---- */
+  .kpa-chat-fab {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 18px; border: 0; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: 14px; font-weight: 700; letter-spacing: -.01em;
+    color: #fff; background: var(--accent-text);
+    box-shadow: 0 10px 24px -8px rgba(28, 16, 18, .45), 0 0 0 1px rgba(255, 255, 255, .12) inset;
+    transition: background-color .2s var(--ease), transform .15s var(--ease);
+  }
+  .kpa-chat-fab:hover { background: #8f440a; }
+  .kpa-chat-fab:active { transform: scale(.97); }
+  .kpa-chat-fab svg { width: 20px; height: 20px; }
+  .kpa-chat-badge {
+    position: absolute; top: 6px; right: 8px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #e5484d; box-shadow: 0 0 0 2px #fff;
+  }
+  .kpa-chat-badge[hidden] { display: none; }
+
+  /* ---- 패널 ---- */
+  .kpa-chat-panel {
+    position: absolute; right: 0; bottom: 0;
+    display: flex; flex-direction: column; overflow: hidden;
+    width: min(360px, calc(100vw - 40px));
+    height: min(70vh, 560px);
+    border: 1px solid var(--line-strong); border-radius: 18px;
+    background: var(--surface);
+    box-shadow: 0 40px 90px -34px rgba(48, 28, 16, .55);
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px) scale(.96); transform-origin: bottom right;
+    transition: opacity .18s ease, transform .28s var(--ease);
+  }
+  .kpa-chat-panel.is-open { opacity: 1; pointer-events: auto; transform: none; }
+
+  .kpa-chat-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; background: var(--surface-ink); color: #fff;
+  }
+  .kpa-chat-avatar {
+    flex: none; width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--accent); color: var(--ink);
+    font-weight: 800; font-size: 16px;
+  }
+  .kpa-chat-who { min-width: 0; flex: 1; }
+  .kpa-chat-title { margin: 0; font-size: 15px; font-weight: 700; }
+  .kpa-chat-status {
+    margin: 2px 0 0; display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--on-ink);
+  }
+  .kpa-chat-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex: none;
+    background: #34c759; box-shadow: 0 0 0 2px rgba(52, 199, 89, .22);
+  }
+  .kpa-chat-x {
+    flex: none; border: 0; background: none; cursor: pointer; padding: 6px;
+    border-radius: 50%; color: rgba(255, 255, 255, .8);
+    transition: background-color .2s, color .2s;
+  }
+  .kpa-chat-x:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+  .kpa-chat-x svg { width: 20px; height: 20px; display: block; }
+
+  .kpa-chat-log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* ---- 말풍선 ---- */
+  .kpa-row { display: flex; align-items: flex-end; gap: 7px; animation: kpa-pop .26s var(--ease) both; }
+  .kpa-row.is-in { justify-content: flex-end; }
+  .kpa-col { display: flex; flex-direction: column; max-width: 78%; }
+  .kpa-bubble { padding: 8px 13px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .kpa-in  { background: var(--accent-text); color: #fff; border-radius: 16px 16px 5px 16px; }
+  .kpa-out { background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 16px 16px 16px 5px; }
+  .kpa-time { margin-top: 3px; font-size: 10px; color: var(--ink-muted); }
+  .kpa-msg-avatar {
+    flex: none; width: 26px; height: 26px; border-radius: 50%; align-self: flex-end;
+    display: grid; place-items: center;
+    background: var(--accent); color: var(--ink); font-weight: 800; font-size: 12px;
+  }
+  .kpa-msg-avatar.is-spacer { visibility: hidden; }
+
+  /* ---- 빠른 질문 칩 ---- */
+  .kpa-quicks { display: flex; flex-wrap: wrap; gap: 7px; padding: 2px 0 2px 33px; animation: kpa-pop .26s var(--ease) both; }
+  .kpa-quicks button {
+    cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 600;
+    padding: 7px 13px; border-radius: 999px;
+    background: #fff; color: var(--accent-text); border: 1px solid var(--line-strong);
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .kpa-quicks button:hover { background: var(--accent-text); color: #fff; border-color: var(--accent-text); }
+
+  /* ---- 폼 ---- */
+  .kpa-chat-intro, .kpa-chat-send { border-top: 1px solid var(--line); background: #fff; }
+  .kpa-chat-intro { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .kpa-chat-intro[hidden], .kpa-chat-send[hidden] { display: none; }
+  .kpa-chat-introtext { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-muted); }
+  .kpa-chat-intro input, .kpa-chat-send textarea {
+    width: 100%; font: inherit; font-size: 14px; color: var(--ink);
+    padding: 9px 12px; border-radius: 10px;
+    border: 1px solid var(--line-strong); background: var(--surface); outline: none;
+    transition: border-color .2s;
+  }
+  .kpa-chat-intro input:focus, .kpa-chat-send textarea:focus { border-color: var(--accent-text); }
+  .kpa-chat-hint { margin: 0; font-size: 11px; line-height: 1.45; color: #c0362c; }
+  .kpa-chat-hint[hidden] { display: none; }
+  .kpa-chat-start {
+    font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    padding: 10px; border: 0; border-radius: 10px; color: #fff; background: var(--accent-text);
+    transition: opacity .2s, background-color .2s;
+  }
+  .kpa-chat-start:disabled { opacity: .45; cursor: not-allowed; }
+  .kpa-chat-send { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; }
+  .kpa-chat-send textarea { max-height: 112px; resize: none; line-height: 1.45; }
+  .kpa-chat-sendbtn {
+    flex: none; border: 0; border-radius: 12px; cursor: pointer; padding: 10px;
+    color: #fff; background: var(--accent-text);
+    transition: opacity .2s;
+  }
+  .kpa-chat-sendbtn:disabled { opacity: .5; }
+  .kpa-chat-sendbtn svg { width: 20px; height: 20px; display: block; }
+
+  @keyframes kpa-pop { from { opacity: 0; transform: translateY(7px) scale(.98); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 640px) {
+    #kpa-chat { right: 14px; bottom: 14px; }
+    .kpa-chat-fab { padding: 11px 15px; font-size: 13px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kpa-chat-panel, .kpa-chat-fab, .kpa-row, .kpa-quicks { transition: none; animation: none; }
+  }
+</style>
+
+<script is:inline define:vars={{ PHILLIPTALK_URL, STRINGS }}>
+  (function () {
+    var root = document.getElementById('kpa-chat');
+    if (!root) return;
+    var API = (root.getAttribute('data-phillip-url') || PHILLIPTALK_URL).replace(/\/+$/, '');
+
+    var toggle = document.getElementById('kpa-chat-toggle');
+    var panel = document.getElementById('kpa-chat-panel');
+    var closeBtn = document.getElementById('kpa-chat-close');
+    var badge = document.getElementById('kpa-chat-badge');
+    var log = document.getElementById('kpa-chat-log');
+    var introForm = document.getElementById('kpa-chat-intro');
+    var sendForm = document.getElementById('kpa-chat-send');
+    var nameInput = document.getElementById('kpa-chat-name');
+    var contactInput = document.getElementById('kpa-chat-contact');
+    var phoneHint = document.getElementById('kpa-chat-phone-hint');
+    var textInput = document.getElementById('kpa-chat-input');
+
+    // 전화번호: 숫자만 추린 뒤 한국 휴대폰/유선 형식이어야 통과. 미완성 번호는 막는다.
+    function validPhone(v) {
+      var d = (v || '').replace(/\D/g, '');
+      return /^(010\d{8}|01[16789]\d{7,8}|0[2-6]\d{7,8})$/.test(d);
+    }
+
+    // ---- 언어 (상단 KR/EN 토글이 바꾸는 <html lang> 을 따라간다) ----
+    function lang() { return document.documentElement.lang === 'en' ? 'en' : 'ko'; }
+    function applyStrings() {
+      var s = STRINGS[lang()];
+      var els = root.querySelectorAll('[data-t]');
+      for (var i = 0; i < els.length; i++) {
+        var k = els[i].getAttribute('data-t');
+        if (s[k] != null) els[i].textContent = s[k];
+      }
+      nameInput.placeholder = s.namePh;
+      contactInput.placeholder = s.contactPh;
+      textInput.placeholder = s.inputPh;
+      toggle.setAttribute('aria-label', s.open);
+      closeBtn.setAttribute('aria-label', s.close);
+      // 인사말·빠른질문은 이미 그려져 있으면 그 자리에서 갈아끼운다.
+      var greet = log.querySelector('[data-greeting]');
+      if (greet) greet.textContent = s.greeting;
+      var quicks = document.getElementById('kpa-quicks');
+      if (quicks) { quicks.replaceWith(buildQuicks()); }
+    }
+    new MutationObserver(applyStrings).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['lang'],
+    });
+
+    // ---- 방문자 토큰 ----
+    var TOKEN_KEY = 'kpa-chat-token';
+    function makeToken() {
+      var bytes = new Uint8Array(32);
+      crypto.getRandomValues(bytes);
+      var b64 = btoa(String.fromCharCode.apply(null, bytes))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      return 'web_' + b64;
+    }
+    function token() {
+      var t;
+      try { t = localStorage.getItem(TOKEN_KEY); } catch (e) {}
+      if (!t) { t = makeToken(); try { localStorage.setItem(TOKEN_KEY, t); } catch (e) {} }
+      return t;
+    }
+
+    // ---- 손님 이름·전화번호 (첫 문의 폼에서 받아 두고 이후 모든 전송에 실린다) ----
+    var NAME_KEY = 'kpa-chat-name';
+    var CONTACT_KEY = 'kpa-chat-contact';
+    var custName = '', custContact = '';
+    try {
+      custName = localStorage.getItem(NAME_KEY) || '';
+      custContact = localStorage.getItem(CONTACT_KEY) || '';
+    } catch (e) {}
+    var hasInfo = !!(custName && custContact);
+
+    // ---- 메시지 렌더 ----
+    // id → { bubble, timeEl, body }. 같은 id가 다시 오면(상담원이 오타를 고침) 본문만 교체 — 규격 v3 upsert.
+    var seen = {};
+    var since = '';
+    var started = false;
+    var poller = null;
+
+    function fmtTime(iso) {
+      try {
+        return new Date(iso).toLocaleTimeString(lang() === 'en' ? 'en-US' : 'ko-KR',
+          { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul' });
+      } catch (e) { return ''; }
+    }
+    function makeAvatar() {
+      var a = document.createElement('div');
+      a.className = 'kpa-msg-avatar';
+      a.setAttribute('aria-hidden', 'true');
+      a.textContent = 'K';
+      return a;
+    }
+    // 연속된 협회(out) 말풍선은 마지막 하나에만 아바타를 보이고 나머지는 자리만 비운다.
+    function regroupAvatars() {
+      var rows = log.querySelectorAll('.kpa-row');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].classList.contains('is-in')) continue;
+        var av = rows[i].querySelector('.kpa-msg-avatar');
+        if (!av) continue;
+        var next = rows[i + 1];
+        av.classList.toggle('is-spacer', !(!next || next.classList.contains('is-in')));
+      }
+    }
+    function addBubble(dir, body, iso) {
+      var row = document.createElement('div');
+      row.className = 'kpa-row' + (dir === 'in' ? ' is-in' : '');
+      if (dir === 'out') row.appendChild(makeAvatar());
+      var col = document.createElement('div');
+      col.className = 'kpa-col';
+      var b = document.createElement('div');
+      b.className = 'kpa-bubble ' + (dir === 'in' ? 'kpa-in' : 'kpa-out');
+      b.textContent = body;
+      col.appendChild(b);
+      var t = null;
+      if (iso) {
+        t = document.createElement('div');
+        t.className = 'kpa-time';
+        t.style.textAlign = dir === 'in' ? 'right' : 'left';
+        t.textContent = fmtTime(iso);
+        col.appendChild(t);
+      }
+      row.appendChild(col);
+      log.appendChild(row);
+      regroupAvatars();
+      return { bubble: b, timeEl: t, body: body };
+    }
+    function markEdited(entry) {
+      if (!entry.timeEl || entry.timeEl.querySelector('.kpa-edited')) return;
+      var tag = document.createElement('span');
+      tag.className = 'kpa-edited';
+      tag.textContent = ' · ' + STRINGS[lang()].edited;
+      entry.timeEl.appendChild(tag);
+    }
+    function scrollDown() { log.scrollTop = log.scrollHeight; }
+
+    function buildQuicks() {
+      var wrap = document.createElement('div');
+      wrap.className = 'kpa-quicks';
+      wrap.id = 'kpa-quicks';
+      (STRINGS[lang()].quicks || []).forEach(function (label) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = label;
+        btn.addEventListener('click', function () { doSend(label); });
+        wrap.appendChild(btn);
+      });
+      return wrap;
+    }
+    function removeQuicks() {
+      var q = document.getElementById('kpa-quicks');
+      if (q) q.remove();
+    }
+    function greet() {
+      var gb = addBubble('out', STRINGS[lang()].greeting).bubble;
+      gb.setAttribute('data-greeting', '');
+      log.appendChild(buildQuicks());
+      regroupAvatars();
+    }
+
+    // ---- 폴링(답장 받아오기) ----
+    function poll() {
+      var url = API + '/api/webchat/messages?token=' + encodeURIComponent(token())
+        + (since ? '&since=' + encodeURIComponent(since) : '');
+      return fetch(url, { method: 'GET' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.messages) return;
+          var added = false, gotReply = false;
+          data.messages.forEach(function (m) {
+            var known = m.id ? seen[m.id] : null;
+            if (known) {
+              if (m.body !== known.body) {
+                known.body = m.body;
+                known.bubble.textContent = m.body;
+                markEdited(known);
+              }
+              return;
+            }
+            var entry = addBubble(m.direction, m.body, m.createdAt);
+            if (m.id) seen[m.id] = entry;
+            if (m.editedAt) markEdited(entry);
+            if (m.createdAt && m.createdAt > since) since = m.createdAt;
+            added = true;
+            if (m.direction === 'out') gotReply = true;
+          });
+          if (added) scrollDown();
+          if (gotReply && !panel.classList.contains('is-open')) badge.hidden = false;
+        })
+        .catch(function () {});
+    }
+    function startPolling() { if (!poller) { poll(); poller = setInterval(poll, 3000); } }
+    function stopPolling() { if (poller) { clearInterval(poller); poller = null; } }
+
+    // ---- 열기/닫기 ----
+    function open() {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+      badge.hidden = true;
+      if (started) startPolling();
+      scrollDown();
+    }
+    function close() {
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+      stopPolling();  // 규격: 닫으면 폴링을 멈춘다
+    }
+    toggle.addEventListener('click', function () {
+      panel.classList.contains('is-open') ? close() : open();
+    });
+    closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('is-open')) close();
+    });
+
+    function enterChat() {
+      started = true;
+      introForm.hidden = true;
+      sendForm.hidden = false;
+    }
+
+    // 성함·전화번호가 채워지기 전에는 '상담 시작'을 막는다.
+    var startBtn = introForm.querySelector('button[type="submit"]');
+    function updateStartBtn() {
+      var nameOk = (nameInput.value || '').trim().length > 0;
+      var phoneOk = validPhone(contactInput.value);
+      if (startBtn) startBtn.disabled = !(nameOk && phoneOk);
+      var typed = (contactInput.value || '').trim().length > 0;
+      if (phoneHint) phoneHint.hidden = !(typed && !phoneOk);
+    }
+    nameInput.addEventListener('input', updateStartBtn);
+    contactInput.addEventListener('input', updateStartBtn);
+
+    introForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nm = (nameInput.value || '').trim();
+      var ct = (contactInput.value || '').trim();
+      if (!nm || !validPhone(ct)) { updateStartBtn(); return; }  // 버튼 우회 대비
+      custName = nm; custContact = ct; hasInfo = true;
+      try {
+        localStorage.setItem(NAME_KEY, nm);
+        localStorage.setItem(CONTACT_KEY, ct);
+      } catch (e2) {}
+      enterChat();
+      greet();
+      if (panel.classList.contains('is-open')) startPolling();
+      textInput.focus();
+    });
+
+    // ---- 전송 ----
+    function sendText(text) {
+      return fetch(API + '/api/webchat/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token(),
+          text: text,
+          name: custName,
+          contact: custContact,      // 전화번호(이메일 아님)
+          page: location.pathname,
+          site: 'kpa',               // 필립톡에서 'KPA 홈페이지 상담' 채널로 간다
+        }),
+      }).then(function (r) {
+        if (!r.ok) throw new Error('send failed');
+        return r.json();
+      });
+    }
+    function doSend(text) {
+      text = (text || '').trim();
+      if (!text) return;
+      if (!hasInfo) { open(); nameInput.focus(); return; }  // 성함·전화 먼저
+      removeQuicks();
+      if (!started) enterChat();
+      var sendBtn = sendForm.querySelector('button');
+      if (sendBtn) sendBtn.disabled = true;
+      sendText(text)
+        .then(function () { startPolling(); poll(); })  // 방금 보낸 것도 바로 보이게
+        .catch(function () {
+          var err = document.createElement('div');
+          err.className = 'kpa-time';
+          err.style.textAlign = 'center';
+          err.textContent = STRINGS[lang()].error;
+          log.appendChild(err);
+          scrollDown();
+        })
+        .finally(function () { if (sendBtn) sendBtn.disabled = false; });
+    }
+    sendForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var text = (textInput.value || '').trim();
+      if (!text) return;
+      textInput.value = '';
+      textInput.style.height = 'auto';
+      doSend(text);
+    });
+
+    // Enter=전송, Shift+Enter=줄바꿈, 입력창 자동 높이
+    textInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendForm.requestSubmit(); }
+    });
+    textInput.addEventListener('input', function () {
+      textInput.style.height = 'auto';
+      textInput.style.height = Math.min(textInput.scrollHeight, 112) + 'px';
+    });
+
+    applyStrings();
+    updateStartBtn();
+    // 이미 성함·전화를 받아 둔 방문자는 폼을 건너뛰고 대화로 복원한다.
+    if (hasInfo) { enterChat(); greet(); }
+  })();
+</script>

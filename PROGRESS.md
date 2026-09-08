@@ -46,13 +46,23 @@
 - ✅ 실도메인 전환 코드 (base '/' + public/CNAME) — docs/도메인전환.md
 - ✅ 파비콘 로컬 호스팅 → 빌드 산출물에 Wix 의존성 0
 - ✅ 통합 로그인(SSO) 코드 — 홈페이지·앱 양쪽 (docs/SSO-앱연동.md)
+- ✅ KR / EN 언어 전환 (헤더 토글 · 사전 `src/data/translations.json` 737개)
+- ✅ 문의하기 상담 위젯 (필립톡 웹챗 연동 · 'KPA 홈페이지 상담' 채널)
 - ⬜ 폰트 역할(본문/제목) 화면 대조 후 확정
 - ⬜ 이미지 최적화 (public/images 21MB, 1MB+ PNG 5장)
 
 ## 다음 할 일
-1. **가비아 DNS 전환** (사용자) → docs/도메인전환.md 2~3번
-2. Pages 커스텀 도메인 지정 + 인증서 확인 → 같은 문서 4~5번
-3. SSO 마무리: Vercel 커스텀 도메인 + 환경변수, Supabase Redirect URL,
+1. **텔레그램 KPA 전용 방** — 방 만들고 봇 초대 → chat_id 를 Vercel(to-philip)에
+   `TELEGRAM_CHAT_ID_KPA` 로 등록. 등록 전까지는 기본 방으로 알림이 간다.
+2. SSO 마무리: Vercel 커스텀 도메인 + 환경변수, Supabase Redirect URL,
    홈페이지 저장소 Secrets → docs/SSO-앱연동.md
-4. 메일 실수신 확인 후 **Wix 해지**
-5. 이미지 최적화 / 일정·인스타 실데이터 / 심화과정 온라인 신청
+3. 메일 실수신 확인 후 **Wix 해지**
+4. 이미지 최적화 (public/images 21MB) / 인스타 실데이터
+5. 심화과정 온라인 신청 (지금은 구글 폼 · 정규과정도 동일)
+
+## 문구를 고친 뒤에 (중요)
+언어 사전은 **화면 텍스트와 글자 단위로 일치**해야 한다. 문구를 바꿨으면:
+```
+npm run build && node scripts/extract-strings.mjs   # 빠진 문구를 en:"" 로 덧붙임
+```
+비어 있는 en 을 채우면 된다. 안 채워도 그 문구만 한국어로 남는다(안 깨진다).
