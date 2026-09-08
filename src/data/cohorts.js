@@ -27,11 +27,31 @@
 // 정규수업이 이어지는 기간(개월). end 를 안 적은 기수의 마지막 수업일 추정에 쓴다.
 export const COURSE_MONTHS = 6;
 
-// 반별 수업 요일·시간. 요일: 0=일 … 6=토. short 는 달력 제목용.
+// 반별 수업 요일·시간. 요일: 0=일 … 6=토. short 는 달력 제목용(shortEn 은 영문 화면용).
 export const CLASS_PATTERNS = {
-  '일요반':  { short: '일요반', days: [0],    time: '11:00–17:00', label: '일요일 11:00 ~ 17:00' },
-  '토요반':  { short: '토요반', days: [6],    time: '12:00–18:00', label: '토요일 12:00 ~ 18:00' },
-  '월/수반': { short: '월수반', days: [1, 3], time: '10:30–13:30', label: '월요일 10:30~13:30 / 수요일 10:30~13:30' },
+  '일요반':  { short: '일요반', shortEn: 'Sun',     days: [0],    time: '11:00–17:00', label: '일요일 11:00 ~ 17:00' },
+  '토요반':  { short: '토요반', shortEn: 'Sat',     days: [6],    time: '12:00–18:00', label: '토요일 12:00 ~ 18:00' },
+  '월/수반': { short: '월수반', shortEn: 'Mon/Wed', days: [1, 3], time: '10:30–13:30', label: '월요일 10:30~13:30 / 수요일 10:30~13:30' },
+};
+
+// 달력 영문 표기용. 여기 없는 말은 한국어 그대로 남는다(깨지지 않는다).
+const EN_TERMS = {
+  '방학': 'break',
+  '개강일': 'first day',
+  '정규과정': 'regular class',
+  '자체 스터디': 'self-study session',
+  '중간고사': 'midterm exam',
+  '기말고사': 'final exam',
+  '프로필 촬영일': 'profile photo day',
+  '필기시험': 'written exam',
+  '실기시험': 'practical exam',
+  '수행평가': 'performance assessment',
+};
+const enTerm = (k) => EN_TERMS[k] || k;
+// '170기' → 'Class 170'. 숫자를 못 찾으면 원문 그대로.
+const enGen = (gen) => {
+  const n = String(gen).match(/\d+/);
+  return n ? `Class ${n[0]}` : String(gen);
 };
 
 // 최신순
@@ -107,6 +127,7 @@ export function cohortEnd(c) {
 /**
  * 달력용 기수 일정 생성. [from, to] 범위 안의 날짜만 만든다.
  *   - 개강일:            "169기 일요반 개강일"          (recurring: false)
+ * 각 일정에는 영문 제목(titleEn)도 함께 담는다 — 달력의 KR/EN 토글이 이걸 쓴다.
  *   - 정규 수업일:       "168기 월수반 정규과정"        (recurring: true  → '다가오는 일정' 목록에서는 제외)
  *   - off 에 든 날:      "168기 월수반 방학"            (recurring: false, 시간 없음)
  *   - special 로 지정한 날: "168기 월수반 수행평가" 등  (recurring: false)
@@ -120,6 +141,7 @@ export function cohortEvents(from, to) {
     if (!p) continue;
     const end = cohortEnd(c);
     const name = `${c.gen} ${p.short}`;
+    const nameEn = `${enGen(c.gen)} ${p.shortEn || p.short}`;
     const off = new Set(c.off || []);
     const special = c.special || {};
     const base = { type: 'academic', where: '본원', time: p.time };
@@ -129,15 +151,15 @@ export function cohortEvents(from, to) {
         if (!p.days.includes(d.getDay())) continue;
         const key = toKey(d);
         if (!inRange(key)) continue;
-        if (off.has(key)) out.push({ type: 'academic', date: key, title: `${name} 방학`, recurring: false });
-        else if (special[key]) out.push({ ...base, date: key, title: `${name} ${special[key]}`, recurring: false });
-        else if (key === c.start) out.push({ ...base, date: key, title: `${name} 개강일`, recurring: false });
-        else out.push({ ...base, date: key, title: `${name} 정규과정`, recurring: true });
+        if (off.has(key)) out.push({ type: 'academic', date: key, title: `${name} 방학`, titleEn: `${nameEn} ${enTerm('방학')}`, recurring: false });
+        else if (special[key]) out.push({ ...base, date: key, title: `${name} ${special[key]}`, titleEn: `${nameEn} ${enTerm(special[key])}`, recurring: false });
+        else if (key === c.start) out.push({ ...base, date: key, title: `${name} 개강일`, titleEn: `${nameEn} ${enTerm('개강일')}`, recurring: false });
+        else out.push({ ...base, date: key, title: `${name} 정규과정`, titleEn: `${nameEn} ${enTerm('정규과정')}`, recurring: true });
       }
     }
     for (const x of c.extra || []) {
       if (!inRange(x.date)) continue;
-      out.push({ ...base, ...(x.time ? { time: x.time } : {}), date: x.date, title: `${name} ${x.title}`, recurring: false });
+      out.push({ ...base, ...(x.time ? { time: x.time } : {}), date: x.date, title: `${name} ${x.title}`, titleEn: `${nameEn} ${enTerm(x.title)}`, recurring: false });
     }
   }
   return out;

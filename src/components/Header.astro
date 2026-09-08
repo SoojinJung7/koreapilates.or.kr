@@ -1,5 +1,6 @@
 ---
 import { navGroups, siteMeta } from '../data/nav.js';
+import LangToggle from './LangToggle.astro';
 import { withBase } from '../utils/url.js';
 const { pathname } = Astro.url;
 const isActive = (href) => pathname === withBase(href);
@@ -51,6 +52,7 @@ const { overHero = false } = Astro.props;
     </nav>
 
     <div class="header-right">
+      <LangToggle />
       <button type="button" class="login-link auth-desktop-btn" data-auth-login data-auth-show="out">인증강사 로그인 <span>|</span> 회원가입</button>
       <span class="auth-user" data-auth-show="in">
         <b class="auth-user__name" data-auth-name></b> 님
@@ -208,6 +210,8 @@ const { overHero = false } = Astro.props;
 
   /* ---------- Right ---------- */
   .header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  /* 언어 토글은 로그인 링크와 조금 더 붙여 둔다(두 항목이 한 덩어리로 보이게). */
+  .header-right .lang-toggle { margin-right: -4px; }
   .login-link {
     font-size: 11.5px; letter-spacing: .1em; color: var(--nav-fg); opacity: .72;
     white-space: nowrap; transition: opacity .3s var(--ease);

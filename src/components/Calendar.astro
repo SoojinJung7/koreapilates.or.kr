@@ -10,11 +10,12 @@ import schedule from '../data/schedule.json';
 import reservations from '../data/reservations.json';
 import { cohortEvents } from '../data/cohorts.js';
 
+// 라벨은 한/영 두 벌. 상단 언어 토글이 <html lang> 을 바꾸면 달력이 스스로 다시 그린다.
 const TYPES = {
-  academic: { label: 'KPA 정규과정', short: '정규과정',        color: 'var(--c-academic)' },
-  practice: { label: '교육생 수련·실습', short: '수련·실습',    color: 'var(--c-practice)' },
-  events:   { label: '심화과정·워크샵', short: '심화과정·워크샵', color: 'var(--c-events)' },
-  support:  { label: '원장 통역·해외 교육', short: '통역·해외',   color: 'var(--c-support)' },
+  academic: { label: { ko: 'KPA 정규과정', en: 'KPA regular course' },     short: { ko: '정규과정', en: 'Regular' },   color: 'var(--c-academic)' },
+  practice: { label: { ko: '교육생 수련·실습', en: 'Trainee practice' },    short: { ko: '수련·실습', en: 'Practice' },  color: 'var(--c-practice)' },
+  events:   { label: { ko: '심화과정·워크샵', en: 'Advanced & workshops' }, short: { ko: '심화과정·워크샵', en: 'Advanced' }, color: 'var(--c-events)' },
+  support:  { label: { ko: '원장 통역·해외 교육', en: 'Interpreting & overseas' }, short: { ko: '통역·해외', en: 'Overseas' }, color: 'var(--c-support)' },
 };
 
 // 지도자과정 개강·정규수업은 cohorts.js 규칙으로 자동 생성 (빌드일 기준 ±12개월, 매일 재빌드로 갱신).
@@ -69,12 +70,56 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
 </div>
 
 <script define:vars={{ manual, seed, seedUpdatedAt, TYPES, apiUrl }}>
-  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  // ---------- 언어 (상단 KR/EN 토글이 바꾸는 <html lang> 을 따라간다) ----------
+  const STR = {
+    ko: {
+      wd: ['일', '월', '화', '수', '목', '금', '토'],
+      title: (y, m) => `${y}년 ${m + 1}월`,
+      dayTitle: (d, wd, today) => `${d.getMonth() + 1}월 ${d.getDate()}일 (${wd})${today ? ' · 오늘' : ''}`,
+      shortDate: (d, wd) => `${d.getMonth() + 1}.${d.getDate()} <em>(${wd})</em>`,
+      cohort: (c) => `${c}기`,
+      practice: '수련', withGuest: '실습',
+      hours: (h) => `${h}시간`, count: (n) => `${n}건`,
+      recent: '최근 30일 활동', recentNone: '최근 30일 등록된 일정 없음',
+      emptyToday: '오늘은 등록된 일정이 없습니다.',
+      emptyDay: '이 날은 등록된 일정이 없습니다.',
+      emptyUp: '예정된 일정이 없습니다.',
+      allDay: '종일',
+      prevMonth: '이전 달', nextMonth: '다음 달',
+      cellLabel: (k, n) => `${k} 일정 ${n}건`,
+      syncLive: (t) => `교육장 예약 실시간 반영 · ${t} 기준`,
+      syncSeed: (t) => `교육장 예약 ${t} 기준`,
+    },
+    en: {
+      wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      mon: ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'],
+      title: (y, m) => `${STR.en.mon[m]} ${y}`,
+      dayTitle: (d, wd, today) => `${STR.en.mon[d.getMonth()].slice(0, 3)} ${d.getDate()} (${wd})${today ? ' · Today' : ''}`,
+      shortDate: (d, wd) => `${STR.en.mon[d.getMonth()].slice(0, 3)} ${d.getDate()} <em>(${wd})</em>`,
+      cohort: (c) => `Class ${c}`,
+      practice: 'practice', withGuest: 'client practice',
+      hours: (h) => `${h} h`, count: (n) => `${n} event${n === 1 ? '' : 's'}`,
+      recent: 'Last 30 days', recentNone: 'No activity in the last 30 days',
+      emptyToday: 'No events scheduled today.',
+      emptyDay: 'No events scheduled on this day.',
+      emptyUp: 'No upcoming events.',
+      allDay: 'All day',
+      prevMonth: 'Previous month', nextMonth: 'Next month',
+      cellLabel: (k, n) => `${k}, ${n} event${n === 1 ? '' : 's'}`,
+      syncLive: (t) => `Studio bookings, live · as of ${t}`,
+      syncSeed: (t) => `Studio bookings · as of ${t}`,
+    },
+  };
+  const lang = () => (document.documentElement.lang === 'en' ? 'en' : 'ko');
+  const S = () => STR[lang()];
+  const WD = () => S().wd;
+  const pick = (v) => (v && typeof v === 'object' ? (v[lang()] ?? v.ko) : v);
   const pad = (n) => String(n).padStart(2, '0');
   const keyOf = (y, m, d) => `${y}-${pad(m + 1)}-${pad(d)}`;
   const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
   const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-  const meta = (t) => TYPES[t] || { label: '기타', short: '기타', color: '#9a9088' };
+  const meta = (t) => TYPES[t] || { label: { ko: '기타', en: 'Other' }, short: { ko: '기타', en: 'Other' }, color: '#9a9088' };
   // 이름·시설명은 앱 사용자 입력값 → 반드시 이스케이프
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const lastDay = (y, m) => new Date(y, m + 1, 0).getDate();
@@ -92,10 +137,10 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
   let syncAt = null;
 
   // 표시 형식은 한 줄로 고정: "168기 홍길동 수련" / "168기 홍길동 실습". 위치(시설)는 내보내지 않는다.
-  const cohortLabel = (c) => (/^\d+$/.test(String(c || '')) ? `${c}기` : String(c || ''));
+  const cohortLabel = (c) => (/^\d+$/.test(String(c || '')) ? S().cohort(c) : String(c || ''));
   const toEvent = (it) => ({
     date: it.date, type: 'practice',
-    title: [cohortLabel(it.cohort), it.name, it.kind === 'with_guest' ? '실습' : '수련'].filter(Boolean).join(' '),
+    title: [cohortLabel(it.cohort), it.name, it.kind === 'with_guest' ? S().withGuest : S().practice].filter(Boolean).join(' '),
     start: it.start, end: it.end, hours: Number(it.hours) || 0,
   });
   const allEvents = () => manual.concat(Array.from(resv.values()).map(toEvent));
@@ -109,6 +154,11 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
     return Math.max(0, (toMin(parts[1]) - toMin(parts[0])) / 60);
   };
   const fmtH = (h) => String(Math.round(h * 10) / 10);
+  // 일정 제목: 영문 화면에서 titleEn 이 있으면 그것을, 없으면 한국어 제목을 그대로 쓴다.
+  const titleOf = (e) => (lang() === 'en' && e.titleEn ? e.titleEn : e.title);
+  // 장소는 지금 '본원' 한 가지뿐 — 모르는 값은 그대로 둔다.
+  const WHERE_EN = { '본원': 'Main studio' };
+  const whereOf = (e) => (lang() === 'en' && WHERE_EN[e.where] ? WHERE_EN[e.where] : e.where);
   const evOn = (k) => allEvents().filter((e) => e.date === k)
     .sort((a, b) => startOf(a).localeCompare(startOf(b)));
 
@@ -146,8 +196,7 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
 
   function init() {
     if (!document.getElementById('cw-week')) return;
-    document.getElementById('cw-week').innerHTML =
-      WD.map((w, i) => `<span class="${i === 0 ? 'sun' : ''}">${w}</span>`).join('');
+    renderWeekdays();
     document.getElementById('cw-prev').onclick = () => { view.m--; if (view.m < 0) { view.m = 11; view.y--; } render(); ensureMonth(view.y, view.m); };
     document.getElementById('cw-next').onclick = () => { view.m++; if (view.m > 11) { view.m = 0; view.y++; } render(); ensureMonth(view.y, view.m); };
     document.getElementById('cw-days').addEventListener('click', (ev) => {
@@ -173,8 +222,15 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
     }
   }
 
+  function renderWeekdays() {
+    document.getElementById('cw-week').innerHTML =
+      WD().map((w, i) => `<span class="${i === 0 ? 'sun' : ''}">${w}</span>`).join('');
+    document.getElementById('cw-prev').setAttribute('aria-label', S().prevMonth);
+    document.getElementById('cw-next').setAttribute('aria-label', S().nextMonth);
+  }
+
   function render() {
-    document.getElementById('cw-title').textContent = `${view.y}년 ${view.m + 1}월`;
+    document.getElementById('cw-title').textContent = S().title(view.y, view.m);
     const first = new Date(view.y, view.m, 1);
     const start = new Date(first); start.setDate(1 - first.getDay());
 
@@ -188,8 +244,8 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
         .map((e) => `<span class="cw-mdot" style="background:${meta(e.type).color}"></span>`).join('');
       const cls = ['cw-cell', out ? 'out' : '', d.getDay() === 0 ? 'sun' : '', same(d, TODAY) ? 'today' : '',
         key === selected ? 'sel' : '', evs.length ? 'has' : ''].filter(Boolean).join(' ');
-      const tip = esc(evs.map((e) => e.title).join(', '));
-      const attrs = out ? '' : ` data-key="${key}" role="button" tabindex="0" aria-label="${key} 일정 ${evs.length}건"`;
+      const tip = esc(evs.map(titleOf).join(', '));
+      const attrs = out ? '' : ` data-key="${key}" role="button" tabindex="0" aria-label="${esc(S().cellLabel(key, evs.length))}"`;
       html += `<div class="${cls}"${attrs} title="${tip}">${d.getDate()}${dots ? `<span class="cw-mdots">${dots}</span>` : ''}</div>`;
     }
     document.getElementById('cw-days').innerHTML = html;
@@ -212,32 +268,32 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
     const chips = Object.entries(counts).sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
       .map(([t, n]) => {
         const h = hoursBy[t] || 0;
-        const val = h ? `${fmtH(h)}시간` : `${n}건`;
-        return `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${meta(t).label} <b>${val}</b></span>`;
+        const val = h ? S().hours(fmtH(h)) : S().count(n);
+        return `<span class="cw-chip"><i style="background:${meta(t).color}"></i>${esc(pick(meta(t).label))} <b>${val}</b></span>`;
       }).join('');
-    const summary = hours ? `${fmtH(hours)}시간 <small>· ${total}건</small>` : `${total}건`;
+    const summary = hours ? `${S().hours(fmtH(hours))} <small>· ${S().count(total)}</small>` : S().count(total);
     document.getElementById('cw-stats').innerHTML = total
-      ? `<span class="cw-live"><i></i>최근 30일 활동</span><span class="cw-total">${summary}</span><div class="cw-chips">${chips}</div>`
-      : `<span class="cw-live cw-live--off"></span><span class="cw-total">최근 30일 등록된 일정 없음</span>`;
+      ? `<span class="cw-live"><i></i>${S().recent}</span><span class="cw-total">${summary}</span><div class="cw-chips">${chips}</div>`
+      : `<span class="cw-live cw-live--off"></span><span class="cw-total">${S().recentNone}</span>`;
   }
 
   function renderDay() {
     const dt = parse(selected);
     const isToday = selected === TODAY_KEY;
     document.getElementById('cw-day-title').textContent =
-      `${dt.getMonth() + 1}월 ${dt.getDate()}일 (${WD[dt.getDay()]})${isToday ? ' · 오늘' : ''}`;
+      S().dayTitle(dt, WD()[dt.getDay()], isToday);
     const evs = evOn(selected);
     const el = document.getElementById('cw-day');
-    if (!evs.length) { el.innerHTML = `<p class="cw-empty">${isToday ? '오늘은' : '이 날은'} 등록된 일정이 없습니다.</p>`; return; }
+    if (!evs.length) { el.innerHTML = `<p class="cw-empty">${isToday ? S().emptyToday : S().emptyDay}</p>`; return; }
     el.innerHTML = evs.map((e) => {
       const t = meta(e.type);
-      const time = e.start ? `${e.start}–${e.end}` : (e.time || '종일');
+      const time = e.start ? `${e.start}–${e.end}` : (e.time || S().allDay);
       // 수련·실습은 제목에 종류가 이미 들어 있으므로 오른쪽 분류 라벨은 생략
-      const typeTag = e.type === 'practice' ? '' : `<span class="cw-utype" style="color:${t.color}">${t.short}</span>`;
+      const typeTag = e.type === 'practice' ? '' : `<span class="cw-utype" style="color:${t.color}">${esc(pick(t.short))}</span>`;
       return `<div class="cw-drow">
         <span class="cw-ubar" style="background:${t.color}"></span>
         <span class="cw-dtime">${esc(time)}</span>
-        <span class="cw-utitle">${esc(e.title)}${e.where ? `<span class="cw-uwhere"> · ${esc(e.where)}</span>` : ''}</span>
+        <span class="cw-utitle">${esc(titleOf(e))}${e.where ? `<span class="cw-uwhere"> · ${esc(whereOf(e))}</span>` : ''}</span>
         ${typeTag}
       </div>`;
     }).join('');
@@ -249,14 +305,14 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
       .filter((e) => parse(e.date) >= TODAY && !e.recurring)
       .sort((a, b) => a.date.localeCompare(b.date)).slice(0, 7);
     const el = document.getElementById('cw-up');
-    if (!up.length) { el.innerHTML = '<p class="cw-empty">예정된 일정이 없습니다.</p>'; return; }
+    if (!up.length) { el.innerHTML = `<p class="cw-empty">${S().emptyUp}</p>`; return; }
     el.innerHTML = up.map((e) => {
       const dt = parse(e.date); const t = meta(e.type);
       return `<div class="cw-urow">
         <span class="cw-ubar" style="background:${t.color}"></span>
-        <span class="cw-udate">${dt.getMonth() + 1}.${dt.getDate()} <em>(${WD[dt.getDay()]})</em></span>
-        <span class="cw-utitle">${esc(e.title)}${e.where ? `<span class="cw-uwhere"> · ${esc(e.where)}</span>` : ''}</span>
-        <span class="cw-utype" style="color:${t.color}">${t.short}</span>
+        <span class="cw-udate">${S().shortDate(dt, WD()[dt.getDay()])}</span>
+        <span class="cw-utitle">${esc(titleOf(e))}${e.where ? `<span class="cw-uwhere"> · ${esc(whereOf(e))}</span>` : ''}</span>
+        <span class="cw-utype" style="color:${t.color}">${esc(pick(t.short))}</span>
       </div>`;
     }).join('');
   }
@@ -264,14 +320,22 @@ const apiUrl = appOrigin ? `${appOrigin}/api/public/schedule` : '';
   function renderSync() {
     const el = document.getElementById('cw-sync');
     if (syncState === 'live' && syncAt) {
-      el.innerHTML = `<i class="cw-sync-dot"></i>교육장 예약 실시간 반영 · ${pad(syncAt.getHours())}:${pad(syncAt.getMinutes())} 기준`;
+      el.innerHTML = `<i class="cw-sync-dot"></i>${esc(S().syncLive(`${pad(syncAt.getHours())}:${pad(syncAt.getMinutes())}`))}`;
     } else if (syncState === 'seed' && seedUpdatedAt) {
       const d = new Date(seedUpdatedAt);
-      el.textContent = `교육장 예약 ${d.getMonth() + 1}.${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())} 기준`;
+      el.textContent = S().syncSeed(`${d.getMonth() + 1}.${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`);
     } else {
       el.textContent = '';
     }
   }
+
+  // 상단 토글이 <html lang> 을 바꾸면 달력을 다시 그린다.
+  // (달력 글자는 JS 가 만들어 내므로 사전 기반 치환으로는 잡히지 않는다)
+  function redraw() {
+    if (!document.getElementById('cw-week')) return;
+    renderWeekdays(); render(); renderStats(); renderDay(); renderUpcoming(); renderSync();
+  }
+  new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init());
   else init();

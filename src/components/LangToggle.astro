@@ -1,0 +1,33 @@
+---
+// KR / EN 전환 버튼. 실제 교체는 BaseLayout 의 인라인 스크립트가 한다
+// (window.__kpaSetLang). 선택은 localStorage['kpa-lang'] 에 남는다.
+---
+<div class="lang-toggle" role="group" aria-label="언어 선택 / Language">
+  <button type="button" class="lang-btn" data-lang-btn="ko" lang="ko"
+    onclick="window.__kpaSetLang && window.__kpaSetLang('ko')">KR</button>
+  <span class="lang-sep" aria-hidden="true">|</span>
+  <button type="button" class="lang-btn" data-lang-btn="en" lang="en"
+    onclick="window.__kpaSetLang && window.__kpaSetLang('en')">EN</button>
+</div>
+
+<style is:global>
+  /* 헤더 안에 놓이므로 색은 헤더가 정한 --nav-fg 를 그대로 물려받는다.
+     활성 표시는 채우지 않고 강조색 글자로 한다 — 투명 헤더/밝은 헤더 양쪽에서
+     AA 를 통과하는 토큰(--accent-lit / --accent-text)이 이미 있어서다. */
+  .lang-toggle {
+    display: inline-flex; align-items: center; gap: 2px;
+    flex-shrink: 0; user-select: none;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .06em;
+  }
+  .lang-btn {
+    background: none; border: 0; cursor: pointer;
+    font: inherit; color: var(--nav-fg); opacity: .55;
+    padding: 4px 3px; line-height: 1.4;
+    transition: opacity .2s var(--ease), color .2s var(--ease);
+  }
+  .lang-btn:hover { opacity: 1; }
+  .lang-btn.is-active { opacity: 1; color: var(--accent-text); }
+  .lang-sep { opacity: .3; color: var(--nav-fg); font-weight: 400; }
+
+  .site-header--over:not(.is-scrolled) .lang-btn.is-active { color: var(--accent-lit); }
+</style>

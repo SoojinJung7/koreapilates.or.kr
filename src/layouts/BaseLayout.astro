@@ -42,6 +42,127 @@ const pretendard = withBase('/fonts/PretendardVariable.woff2');
     <Footer />
     <AuthController />
 
+    <!-- ── KR / EN 전환 ───────────────────────────────────────────────
+         페이지를 두 벌 만들지 않고, 화면의 한글 텍스트 노드를 사전대로 갈아끼운다.
+         선택은 localStorage['kpa-lang'] 에 남아 다음 방문에도 이어진다.
+         · 사전(/lang/en.json, 약 64KB)은 **EN 을 고른 방문자만** 받아 간다.
+           페이지마다 인라인하면 34개 페이지가 통째로 무거워지기 때문.
+         · 사전에 없는 문구는 한국어로 남는다(깨지지 않는다).
+         · 달력·인스타처럼 **나중에 그려지는 글자**도 잡아야 하므로
+           MutationObserver 로 새로 붙은 노드를 계속 주워 담는다.
+           (우리가 바꾸는 건 nodeValue = characterData 라 childList 감시를 다시
+            깨우지 않는다 → 무한루프 없음)
+    -->
+    <script is:inline define:vars={{ DICT_URL: withBase('/lang/en.json') }}>
+      (function () {
+        var KEY = 'kpa-lang';
+        var lang = 'ko';
+        var DICT = null;
+        var records = [];
+        var seen = typeof WeakSet === 'function' ? new WeakSet() : null;
+        var loading = null;
+        var watching = false;
+
+        function consider(node, out) {
+          if (seen && seen.has(node)) return;
+          var raw = node.nodeValue;
+          if (!raw) return;
+          var key = raw.trim();
+          if (!key || !Object.prototype.hasOwnProperty.call(DICT, key)) return;
+          if (seen) seen.add(node);
+          var rec = { node: node, ko: raw, key: key };
+          records.push(rec);
+          out.push(rec);
+        }
+
+        // root 아래(자기 자신 포함)의 텍스트 노드 중 사전에 있는 것만 모은다.
+        function collect(root) {
+          var fresh = [];
+          if (!root || !DICT) return fresh;
+          if (root.nodeType === 3) { consider(root, fresh); return fresh; }
+          if (root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return fresh;
+          var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          var n;
+          while ((n = walker.nextNode())) consider(n, fresh);
+          return fresh;
+        }
+
+        function paint(list) {
+          for (var i = 0; i < list.length; i++) {
+            var r = list[i];
+            // 앞뒤 공백/줄바꿈은 그대로 두고 알맹이만 바꾼다(레이아웃 유지).
+            r.node.nodeValue = lang === 'en' ? r.ko.replace(r.key, DICT[r.key]) : r.ko;
+          }
+        }
+
+        // 나중에 그려지는 글자(달력·인스타 등)까지 따라잡는다. 사전을 받은 뒤 한 번만 건다.
+        function watch() {
+          if (watching || typeof MutationObserver !== 'function') return;
+          watching = true;
+          new MutationObserver(function (muts) {
+            var fresh = [];
+            for (var i = 0; i < muts.length; i++) {
+              var added = muts[i].addedNodes;
+              for (var j = 0; j < added.length; j++) fresh = fresh.concat(collect(added[j]));
+            }
+            if (fresh.length && lang === 'en') paint(fresh);
+          }).observe(document.body, { childList: true, subtree: true });
+        }
+
+        function markButtons() {
+          var btns = document.querySelectorAll('[data-lang-btn]');
+          for (var i = 0; i < btns.length; i++) {
+            var on = btns[i].getAttribute('data-lang-btn') === lang;
+            btns[i].classList.toggle('is-active', on);
+            btns[i].setAttribute('aria-pressed', String(on));
+          }
+        }
+
+        function render() {
+          if (DICT) paint(records);
+          document.documentElement.lang = lang;
+          markButtons();
+        }
+
+        // 사전을 받아 온다(한 번만). 실패하면 조용히 한국어로 남는다.
+        function loadDict() {
+          if (DICT) return Promise.resolve(DICT);
+          if (loading) return loading;
+          loading = fetch(DICT_URL)
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (data) {
+              if (!data) return null;
+              DICT = data;
+              if (document.body) { collect(document.body); watch(); }
+              return DICT;
+            })
+            .catch(function () { return null; });
+          return loading;
+        }
+
+        window.__kpaSetLang = function (next) {
+          lang = next === 'en' ? 'en' : 'ko';
+          try { localStorage.setItem(KEY, lang); } catch (e) {}
+          if (lang === 'en') loadDict().then(render);
+          else render();
+        };
+
+        var saved = 'ko';
+        try { saved = localStorage.getItem(KEY) === 'en' ? 'en' : 'ko'; } catch (e) {}
+        lang = saved;
+        // 저장된 언어가 영어면 DOM 을 기다리지 않고 곧바로 받기 시작한다(전환 깜빡임 최소화).
+        if (saved === 'en') loadDict();
+
+        function start() {
+          if (saved === 'en') loadDict().then(render);
+          else render();
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+        else start();
+      })();
+    </script>
+
+
     <script>
       // 전역 미세 인터랙션: 섹션 등장.
       // prefers-reduced-motion 이면 아예 실행하지 않습니다.
