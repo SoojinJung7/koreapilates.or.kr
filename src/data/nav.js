@@ -37,7 +37,7 @@ export const navGroups = [
       { label: '인증 회원 찾기', href: '/members' },
     ],
   },
-  { label: '더 스파이럴 분당', href: 'https://www.thespiral.co.kr', external: true },
+  { label: '더 스파이럴 분당', href: 'https://www.thespiralbundang.com/', external: true },
 ];
 
 // 평면 목록 (사이트맵/보조용)
