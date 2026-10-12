@@ -150,12 +150,16 @@ const stories = [
             <div class="batch-status">
               {b.status === 'open' ? (
                 <span class="badge badge--open">신청 가능{b.note && ` · ${b.note}`}</span>
+              ) : b.status === 'full' ? (
+                <span class="badge badge--full">정원마감 · 대기 신청만 가능</span>
               ) : (
                 <span class="badge badge--closed">마감</span>
               )}
             </div>
             {b.status === 'open' ? (
               <a class="btn btn--sm btn--filled" href={applyForm} target="_blank" rel="noopener">신청하기</a>
+            ) : b.status === 'full' ? (
+              <a class="btn btn--sm" href={applyForm} target="_blank" rel="noopener">대기 신청</a>
             ) : (
               <span class="btn btn--sm btn--disabled" aria-disabled="true">모집 종료</span>
             )}
@@ -337,6 +341,7 @@ const stories = [
     white-space: nowrap;
   }
   .badge--open { background: var(--surface-ink); color: #fff; }
+  .badge--full { background: #fff; color: var(--accent-text); border: 1px solid var(--accent-text); padding: 4px 11px; }
   .badge--closed { background: rgba(122, 105, 94, 0.2); color: var(--accent-text); }
   .btn--sm { padding: 8px 18px; font-size: 13px; }
   .btn--disabled {

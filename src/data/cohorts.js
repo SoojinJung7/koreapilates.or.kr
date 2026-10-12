@@ -12,8 +12,9 @@
  *   gen      '169기'
  *   start    '2026-09-06'            개강일 (첫 수업일)
  *   end      '2026-10-14' | null     마지막 정규수업일. null 이면 COURSE_MONTHS 로 추정
- *   cls      '일요반' | '월/수반' | '토요반'
- *   status   'open' | 'closed'       모집 상태
+ *   cls      '일요반' | '월/수반' | '화/목반' | '토요반'
+ *   status   'open' | 'full' | 'closed'
+ *            모집 상태. full = 정원마감(대기 신청만 받음), closed = 모집 종료
  *   note     '잔여 1자리'            모집 중일 때 표시할 문구 (선택)
  *   off      ['2026-05-25', …]       방학·휴강일 — 수업 대신 "168기 월수반 방학" 으로 표시 (선택)
  *   special  { '2026-07-22': '수행평가', … }
@@ -32,6 +33,7 @@ export const CLASS_PATTERNS = {
   '일요반':  { short: '일요반', shortEn: 'Sun',     days: [0],    time: '11:00–17:00', label: '일요일 11:00 ~ 17:00' },
   '토요반':  { short: '토요반', shortEn: 'Sat',     days: [6],    time: '12:00–18:00', label: '토요일 12:00 ~ 18:00' },
   '월/수반': { short: '월수반', shortEn: 'Mon/Wed', days: [1, 3], time: '10:30–13:30', label: '월요일 10:30~13:30 / 수요일 10:30~13:30' },
+  '화/목반': { short: '화목반', shortEn: 'Tue/Thu', days: [2, 4], time: '12:00–15:00', label: '화요일 12:00~15:00 / 목요일 12:00~15:00' },
 };
 
 // 달력 영문 표기용. 여기 없는 말은 한국어 그대로 남는다(깨지지 않는다).
@@ -56,7 +58,9 @@ const enGen = (gen) => {
 
 // 최신순
 export const cohorts = [
-  { gen: '170기', start: '2026-12-07', end: null, cls: '월/수반', status: 'open',   note: '잔여 1자리' },
+  // 171기 개강일은 아직 미정 — 우선 12/8(화)로 둔다.
+  { gen: '171기', start: '2026-12-08', end: null, cls: '화/목반', status: 'open',   note: '잔여 3자리' },
+  { gen: '170기', start: '2026-12-07', end: null, cls: '월/수반', status: 'full' },
   {
     // 169기 일요반 커리큘럼표(2026-09 기준) 반영. 교육순서·일정은 습득속도에 따라 유동적.
     gen: '169기', start: '2026-09-06', end: '2027-02-21', cls: '일요반', status: 'closed',
