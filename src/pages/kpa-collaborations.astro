@@ -5,60 +5,162 @@ import { withBase, img } from '../utils/url.js';
 
 const kakaoChat = 'https://pf.kakao.com/_vIRDxl/chat';
 
-// 페이지 대표 이미지 (에릭 프랭클린 초청 워크샵 현장)
-const heroImg = '6f7ec1_cd3110807926449b8c6c2f053e4fc2bc~mv2.png';
+// 페이지 대표 이미지 (졸업생 세미나 강의 현장)
+const heroImg = '6f7ec1_bc66e70244be420aa1fb98353cc2528b~mv2.jpeg';
 
-// 해외 초청 세미나 아카이브 (원본 블로그 카드 순서 그대로)
+// 졸업생 세미나 카테고리
+const seminarCategories = [
+  {
+    en: 'Advanced anatomy seminar',
+    title: '해부학 세미나',
+    items: [
+      '십자인대 파열 및 운동케어',
+      '주요 6근육 심화스터디 (승모근, 광배근, 장요근, 복횡근, 횡격막, 골반기저근) 등',
+    ],
+  },
+  {
+    en: 'Advanced Pilates repertoire',
+    title: '실기 동작 세미나',
+    items: [
+      '동작의 길 (교재 외 실기동작 습득)',
+      '스프링보드 101 (기구소개 및 실기동작)',
+      "JOSEPH'S MAGIC CIRCLE 등",
+    ],
+  },
+  {
+    en: 'Miscellaneous seminar',
+    title: '그 외 세미나',
+    items: [
+      'NPCP 국제공인 자격취득반',
+      '발레, 그리고 필라테스',
+      '심폐소생술 심화과정 (CPR)',
+      '산전산후 케어 솔루션 등',
+    ],
+  },
+];
+
+// 졸업생 세미나 콘텐츠 (원본 블로그 카드 순서 그대로)
 const seminars = [
   {
-    title: 'Franklin method® 에릭 프랭클린 워크샵',
-    tag: 'Franklin Method',
-    desc: '세계적인 무브먼트 전문가 에릭 프랭클린(Eric Franklin)을 초청하여 진행한 프랭클린 메소드® 워크샵. 이미지와 상상을 활용한 다이나믹 뉴로코그니티브 이미저리(Dynamic Neurocognitive Imagery)로 몸의 움직임을 효율적으로 재교육하는 방법을 배웁니다.',
-    image: '6f7ec1_cd3110807926449b8c6c2f053e4fc2bc~mv2.png',
+    title: '목통증, 어디까지 알고있니?',
+    tag: 'Cervical Care',
+    desc: '전-후 차이가 확실한 경추통증 솔루션 : 경추의 변형된 커브 종류 탐구 / 경추 통증기전에 따른 실전 노하우 & 시퀀스, 폼롤러, 리커버링을 이용한 근막이완',
+    image: '6f7ec1_6b484e1f4b92438f8457cb2f9ba16b65~mv2.jpg',
   },
   {
-    title: 'CLT Exercise course 워크샵',
-    tag: 'CLT Exercise',
-    desc: 'CLT Exercise course _ 움직임 및 운동 관련분야 전문가과정. 협응적이고 기능적인 움직임의 기본 패턴들을 사용하여 몸의 움직임을 협응적인 형태로 연습시키는 운동 방법이자 치료법입니다.',
-    image: '6f7ec1_529ff3512dee46bbab12ea48149c8909~mv2.png',
+    title: '추석세미나 : DAY 3',
+    tag: 'Cadillac',
+    desc: 'TOWARDS PERFECTION : CADILLAC — 캐딜락 교재에 수록된 모든 동작들의 목적 / 완성도를 높이는 워크샵',
+    image: '6f7ec1_4a3e0ffcb76e4c2f9390848ee95699c7~mv2.jpg',
   },
   {
-    title: '필라테스 전문 세미나 "Innovations in Pilates"',
-    tag: 'Innovations',
-    date: '2016.08.26–27',
-    desc: '아카데미 문화의 선두주자, 스포츠클럽 필립에서 필라테스 전문 세미나 "Innovations in Pilates"가 지난 8월 26–27일 양일간 개최되었습니다. (Anthony Lett / 안기만 박사)',
-    image: '6f7ec1_a6993825569540f99499d40489b100f6~mv2.png',
+    title: '추석세미나 : DAY 2',
+    tag: 'Pre & Post Natal',
+    desc: 'PRE & POST NATAL 101 — 산전, 산후에 대한 정보 및 유용한 필라테스 시퀀스, 시기별로 변하는 임산부의 정렬과 몸의 변화에 따른 필라테스 접근법 +a',
+    image: '6f7ec1_b93115d75cbf43ac9ba01d29b9ea8b2a~mv2.jpg',
   },
   {
-    title: '보수와 필라테스의 만남',
-    tag: 'BOSU',
-    desc: '불안정한 지지면 위에서의 균형 훈련을 필라테스와 접목한 세미나. 보수(BOSU)를 활용해 코어 안정성과 고유수용감각(proprioception)을 향상시키는 다양한 응용 동작을 배웁니다.',
-    image: '6f7ec1_df7d402ed24c4c31b6132e21dbff7294~mv2.jpg',
+    title: '추석세미나 : DAY 1',
+    tag: 'Anatomy',
+    desc: 'COMPLETE ANATOMY — 3D 해부학 프로그램을 통한 근골격계 질환 탐구 / 흉곽출구증후군 / 어깨충돌증후군 / 반월상연골파열 / 전방십자인대파열 탐구',
+    image: '6f7ec1_3740780c149a472dbe6970aec77e842c~mv2.jpg',
+  },
+  {
+    title: 'NPCP 자격증반 1기',
+    tag: 'Certification',
+    desc: '국제공인 PMA-NPCP 자격취득과정 / 커리큘럼 소개 / STUDY GUIDE / PRACTICE QUESTION 풀이',
+    image: '6f7ec1_bc66e70244be420aa1fb98353cc2528b~mv2.jpeg',
+  },
+  {
+    title: '발레, 그리고 필라테스',
+    tag: 'Ballet',
+    desc: '필라테스와 발레의 공통점 탐구 및 폴드브라(Port de bras), 안전한 고관절 외회전 큐잉방법 및 변형동작 시퀀스 전수',
+    image: '6f7ec1_06deb9ecb78f4d019e3d1e3bca7bfbb1~mv2.jpg',
+  },
+  {
+    title: 'KPA 봄맞이 수련 : 매직서클',
+    tag: 'Magic Circle',
+    desc: "JOSEPH'S MAGIC CIRCLE — 간과하고 있었던 필라테스 매직서클 소도구 사용법 돌아보기 및 매직서클을 이용한 복횡근, 골반기저근 티칭법 전수",
+    image: '6f7ec1_48951219a66447b68e1a02718e8f022b~mv2.jpg',
+  },
+  {
+    title: '심폐소생술 심화교육',
+    tag: 'CPR',
+    desc: '한국응급처치교육원 초빙, 심폐소생술 심화교육 및 임산부, 영아에 따른 응급처치 방법, 자동심장충격기(AED) 사용방법 습득 (CPR 심화수료증 발급)',
+    image: '6f7ec1_48da69716105422aabaabadc637b1720~mv2.jpg',
+  },
+  {
+    title: 'OT실전 노하우',
+    tag: 'Orientation',
+    desc: 'OT(Orientation)수업 Before & After를 극대화시키는 체형별 안성맞춤 동작 찾아내기, 모의 OT레슨 시뮬레이션 진행, 계약을 이끄는 실전 Tip 및 조언 전수',
+    image: '6f7ec1_e5695dc310a84346a61eda6544947252~mv2.jpg',
+  },
+  {
+    title: '동작의길 again',
+    tag: 'Reformer',
+    desc: '(추가수요로 인한 재진행) 교재 외 새로운 리포머 상급동작 습득 및 부상 없는 수행을 돕는 핸즈온 전수, 2023년 맞이 KPA졸업생세미나 컨텐츠 소개',
+    image: '6f7ec1_787dc173a35147b28350bf8b12bbd200~mv2.jpg',
+  },
+  {
+    title: '동작의길',
+    tag: 'Reformer',
+    desc: '교재 외 새로운 리포머 상급동작 습득 및 부상 없는 수행을 돕는 핸즈온 전수, 2023년 맞이 KPA졸업생세미나 컨텐츠 소개',
+    image: '6f7ec1_9bcc882c7ca24ecca7bb7f1b53231f2b~mv2.jpg',
   },
 ];
 ---
-<BaseLayout title="해외 초청 워크샵" overHero={true}>
+<BaseLayout title="KPA & 공동 교육" overHero={true}>
   <!-- PAGE HERO -->
   <PageHero
-    eyebrow="INVITED CONFERENCES"
-    title="해외 초청 세미나"
+    eyebrow="KPA COLLABORATIONS"
+    title="KPA & 공동 교육"
     image={heroImg}
   >
-    국내외 운동관련 다양한 전문가들을 초빙하여<br />
-    배움의 장을 열어줍니다.
+    정규 지도자과정을 졸업하신 분들을 위한<br />
+    심화 실기·해부학·현장 노하우 교육 프로그램입니다.
   </PageHero>
 
   <!-- INTRO -->
   <section class="section intro">
     <div class="wrap intro-inner">
-      <p class="eyebrow">Global Masters</p>
-      <h2>세계적인 전문가들과<br />함께하는 배움의 장</h2>
+      <p class="eyebrow">Continuing Education</p>
+      <h2>졸업 이후에도 이어지는<br />배움의 여정</h2>
       <p class="intro-body">
-        대한필라테스협회는 프랭클린 메소드®의 에릭 프랭클린을 비롯한 세계적인
-        무브먼트·필라테스 전문가들을 국내로 초청하여 특별 워크샵과 세미나를
-        진행합니다. 필라테스의 지평을 넓히는 최신 이론과 실기를 국내에서 직접
-        만나보실 수 있습니다.
+        KPA 협회에서는 졸업 이후에도 배움을 이어나갈 수 있도록 수준 높은 교육
+        컨텐츠를 제공합니다. 대한필라테스협회의 정규 지도자과정을 성공적으로
+        졸업하신 분들은 ‘졸업생’이 되시며, 졸업생 세미나에 참여할 수 있는 자격이
+        주어집니다. 더욱 많은 실기동작, 심층적 해부학 이론, 그리고 실제 강사활동시에
+        유용하게 사용할 수 있는 정보를 습득하여 실력을 향상시킬 수 있습니다.
       </p>
+    </div>
+  </section>
+
+  <!-- ALUMNI SEMINAR DETAIL -->
+  <section class="section cats">
+    <div class="wrap">
+      <div class="cat-head">
+        <p class="eyebrow">ALUMNI SEMINAR</p>
+        <h2>졸업생 세미나</h2>
+        <p class="cat-lead">
+          대한필라테스협회의 정규 지도자과정을 성공적으로 졸업하신 분들은
+          ‘졸업생’이 되시며, 졸업생 세미나에 참여할 수 있는 자격이 주어집니다.
+          더욱 많은 실기동작, 심층적 해부학 이론 및 실제 강사활동시에 더욱
+          유용하게 사용할 수 있는 정보를 습득하여 실력을 향상시킬 수 있습니다.
+        </p>
+      </div>
+      <div class="cat-grid">
+        {seminarCategories.map((c) => (
+          <article class="cat-card">
+            <p class="cat-en">{c.en}</p>
+            <h3>{c.title}</h3>
+            <ul>
+              {c.items.map((i) => (
+                <li>{i}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -66,11 +168,11 @@ const seminars = [
   <section class="section archive">
     <div class="wrap">
       <div class="archive-head">
-        <p class="eyebrow">CONFERENCE ARCHIVE</p>
-        <h2>지난 초청 워크샵 · 세미나</h2>
+        <p class="eyebrow">SEMINAR ARCHIVE</p>
+        <h2>지난 졸업생 세미나 콘텐츠</h2>
         <p class="archive-lead">
-          프랭클린 메소드부터 CLT Exercise, Innovations in Pilates, 보수 세미나까지
-          — 국내외 전문가들과 함께한 다채로운 초청 교육을 진행해 왔습니다.
+          해부학부터 실기 동작, 자격취득과정, 응급처치까지 — 지도자로서의 역량을
+          한층 더 넓히는 다양한 심화 세미나를 진행해 왔습니다.
         </p>
       </div>
       <div class="archive-grid">
@@ -82,7 +184,6 @@ const seminars = [
             </div>
             <div class="seminar-body">
               <h3>{s.title}</h3>
-              {s.date && <p class="seminar-date">{s.date}</p>}
               <p>{s.desc}</p>
             </div>
           </article>
@@ -95,14 +196,13 @@ const seminars = [
   <section class="section cta-band">
     <div class="wrap">
       <p class="eyebrow">JOIN US</p>
-      <h2>초청 워크샵 신청 안내</h2>
+      <h2>졸업생 세미나 신청</h2>
       <p>
-        새로운 초청 워크샵 일정과 신청은 워크샵/세미나 신청 페이지에서 확인하실 수
+        새로운 세미나 일정과 신청은 워크샵/세미나 신청 페이지에서 확인하실 수
         있습니다. 궁금한 점은 카카오톡으로 편하게 문의해 주세요.
       </p>
       <div class="cta-band__actions">
         <a class="btn btn--filled" href={withBase('/event-list')}>워크샵/세미나 신청</a>
-        <a class="btn" href={withBase('/global-seminar')}>워크샵/세미나 안내</a>
         <a class="btn" href={kakaoChat} target="_blank" rel="noopener">카카오톡 상담</a>
       </div>
     </div>
@@ -116,6 +216,49 @@ const seminars = [
   .intro-inner h2 { color: var(--ink-strong); font-size: clamp(26px, 3.8vw, 40px); margin: 6px 0 20px; line-height: 1.25; }
   .intro-body { color: var(--ink-muted); font-size: clamp(15px, 1.8vw, 17px); line-height: 1.95; margin: 0; }
 
+  /* CATEGORIES */
+  .cat-head { max-width: 820px; margin-bottom: clamp(28px, 4vw, 44px); }
+  .cat-head h2 { color: var(--ink-strong); font-size: clamp(26px, 4vw, 42px); margin: 6px 0 18px; }
+  .cat-lead { color: var(--ink-muted); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.9; margin: 0; }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 3vw, 30px);
+  }
+  .cat-card {
+    background: #fbf7ef;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: clamp(24px, 3vw, 32px);
+  }
+  .cat-en {
+    font-family: var(--font-display);
+    color: var(--accent-text);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    font-size: 13px;
+    margin: 0 0 4px;
+  }
+  .cat-card h3 { color: var(--ink-strong); font-size: clamp(18px, 2.2vw, 22px); margin: 0 0 16px; }
+  .cat-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .cat-card li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--ink-muted);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .cat-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-deep);
+  }
+
   /* ARCHIVE */
   .archive { background: var(--surface-2); }
   .archive-head { max-width: 820px; margin-bottom: clamp(28px, 4vw, 46px); }
@@ -123,7 +266,7 @@ const seminars = [
   .archive-lead { color: var(--ink-muted); font-size: clamp(15px, 1.9vw, 17px); line-height: 1.9; margin: 0; }
   .archive-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: clamp(20px, 3vw, 32px);
   }
   .seminar-card {
@@ -151,20 +294,16 @@ const seminars = [
     border-radius: 999px;
   }
   .seminar-body { padding: clamp(20px, 2.6vw, 26px); display: flex; flex-direction: column; }
-  .seminar-body h3 { color: var(--ink-strong); font-size: clamp(18px, 2.2vw, 22px); margin: 0 0 10px; line-height: 1.35; }
-  .seminar-date {
-    font-family: var(--font-display);
-    color: var(--accent-text);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    margin: 0 0 10px;
-  }
+  .seminar-body h3 { color: var(--ink-strong); font-size: clamp(18px, 2.2vw, 22px); margin: 0 0 12px; line-height: 1.35; }
   .seminar-body p { color: var(--ink-muted); font-size: 14.5px; line-height: 1.8; margin: 0; }
   .cta-band h2 { margin: 6px 0 12px; font-size: clamp(26px, 4vw, 40px); }
   .cta-band p { margin: 0 0 28px; line-height: 1.85; max-width: 640px; }
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
+    .cat-grid { grid-template-columns: 1fr; }
+    .archive-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
     .archive-grid { grid-template-columns: 1fr; }
   }
 </style>
