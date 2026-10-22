@@ -22,11 +22,11 @@ export const navGroups = [
     ],
   },
   {
-    label: '워크샵',
+    label: '워크샵/세미나',
     children: [
-      { label: '워크샵/세미나', href: '/workshop-seminar' },
-      { label: '졸업생 세미나', href: '/graduates-seminar' },
-      { label: '해외 초청 워크샵', href: '/conferences' },
+      { label: '해외 초청 세미나', href: '/workshop-seminar' },
+      { label: '해외 현지 KPA 교육', href: '/graduates-seminar' },
+      { label: 'KPA & 공동 교육', href: '/conferences' },
     ],
   },
   {
