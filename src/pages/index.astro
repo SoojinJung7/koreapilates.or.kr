@@ -154,7 +154,7 @@ const partners = [
           <h2>워크샵 · 세미나</h2>
         </div>
         <div class="split-aside">
-          <a class="text-link" href={withBase('/workshop-seminar')}>
+          <a class="text-link" href={withBase('/global-seminar')}>
             전체 보기
             <svg width="13" height="9" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
@@ -163,7 +163,7 @@ const partners = [
 
       <div class="workshop-grid">
         {workshops.map((w, i) => (
-          <a class={`workshop-card workshop-card--${i}`} href={withBase('/workshop-seminar')}>
+          <a class={`workshop-card workshop-card--${i}`} href={withBase('/global-seminar')}>
             <div class="workshop-img" style={`background-image:url(${img(w.img)})`}></div>
             <h3>{w.t}</h3>
           </a>

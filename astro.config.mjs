@@ -7,6 +7,12 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://koreapilates.or.kr',
   base: '/',
+  // 예전 주소로 들어와도 새 주소로 이동(검색결과·공유 링크 보호)
+  redirects: {
+    '/workshop-seminar': '/global-seminar',
+    '/graduates-seminar': '/kpa-global',
+    '/conferences': '/kpa-collaborations',
+  },
   build: {
     format: 'directory',
   },

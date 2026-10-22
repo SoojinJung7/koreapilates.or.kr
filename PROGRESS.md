@@ -29,10 +29,10 @@
 | /kpaapp | KPA 교육어플 | ✅ 완료 |
 | /category/all-products | 심화과정 수강신청 | ✅ 완료 |
 | /ncpt | NCPT 국제공인 자격증 | ✅ 완료 |
-| /workshop-seminar | 워크샵/세미나 | ✅ 완료 |
+| /global-seminar | 워크샵/세미나 | ✅ 완료 |
 | /event-list | 워크샵/세미나 신청 | ✅ 완료 |
-| /graduates-seminar | 졸업생세미나 | ✅ 완료 |
-| /conferences | 해외 초청 워크샵 | ✅ 완료 |
+| /kpa-global | 졸업생세미나 | ✅ 완료 |
+| /kpa-collaborations | 해외 초청 워크샵 | ✅ 완료 |
 | /community | KPA커뮤니티 | ✅ 완료 |
 | /file-share | 자료게시판 | ✅ 완료 |
 | /members | 인증 회원 찾기 | ✅ 완료 |

@@ -24,9 +24,9 @@ export const navGroups = [
   {
     label: '워크샵/세미나',
     children: [
-      { label: '해외 초청 세미나', href: '/workshop-seminar' },
-      { label: '해외 현지 KPA 교육', href: '/graduates-seminar' },
-      { label: 'KPA & 공동 교육', href: '/conferences' },
+      { label: '해외 초청 세미나', href: '/global-seminar' },
+      { label: '해외 현지 KPA 교육', href: '/kpa-global' },
+      { label: 'KPA & 공동 교육', href: '/kpa-collaborations' },
     ],
   },
   {
